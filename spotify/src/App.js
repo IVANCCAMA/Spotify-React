@@ -1,25 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import CrearLista from './components/crearLista';
+import MenuLateral from './components/menuLateral';
 
-function App() {
+function App () {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Hola mundo Spotify :D
-        </p>
-        <a
-          className="App-link"
-          href="https://react.dev/learn"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Doc React
-        </a>
-      </header>
+    <div className='bg-teal-300'> 
+       <div className='flex'>
+        <MenuLateral/>
+          <div className="container mx-auto py-4 px-20">
+            <Routes>
+              <Route path="/crearLista" element={< CrearLista />} />
+            </Routes>
+        </div>
+       </div>
     </div>
   );
-}
+};
 
 export default App;
