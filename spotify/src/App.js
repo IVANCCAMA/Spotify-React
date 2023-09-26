@@ -1,25 +1,15 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+//import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ReproducirCancion  from './components/reproducirCancion';
+ 
+//Prueba para ver la ejecucion nomas
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Hola mundo Spotify :D
-        </p>
-        <a
-          className="App-link"
-          href="https://react.dev/learn"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Doc React
-        </a>
-      </header>
-    </div>
-  );
+  const songs = [
+    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', //EJMPLO
+  ];
+
+  return <ReproducirCancion songs={songs} />;
 }
 
 export default App;
