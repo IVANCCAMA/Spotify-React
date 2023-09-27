@@ -2,16 +2,14 @@ import React from 'react';
 
 function CrearLista() {
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
-      <h2 className="text-xl font-bold mb-4">Crear Lista</h2>
-
+    <div className="max-w-md mx-auto p-6 bg-white  shadow-md ">
       <form>
         <div className="mb-4">
           <label htmlFor="titulo" className="block text-gray-700">Título de la Lista *</label>
           <input
             type="text"
             id="titulo"
-            className="w-full p-2 border rounded-md"
+            className="w-full p-2 border "
             placeholder="Ingrese el título de la lista"
             required
           />
@@ -19,7 +17,7 @@ function CrearLista() {
 
         <div className="mb-4">
           <label htmlFor="tipoLista" className="block text-gray-700">Tipo de Lista</label>
-          <select id="tipoLista" className="w-full p-2 border rounded-md">
+          <select id="tipoLista" className="w-full p-2 border ">
             <option value="album">Álbum</option>
             <option value="sencillo">Sencillo</option>
           </select>
@@ -31,8 +29,8 @@ function CrearLista() {
         </div>
 
         <div className="flex justify-between">
-          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md">Crear</button>
-          <button type="button" className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">Cancelar</button>
+          <button type="submit" className="px-1 py-1 bg-blue-500 text-white ">Aceptar</button>
+          <button type="button" className="px-1 py-1 bg-gray-300 text-gray-700 ">Cancelar</button>
         </div>
       </form>
     </div>
