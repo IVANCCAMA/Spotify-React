@@ -20,6 +20,11 @@ function MenuLateral() {
             Crear Lista
           </Link>
         </li>
+        <li>
+          <Link className="bg-slate-200 py-2 px-4 flex items-center" to="/añadirCancion">
+            Añadir canción
+          </Link>
+        </li>
       </ul>
     </div>
   );
