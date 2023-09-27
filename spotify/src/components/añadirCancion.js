@@ -5,13 +5,13 @@ import { SubirCancion } from '../firebase/config';
 function AñadirCancion() {
     const [file, setFile] = useState(null);
     
-    const ValidarForm = (e) => {
+    const ValidarForm = async (e) => {
         e.preventDefault();
         // validar campos
         // code
 
         // validar formato
-        const Formatos = ["mp3", "wav"];
+        const Formatos = ["mpeg", "wav"]; // mpeg === mp3
         let flag = false;
 
         for (let i = 0; i < Formatos.length && !flag; i++) {
@@ -20,8 +20,20 @@ function AñadirCancion() {
             }
         }
 
-        if (flag) {
-            SubirCancion(file);
+        if (flag) { 
+            // otra funcion (?)
+
+            // add en firebase
+            try {
+                const url = await SubirCancion(file);
+                console.log(url);
+            } catch (error) {
+                console.log(error);
+                alert(`Error al subir el archivo.`);
+            }
+            
+            // add en db
+
         } else {
             alert(`Formato del archivo no admitido.`);
         }

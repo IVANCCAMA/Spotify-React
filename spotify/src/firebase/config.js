@@ -1,7 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -26,31 +28,31 @@ export const storage = getStorage(app);
 function NombrarCancion(file) {
     // Como se manejaran los nombres?
     // name unicas
-    return "some-chage";
+    return "Canciones/" + v4();
 }
 
-export function SubirCancion(file) {
+export async function SubirCancion(file) {
     // quisiera crear un directorio para cada cacion
     // ejm: Canciones/name/audio
     // Canciones/name/{audio, lyrics, description,...}
-    updateFile(file, NombrarCancion(file));
+    return updateFile(file, NombrarCancion(file));
 }
 
 function NombrarPortada(file) {
     // Como se manejaran los nombres?
     // name unicas
-    return "some-chage";
+    return "Portadas/" + v4();
 }
 
-export function SubirPortada(file) {
+export async function SubirPortada(file) {
     // quisiera crear un directorio para cada portada
     // ejm: Portadas/name/imagen
-    updateFile(file, NombrarPortada(file));
+    return updateFile(file, NombrarPortada(file));
 }
 
-function updateFile(file, filepath) {
+async function updateFile(file, filepath) {
     const storagePortadaRef = ref(storage, filepath);
-    uploadBytes(storagePortadaRef, file).then(snapshot => {
-        console.log(snapshot);
-    });
+    await uploadBytes(storagePortadaRef, file);
+    const url = await getDownloadURL(storagePortadaRef);
+    return url;
 }
