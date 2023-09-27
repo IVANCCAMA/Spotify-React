@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import CrearLista from './components/crearLista';
+import AñadirCancion from './components/añadirCancion';
 import MenuLateral from './components/menuLateral';
 
 function App () {
@@ -12,7 +13,10 @@ function App () {
             <Routes>
               <Route path="/crearLista" element={< CrearLista />} />
             </Routes>
-        </div>
+            <Routes>
+              <Route path="/añadirCancion" element={< AñadirCancion />} />
+            </Routes>
+          </div>
        </div>
     </div>
   );
