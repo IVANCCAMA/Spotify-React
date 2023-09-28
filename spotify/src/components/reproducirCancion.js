@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-//import './index.css'; // Asegúrate de crear este archivo y añadir tus estilos.
+//import './index.css'; 
 
 const ReproducirCancion = ({ songs }) => {
    const [currentSongIndex, setCurrentSongIndex] = useState(0);
