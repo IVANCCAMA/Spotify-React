@@ -1,40 +1,89 @@
-import React from 'react';
+  import React from 'react';
+  import './crearLista.css'
+  
+  function CrearLista() {
 
-function CrearLista() {
-  return (
-    <div className="max-w-md mx-auto p-6 bg-white  shadow-md ">
-      <form>
-        <div className="mb-4">
-          <label htmlFor="titulo" className="block text-gray-700">Título de la Lista *</label>
-          <input
-            type="text"
-            id="titulo"
-            className="w-full p-2 border "
-            placeholder="Ingrese el título de la lista"
-            required
-          />
-        </div>
+    // Form de lista
+  const entradas = document.querySelectorAll('.validar');
 
-        <div className="mb-4">
-          <label htmlFor="tipoLista" className="block text-gray-700">Tipo de Lista</label>
-          <select id="tipoLista" className="w-full p-2 border ">
-            <option value="album">Álbum</option>
-            <option value="sencillo">Sencillo</option>
-          </select>
-        </div>
+  entradas.forEach(function (entrada) {
+      entrada.addEventListener('input', function(event) {
+          const valor = event.target.value;
+          
+          const alfanumerico = /^[a-zA-Z0-9]*$/;
+          if (!alfanumerico.test(valor)) {
+              entrada.classList.add('active');
+              // reemplazar el valor no alfanumerico
+              // event.target.value = valor.replace(/[^a-zA-Z0-9]/g, '');
+              console.log("valor ingresado no es alfanumerico");
+          } else {
+              entrada.classList.remove('active');
+          }
 
-        <div className="mb-4">
-          <label htmlFor="imagen" className="block text-gray-700">Subir Imagen</label>
-          <input type="file" id="imagen" className="w-full" />
-        </div>
+          if (valor.length > 20) {
+              // sub-string del valor hasta 20
+              // entrada.value = valor.slice(0, 20);
+              console.log("valor ingresado mayor a 20");
+          }
+      });
+  });
+    
+    const handleSubirArchivo = () => {
+      const imagen = document.getElementById('imagen');
+      imagen.click(); 
+    };
+    return (
+      <div className="modal-crear-lista">
+        <form className="modal-box">
+          <div className="inter-modal">
+            <div className="campo">
+              <div className="input-box">
+                <label htmlFor="titulo">Título del álbum *</label>
+                {/* Falta controlar entradas max 20 */}
+                <input type="text" className="validar" id="titulo" autoFocus required />
+              </div>
+            </div>
 
-        <div className="flex justify-between">
-          <button type="submit" className="px-1 py-1 bg-blue-500 text-white ">Aceptar</button>
-          <button type="button" className="px-1 py-1 bg-gray-300 text-gray-700 ">Cancelar</button>
-        </div>
-      </form>
-    </div>
-  );
-};
+            <div className="campo">
+              <div className="input-box">
+                <label htmlFor="artista">Artista *</label>
+                <input type="text" className="validar" id="artista" autoFocus required />
+              </div>
+            </div>
 
-export default CrearLista;
+            <div className="campo">
+              <div className="input-box">
+                <label htmlFor="colaboradores">Artistas colaboradores</label>
+                <select id="colaboradores">
+                  <option value="null" selected></option>
+                  <option value="id">Shakira</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="campo">
+              <div className="input-box">
+                <label htmlFor="portada">Portada del álbum</label>
+                <input 
+                  type="button"
+                  className="btn-subir bg-white "
+                  onClick={handleSubirArchivo}
+                  value="Seleccionar imagen"
+                />
+                <input type="file" id="imagen" style={{ display: 'none' }} />
+              </div>
+            </div>
+
+            <div className="campo">
+              <div className="btn-box">
+                <button className="btn-next">Aceptar</button>
+                <button className="btn-next">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    );
+  };
+
+  export default CrearLista;
