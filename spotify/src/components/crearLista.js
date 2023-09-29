@@ -3,7 +3,7 @@
   
   function CrearLista() {
 
-    // Form de lista
+    // Form de lista 
   const entradas = document.querySelectorAll('.validar');
 
   entradas.forEach(function (entrada) {
