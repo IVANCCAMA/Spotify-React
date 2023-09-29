@@ -27,12 +27,16 @@ function AñadirCancion() {
             try {
                 const url = await SubirCancion(file);
                 console.log(url);
+                alert(`Archivo subido correctamente.`);
             } catch (error) {
                 console.log(error);
                 alert(`Error al subir el archivo.`);
             }
-            
+
             // add en db
+
+            // ventana para confirmar de subida
+            window.location.reload();
 
         } else {
             alert(`Formato del archivo no admitido.`);
