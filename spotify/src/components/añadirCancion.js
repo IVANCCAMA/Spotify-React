@@ -55,6 +55,12 @@ const ValidarForm = async (e) => {
     return;
   }
 
+  // validar tamanio
+  if (archivo.size > (15 * 100 * 100)) { // megas
+    alert(`Tamanio del archivo no admitido.`);
+    return;
+  }
+
   try {
     // subir el archivo a Firebase
     const resultado = await SubirCancion(archivo);
