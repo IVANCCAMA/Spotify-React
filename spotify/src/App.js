@@ -9,6 +9,7 @@ function App () {
   return (
     <div className='boby'> 
        <div className='flex'>
+  
         <MenuLateral/>
           <div className="container mx-auto py-4 px-20">
             <Routes>
