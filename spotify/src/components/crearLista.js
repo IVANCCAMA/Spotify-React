@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
-import './crearLista.css'
+import React, { useState, useEffect, useRef } from 'react';
+import './crearLista.css';
 
 function CrearLista() {
-
   const [titulo, setTitulo] = useState('');
   const [artista, setArtista] = useState('');
+  const tituloInputRef = useRef(null);
+
+  useEffect(() => {
+    // Enfocar en la entrada de "Título del álbum" al cargar la página
+    if (tituloInputRef.current) {
+      tituloInputRef.current.focus();
+    }
+  }, []);
 
   const handleTituloChange = (event) => {
     const valor = event.target.value;
@@ -24,13 +31,14 @@ function CrearLista() {
     const imagen = document.getElementById('imagen');
     imagen.click();
   };
+
   return (
-      /* Form de lista */
+    /* Form de lista */
     <div className="modal-crear-lista">
       <form className="modal-box">
         <div className="inter-modal">
           <div className="campo">
-          <div className="input-box">
+            <div className="input-box">
               <label htmlFor="titulo">Título del álbum *</label>
               <input
                 type="text"
@@ -38,10 +46,11 @@ function CrearLista() {
                 id="titulo"
                 autoFocus
                 value={titulo}
-                onChange={handleTituloChange} 
-                autofocus required
+                onChange={handleTituloChange}
+                required
+                ref={tituloInputRef}  // Referencia al input del título
               />
-            </div>  
+            </div>
           </div>
 
           <div className="campo">
@@ -51,10 +60,9 @@ function CrearLista() {
                 type="text"
                 className="validar"
                 id="artista"
-                autoFocus
                 value={artista}
                 onChange={handleArtistaChange}
-                autofocus required
+                required
               />
             </div>
           </div>
@@ -72,9 +80,9 @@ function CrearLista() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="portada">Portada del álbum</label>
-              <input 
+              <input
                 type="button"
-                className="btn-subir bg-white "
+                className="btn-subir bg-white"
                 onClick={handleSubirArchivo}
                 value="Seleccionar imagen"
               />
@@ -92,6 +100,6 @@ function CrearLista() {
       </form>
     </div>
   );
-};
+}
 
 export default CrearLista;

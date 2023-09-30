@@ -9,7 +9,7 @@
     flex-direction: column; /* Cambiado a columna para colocar títulos encima de campos */
     align-items: center;
     overflow: hidden;
-    
+    margin-left: auto;  
 }
 
 /* Contenedor del formulario */
