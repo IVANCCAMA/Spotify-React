@@ -41,7 +41,7 @@ function CrearLista() {
                 onChange={handleTituloChange} 
                 autofocus required
               />
-            </div>
+            </div>  
           </div>
 
           <div className="campo">
