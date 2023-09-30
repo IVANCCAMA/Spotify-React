@@ -2,14 +2,26 @@ import React from 'react';
 //import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ReproducirCancion  from './components/reproducirCancion';
  
-//Prueba para ver la ejecucion nomas
+
 
 function App() {
   const songs = [
-    'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', //EJMPLO
+    {
+      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+      name: 'Canción ',
+      artist: 'Artista',
+      cover: 'url1.jpg'
+    },
+    {
+      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+      name: 'Canción 2',
+      artist: 'Artista 2',
+      cover: 'url2.jpg'
+    }
+  
   ];
 
-  return <ReproducirCancion songs={songs} />;
+  return <ReproducirCancion inputSongs={songs} />;
 }
 
 export default App;
