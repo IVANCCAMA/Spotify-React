@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { v4 } from "uuid";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -23,36 +23,54 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
-export const storage = getStorage(app);
+const storage = getStorage(app);
 
 function NombrarCancion(file) {
-    // Como se manejaran los nombres?
-    // name unicas
-    return "Canciones/" + v4();
+  // Como se manejaran los nombres?
+  // name unicas
+  return "Canciones/" + v4();
 }
 
-export async function SubirCancion(file) {
-    // quisiera crear un directorio para cada cacion
-    // ejm: Canciones/name/audio
-    // Canciones/name/{audio, lyrics, description,...}
-    return updateFile(file, NombrarCancion(file));
+export function SubirCancion(file) {
+  // quisiera crear un directorio para cada cacion
+  // ejm: Canciones/name/audio
+  // Canciones/name/{audio, lyrics, description,...}
+  return updateFile(file, NombrarCancion(file));
 }
 
 function NombrarPortada(file) {
-    // Como se manejaran los nombres?
-    // name unicas
-    return "Portadas/" + v4();
+  // Como se manejaran los nombres?
+  // name unicas
+  return "Portadas/" + v4();
 }
 
-export async function SubirPortada(file) {
-    // quisiera crear un directorio para cada portada
-    // ejm: Portadas/name/imagen
-    return updateFile(file, NombrarPortada(file));
+export function SubirPortada(file) {
+  // quisiera crear un directorio para cada portada
+  // ejm: Portadas/name/imagen
+  return updateFile(file, NombrarPortada(file));
 }
 
 async function updateFile(file, filepath) {
-    const storagePortadaRef = ref(storage, filepath);
+  const storagePortadaRef = ref(storage, filepath);
+  try {
     await uploadBytes(storagePortadaRef, file);
     const url = await getDownloadURL(storagePortadaRef);
-    return url;
+    return {
+      filepath: filepath,
+      url: url,
+    };
+  } catch (error) {
+    console.error('Error al subir el archivo:', error);
+    throw error;
+  }
+}
+
+export function deleteFile(filepath) {
+  const storageArchivoRef = ref(storage, filepath);
+  deleteObject(storageArchivoRef).then(() => {
+      console.log('Archivo eliminado exitosamente.');
+    })
+    .catch((error) => {
+      console.error('Error al eliminar el archivo:', error);
+    });
 }
