@@ -1,5 +1,8 @@
+import React from "react";
 
-return(
+function Busqueda (){
+
+  return(
 
 
     <div class="box">
@@ -8,5 +11,12 @@ return(
       </div>
     </div>
     
+
+
+    
     )
+};
+
+export default Busqueda;
+
     
