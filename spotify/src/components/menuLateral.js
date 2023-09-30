@@ -1,31 +1,60 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import logo from '../logos/logo.png';
+import home from '../logos/home.png';
+import disc from '../logos/disc.png';
+import group from '../logos/group.png';
+import plus from '../logos/plus.png';
+import './menuLateral.css';
+
 
 function MenuLateral() {
   return (
-    <div className="bg-teal-950 h-screen w-1/4 flex flex-col items-center">
-      <div className="py-4">
-        <Link to="/" className="text-white font-bold flex items-center">
-          <h1>Spotify</h1>
-        </Link>
+    <div className="menu">
+      <div className="profile">
+        <div className="logo">
+          <img src={logo} alt="Logo" width="200" />
+        </div>
       </div>
-      <ul className="flex flex-col gap-1">
-        <li>
-          <Link className="bg-slate-200 py-2 px-4 flex items-center" to="/">
-            Inicio
+
+      <div className="menu-items">
+        <div className="item">
+          <Link to="/Inicio">
+            <img src={home} alt="Home" className="icon" width="40"/>
+            <div className="title">Inicio</div>
           </Link>
-        </li>
-        <li>
-          <Link className="bg-slate-200 py-2 px-4 flex items-center" to="/crearLista">
-            Crear Lista
+        </div>
+
+        <div className="item separador border-b-5 border-black"></div>
+
+        <div className="item">
+          <Link to="/Albumes">
+            <img src={group} alt="Álbumes" className="icon" width="40"/>
+            <div className="title">Álbumes</div>
           </Link>
-        </li>
-        <li>
-          <Link className="bg-slate-200 py-2 px-4 flex items-center" to="/añadirCancion">
-            Añadir canción
+        </div>
+
+        <div className="item">
+          <Link to="/crearAlbum"> {/* Utiliza Link y especifica la ruta */}
+            <img src={plus} alt="Crear álbum" className="icon" width="40" />
+            <div className="title">Crear álbum</div>
           </Link>
-        </li>
-      </ul>
+        </div>
+
+        <div className="item">
+          <Link to="/Sencillo">
+            <img src={disc} alt="Sencillo" className="icon" width="40" />
+            <div className="title">Sencillo</div>
+          </Link>
+        </div>
+
+        <div className="item">
+          <Link to="/CargarCancion">
+            <img src={plus} alt="Cargar canción" className="icon" />
+            <div className="title">Cargar canción</div>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
