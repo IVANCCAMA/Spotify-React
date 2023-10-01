@@ -1,0 +1,55 @@
+.album-list {
+  padding: 20px;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 0 0 200px; 
+  margin-top: 0px; 
+  
+}
+
+.album-item {
+  display: flex;
+  flex-direction: row; 
+  align-items: center; 
+}
+
+.album-logo {
+  margin-right: 25px; 
+}
+
+.album-title {
+  padding: 10px;
+    font-weight: bold;
+    font-size: 25px;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    text-align: justify;
+    font-family: var(--fuente-1);
+}
+
+.artist-name {
+  padding: 7px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    text-align: justify;
+    font-family: var(--fuente-1);
+}
+.album-songs {
+  padding: 7px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    text-align: justify;
+    font-family: var(--fuente-1);
+
+    
+}
