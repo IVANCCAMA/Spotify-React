@@ -131,8 +131,14 @@ function CrearLista() {
         imagenInput.nextElementSibling.innerText = 'Seleccionar imagen'; // Restaurar el texto original
       }
     });
+
+});
+
+  const handleSubirArchivo = () => {
+    const imagen = document.getElementById('archivo');
+    imagen.click(); 
+
   
-    imagenInput.click();
   };
   
   
