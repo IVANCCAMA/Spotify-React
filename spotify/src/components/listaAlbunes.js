@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import './listaAlbunes.css'; // Asegúrate de importar tus estilos CSS
-import groupLogo from '../logos/group.png'; // Ruta de tu imagen de álbum
+import './listaAlbunes.css';
+import groupLogo from '../logos/group.png';
 
 function ListaAlbumes() {
   const albums = [
@@ -24,6 +24,7 @@ function ListaAlbumes() {
           <div className="album-details">
             <div className="album-title">Album {index+1}</div>
             <div className="artist-name">{album.artist}</div>
+            <div className="album-songs">0 canciones</div>
           </div>
         </Link>
       ))}
