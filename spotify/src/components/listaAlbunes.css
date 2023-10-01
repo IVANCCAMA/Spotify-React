@@ -1,4 +1,4 @@
-.lista {    
+.lista {
   width: 600px;
   height: 760px;
   background: #008080;
@@ -6,9 +6,9 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  
 }
-.lista .lista-item .item a {
+
+.lista-item a {
   padding: 16px;
   text-decoration: none;
   font-weight: bold;
@@ -20,6 +20,6 @@
   font-family: var(--fuente-1);
 }
 
-.lista .lista-items .item a .icon {
+.icon {
   margin: 5px 25px;
 }
