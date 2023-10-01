@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import CrearLista from './components/crearLista';
 import AñadirCancion from './components/añadirCancion';
 import MenuLateral from './components/menuLateral';
+import ListaAlbumes from './components/listaAlbunes';
 import './App.css'
 
 function App () {
@@ -16,6 +17,9 @@ function App () {
             </Routes>
             <Routes>
               <Route path="/añadirCancion" element={< AñadirCancion />} />
+            </Routes>
+            <Routes>
+              <Route path="/Albumes" element={< ListaAlbumes />} />
             </Routes>
           </div>
        </div>
