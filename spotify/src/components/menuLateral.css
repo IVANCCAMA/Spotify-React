@@ -1,47 +1,55 @@
-.logo {
-    display: flex;
-  justify-content: center;
-  align-items: center;
-  
-}
 /* MENU */
 .menu {
-    height: 100%;
-    width: 300;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    background-color: #006666;
-    border: 5px solid #000000;
-    overflow: hidden;
-  }
+
+  height: 100vh;
+  width: 250px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #006666;
+  border: 5px solid #000000;
+  overflow-y: auto;
   
-  .menu .profile .logo {
-    margin: 40px 0;
-    text-align: center;
-    align-items: center;
-  }
+}
+
+.menu .profile .logo {
+  margin: 20px 0;
+  text-align: center;
   
-  .menu .menu-items .item a {
-    padding: 16px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 32px;
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    text-align: justify;
-    font-family: var(--fuente-1);
+}
+
+.menu .menu-items .item a {
+  display: flex; /* Mostrar elementos en línea */
+  align-items: center; /* Centrar verticalmente los elementos */
+  padding: 16px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+  color: #FFFFFF;
+  text-align: left; /* Alineación de texto a la izquierda */
+  font-family: var(--fuente-1);
+}
+
+.menu .menu-items .item a .icon {
+  width: 25px; /* Ancho fijo para los iconos */
+  margin-right: 10px;
+}
+
+.menu .menu-items .item.separador {
+  height: 5px;
+  border-bottom: solid 5px #000000;
+  margin: 10px 0;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .menu {
+    display: none; /* Ocultar el menú en pantallas más pequeñas */
   }
-  
-  .menu .menu-items .item a .icon {
-    margin: 5px 25px;
-  }
-  
-  .menu .menu-items .item.separador {
-    height: 5px;
-    border-bottom: solid 5px #000000;
-    margin: 10px 0;
-  }
-  
+}

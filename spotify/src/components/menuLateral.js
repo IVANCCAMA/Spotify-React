@@ -7,20 +7,21 @@ import group from '../logos/group.png';
 import plus from '../logos/plus.png';
 import './menuLateral.css';
 
-
 function MenuLateral() {
   return (
     <div className="menu">
       <div className="profile">
         <div className="logo">
-          <img src={logo} alt="Logo" width="200" />
+          <img src={logo} alt="Logo" width="100" />
         </div>
       </div>
 
       <div className="menu-items">
         <div className="item">
           <Link to="/Inicio">
-            <img src={home} alt="Home" className="icon" width="40"/>
+            <div className="icon">
+              <img src={home} alt="Home"  width="25" />
+            </div>
             <div className="title">Inicio</div>
           </Link>
         </div>
@@ -29,28 +30,38 @@ function MenuLateral() {
 
         <div className="item">
           <Link to="/Albumes">
-            <img src={group} alt="Álbumes" className="icon" width="40"/>
+            <div className="icon">
+              <img src={group} alt="Álbumes" width="30" />
+            </div>
             <div className="title">Álbumes</div>
           </Link>
         </div>
 
         <div className="item">
-          <Link to="/crearAlbum"> {/* Utiliza Link y especifica la ruta */}
-            <img src={plus} alt="Crear álbum" className="icon" width="40" />
+          <Link to="/crearAlbum">
+            <div className="icon">
+              <img src={plus} alt="Crear álbum" width="30" />
+            </div>
             <div className="title">Crear álbum</div>
           </Link>
         </div>
 
         <div className="item">
           <Link to="/Sencillo">
-            <img src={disc} alt="Sencillo" className="icon" width="40" />
+            <div className="icon">
+              <img src={disc} alt="Sencillo" width="30" />
+            </div>
             <div className="title">Sencillo</div>
           </Link>
         </div>
 
         <div className="item">
-          <Link to="/CargarCancion">
-            <img src={plus} alt="Cargar canción" className="icon" />
+          <Link to="/añadirCancion">
+
+            <div className="icon">
+              <img src={plus} alt="Cargar canción" width="30" />
+            </div>
+
             <div className="title">Cargar canción</div>
           </Link>
         </div>

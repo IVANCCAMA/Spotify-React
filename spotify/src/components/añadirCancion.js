@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { SubirCancion, deleteFile } from '../firebase/config';
+import './añadirCancion.css'
 
 const validarCampos = (campos) => {
   if (campos.campo1 == "value1") {}
@@ -87,21 +88,107 @@ const ValidarForm = async (e) => {
 function AñadirCancion() {
   const [file, setFile] = useState(null);
 
+  // const handleSubirArchivo = () => {
+  //   const imagen = document.getElementById('archivo');
+  //   imagen.click(); 
+
+  
+  // };
+
+  const handleSubirArchivo = () => {
+    const imagenInput = document.getElementById('archivo');
+
+    imagenInput.addEventListener('change', () => {
+      if (imagenInput.files && imagenInput.files.length > 0) {
+        const nombreArchivo = imagenInput.files[0].name;
+        imagenInput.nextElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
+      } else {
+        imagenInput.nextElementSibling.innerText = 'Seleccionar imagen'; // Restaurar el texto original
+      }
+    });
+
+    imagenInput.click();
+  };  
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
-      <h2 className="text-xl font-bold mb-4">Crear Lista</h2>
+    <div className="modal-añadir-cancion">
+      <form className="modal-box" onSubmit={ValidarForm}>
+        <div className="inter-modal">
+          <div className="campo">
+            <div className="input-box">
+              <label htmlFor="titulo">Título de la canción *</label>
+              <input type="text" className="validar" id="titulo" autoFocus required />
+            </div>
+          </div>
 
-      <form onSubmit={ValidarForm}>
-        <div className="mb-4">
-          <label htmlFor="imagen" className="block text-gray-700">Seleccionar archivo con los formatos: mp3 o wav.</label>
-          {/* <input type="file" className="w-full" name="archivo" id="archivo" onChange={e => SubirCancion(e.target.files[0])}/> */}
-          {/* accept="image/jpeg, image/png" */}
-          <input type="file" className="w-full" name="archivo" id="archivo" accept=".mp3, audio/wav" onChange={e => setFile(e.target.files[0])} />
-        </div>
+          <div className="campo">
+            <div className="input-box">
+              <label htmlFor="ambum">Album</label>
+              <select id="album">
+                <option value="null" selected></option>
+                <option value="id">Album1</option>
+              </select>
+            </div>
+          </div>
 
-        <div className="flex justify-between">
-          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md">Aceptar</button>
-          <button type="button" className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">Cancelar</button>
+          <div className="campo">
+            <div className="input-box">
+              <label htmlFro="genero">Genero *</label>
+              <select id="genero">
+                <option value="null" selected></option>
+                <option value="id">Genero1</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="campo">
+            <div className="input-box">
+              <label htmlFor="imagen" className="">Canción</label>
+              {/* <input type="file" className="w-full" name="archivo" id="archivo" onChange={e => SubirCancion(e.target.files[0])}/> */}
+              {/* accept="image/jpeg, image/png" */}
+              <input 
+                type="button"
+                className="bnt-subir bg-white"
+                onClick={handleSubirArchivo}
+                value="Seleccionar audio"
+              />
+              <input
+                 type="file" 
+                 className="" 
+                 name="archivo" 
+                 id="archivo" 
+                 accept=".mp3, audio/wav" 
+                 style={{display: 'none'}}
+                   />
+              <span id="nombreAudio">Seleccionar audio</span>
+            </div>
+          </div>
+
+          {/* SELECCIONAR ARCHIVO */}
+          <div className="campo">
+            <div className="input-box">
+              <label htmlFor="portada">Portada del álbum</label>
+              <input
+                type="button"
+                className="btn-subir bg-white"
+                onClick={handleSubirArchivo}
+                value="Seleccionar imagen"
+              />
+              <input 
+                type="file" 
+                id="imagen" 
+                style={{ display: 'none' }} 
+                accept=".png, .jpg, .jpeg"
+              />
+              <span id="nombreArchivo">Seleccionar imagen</span> {/* Mostrar nombre del archivo */}
+            </div>
+          </div>
+
+          <div className="campo">
+            <div className="btn-box">
+              <button type="submit" className="btn-next">Aceptar</button>
+              <button type="button" className="btn-next">Cancelar</button>
+              </div>
+          </div>
         </div>
       </form>
     </div>
