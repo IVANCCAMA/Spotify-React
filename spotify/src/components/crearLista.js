@@ -132,15 +132,7 @@ function CrearLista() {
       }
     });
 
-});
-
-  const handleSubirArchivo = () => {
-    const imagen = document.getElementById('archivo');
-    imagen.click(); 
-
-  
-  };
-  
+  } 
   
 
   return (
