@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
+import { SubirPortada, storage } from '../firebase/config';
 import './crearLista.css';
 
 // BORRAME TEMPORAL
@@ -18,6 +19,7 @@ function CrearLista() {
   const [path_image, setPath_image] = useState('');
   const [colaborador, setColaborador] = useState('');
   const imagenInputRef = useRef(null);
+  const [imagen, setImagen] = useState(null);
 
   
 
@@ -29,9 +31,20 @@ function CrearLista() {
       const nuevoAlbum = {
         id_usuario,
         titulo_lista,
-        path_image,
         colaborador,
       };
+
+      // Subir portada y obtener informacion
+        const portadaInfo = await SubirPortada(); // 'imagen' debe ser el archivo de imagen
+        console.log('Información de la imagen subida:', portadaInfo);
+
+      // Obtener la URL de la imagen subida
+      const pathImagen = portadaInfo.url;
+
+      // Agregar la URL de la imagen al objeto nuevoAlbum
+      nuevoAlbum.path_image = pathImagen;
+
+      console.log("Path recuperado de Firebase:", nuevoAlbum.path_image);
 
       // Enviar la solicitud POST al backend para crear el álbum
       const response = await axios.post('http://localhost:4000/api/lista_canciones/', nuevoAlbum);
@@ -88,6 +101,10 @@ function CrearLista() {
     }
   };
 
+  const handleImagenChange = (file) => {
+    setImagen(file);
+  };
+
   const handleSubirArchivo = () => {
     // Accede a la referencia del input
     const imagenInput = imagenInputRef.current;
@@ -117,6 +134,7 @@ function CrearLista() {
   
     imagenInput.click();
   };
+  
   
 
   return (
@@ -186,8 +204,11 @@ function CrearLista() {
                 style={{ display: 'none' }} 
                 accept=".png, .jpg, .jpeg"
                 ref={imagenInputRef}  
+                onChange={(e) => handleImagenChange(e.target.files[0])}
               />
-              <span className="nombreArchivo" id="nombreArchivo">Selecionar imagen</span> {/* Mostrar nombre del archivo */}
+              <div>
+                <span className="nombreArchivo" id="nombreArchivo">Selecionar imagen</span> {/* Mostrar nombre del archivo */}
+              </div>
             </div>
           </div>
 
