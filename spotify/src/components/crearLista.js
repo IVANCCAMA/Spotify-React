@@ -108,13 +108,13 @@ function CrearLista() {
   const handleSubirArchivo = () => {
     // Accede a la referencia del input
     const imagenInput = imagenInputRef.current;
-    
+
     imagenInput.addEventListener('change', () => {
       const file = imagenInput.files[0];
-  
+
       if (file) {
         const maxSize = 5 * 1024 * 1024; // 5 MB en bytes
-  
+
         if (file.size > maxSize) {
           // Mostrar un mensaje de error
           alert('El tamaño del archivo no puede exceder 5 MB.');
@@ -122,7 +122,7 @@ function CrearLista() {
           imagenInput.nextElementSibling.innerText = 'Seleccionar imagen';
           return;
         }
-  
+
         const nombreArchivo = file.name;
         imagenInput.nextElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
         setPath_image(nombreArchivo);
@@ -132,7 +132,8 @@ function CrearLista() {
       }
     });
 
-  } 
+    imagenInput.click();
+  };
   
 
   return (
