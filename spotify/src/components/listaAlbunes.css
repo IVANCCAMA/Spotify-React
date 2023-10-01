@@ -1,25 +1,52 @@
-.lista {
-  width: 600px;
-  height: 760px;
-  background: #008080;
-  border: 4px solid #000000;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
+/* Estilo para la lista de álbumes */
+.album-list {
+  /*background-color: rgba(255, 255, 255, 0.8); /* Fondo semi-transparente blanco */
+  padding: 20px;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columnas iguales */
+  gap: 20px; /* Espacio entre álbumes */
+  max-width: 1000px; /* Ancho máximo de la lista */
+  margin: 0 0 0 200px; /* Centra horizontalmente en la pantalla */
+  margin-top: 0px; /* Ajusta el margen superior para centrar verticalmente */
+  
 }
 
-.lista-item a {
-  padding: 16px;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 32px;
-  color: #FFFFFF;
+/* Estilo para cada álbum */
+.album-item {
   display: flex;
-  align-items: center;
-  text-align: justify;
-  font-family: var(--fuente-1);
+  flex-direction: row; /* Alinea elementos en fila */
+  align-items: center; /* Centra verticalmente */
+
 }
 
-.icon {
-  margin: 5px 25px;
+.album-logo {
+  margin-right: 25px; /* Espacio entre el logo y el texto */
+}
+
+.album-title {
+  /*color: #FFFFFF; /* Color blanco para el título */
+  /*font-weight: bold;*/
+  padding: 10px;
+    font-weight: bold;
+    font-size: 25px;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    text-align: justify;
+    font-family: var(--fuente-1);
+}
+
+.artist-name {
+  /*color: #FFFFFF; /* Color blanco para el nombre del artista */
+  /*font-size: 14px; /* Tamaño de fuente más pequeño para el nombre del artista */
+  /*margin-top: 4px; /* Espacio superior para el nombre del artista */
+  padding: 7px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    text-align: justify;
+    font-family: var(--fuente-1);
 }

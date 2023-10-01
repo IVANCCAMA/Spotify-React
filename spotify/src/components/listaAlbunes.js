@@ -5,15 +5,15 @@ import groupLogo from '../logos/group.png'; // Ruta de tu imagen de álbum
 
 function ListaAlbumes() {
   const albums = [
-    { id: 1, artist: "Nombre del Artista 1" },
-    { id: 2, artist: "Nombre del Artista 2" },
-    { id: 3, artist: "Nombre del Artista 3" },
-    { id: 4, artist: "Nombre del Artista 4" },
-    { id: 5, artist: "Nombre del Artista 5" },
-    { id: 6, artist: "Nombre del Artista 6" },
-    { id: 7, artist: "Nombre del Artista 7" },
-    { id: 8, artist: "Nombre del Artista 8" },
-    { id: 9, artist: "Nombre del Artista 9" }
+    { id: 1, artist: "Nombre del Artista" },
+    { id: 2, artist: "Nombre del Artista" },
+    { id: 3, artist: "Nombre del Artista" },
+    { id: 4, artist: "Nombre del Artista" },
+    { id: 5, artist: "Nombre del Artista" },
+    { id: 6, artist: "Nombre del Artista" },
+    { id: 7, artist: "Nombre del Artista" },
+    { id: 8, artist: "Nombre del Artista" },
+    { id: 9, artist: "Nombre del Artista" }
   ];
 
   return (
@@ -22,7 +22,7 @@ function ListaAlbumes() {
         <Link to={`/detalle-album/${album.id}`} key={album.id} className="album-item">
           <img src={groupLogo} alt="Álbum" className="album-logo" />
           <div className="album-details">
-            <div className="album-title">Album {index + 1}</div>
+            <div className="album-title">Album {index+1}</div>
             <div className="artist-name">{album.artist}</div>
           </div>
         </Link>
