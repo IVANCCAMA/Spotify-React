@@ -27,11 +27,15 @@ entradas.forEach(function (entrada) {
         }
     });
 });
-  
+
   const handleSubirArchivo = () => {
-    const imagen = document.getElementById('imagen');
+    const imagen = document.getElementById('archivo');
     imagen.click(); 
+
+  
   };
+  
+  
   return (
     <div className="modal-crear-lista">
       <form className="modal-box">

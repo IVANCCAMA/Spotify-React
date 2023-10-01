@@ -49,7 +49,7 @@ function MenuLateral() {
         </div>
 
         <div className="item">
-          <Link to="/CargarCancion">
+          <Link to="/añadirCancion">
             <img src={plus} alt="Cargar canción" className="icon" />
             <div className="title">Cargar canción</div>
           </Link>
