@@ -5,23 +5,23 @@ import ReproducirCancion  from './components/reproducirCancion';
 
 
 function App() {
-  const songs = [
+  const cancion = [
     {
       url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-      name: 'Canción ',
-      artist: 'Artista',
-      cover: 'url1.jpg'
+      nombre: 'Canción 1',
+      artista: 'Artista 1',
+      portada: 'url1.jpg'
     },
     {
       url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-      name: 'Canción 2',
-      artist: 'Artista 2',
-      cover: 'url2.jpg'
+      nombre: 'Canción 2',
+      artista: 'Artista 2',
+      portada: 'url2.jpg'
     }
   
   ];
 
-  return <ReproducirCancion inputSongs={songs} />;
+  return <ReproducirCancion canciones={cancion} />;
 }
 
 export default App;

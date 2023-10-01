@@ -1,24 +1,27 @@
-// Importando módulos necesarios de React y Hooks
+// Importando módulos necesarios de React y Hooks(PERMITE UTILIZAR ESTADOS)
 //useState(estado de mi componente) y useRef(elemen DOM) Hooks 
 import React, { useState, useRef } from "react";
-//React Icons incluir iconos de la biblioteca
+//React Icons incluir iconos de la biblioteca, visualizacion de los iconos
 import { FaPlay, FaPause, FaForward, FaBackward } from 'react-icons/fa';
-
 // Importando estilos
-import './index.css';  
-
-const ReproducirCancion = ({ inputSongs  }) => {
-  // Estado para gestionar el índice de la canción actual
-  const [indiceCancionActual, setIndiceCancionActual] = useState(0);
-  // Referencia para el elemento de audio
+import './estilosReproductor.css';  
+/**
+ *Componente para reproducir canciones, permitiendo controlar la reproducción, pausa, y volumen.
+ * @param {Object[]} canciones -Lista de canciones con su información correspondiente. 
+ */
+const ReproducirCancion = ({ canciones  }) => {
+  // Estados para gestionar la información y comportamiento del reproductor
+  const [indiceCancionActual, setIndiceCancionActual] = useState(0);//Índice de la canción actual en reproducción
   const audioRef = useRef();
-  const [nombreMusica, setNombreMusica] = useState(inputSongs[0].name);
-  const [nombreArtista, setNombreArtista] = useState(inputSongs[0].artist);
-  const [portadaAlbum, setPortadaAlbum] = useState(inputSongs[0].cover);
+  const [nombreMusica, setNombreMusica] = useState(canciones[0].nombre);// Nombre de la canción actual
+  const [nombreArtista, setNombreArtista] = useState(canciones[0].artista);// Nombre del artista
+  const [portadaAlbum, setPortadaAlbum] = useState(canciones[0].portada);//Imagen de la protada de cancion
   const [volumen, setVolumen] = useState(50);
   const [estaReproduciendo, setEstaReproduciendo] = useState(false); // Definir inicialmente como false
    
-  // Función para manejar la reproducción y pausar la canción
+  /** 
+   * Para Reproducción y pausar la canción
+   * */ 
   const clicReproducirPause = () => {
     if (audioRef.current) {
       const audio = audioRef.current;
@@ -33,57 +36,64 @@ const ReproducirCancion = ({ inputSongs  }) => {
       console.error('audioRef.current no está definido');
     }
   };
-  // Función para pasar a la siguiente canción
+  /**
+   * Cambia a la siguiente canción.
+   */
   const sigCancion = () => {
-    const newIndex = (indiceCancionActual + 1) % inputSongs.length;
-    setIndiceCancionActual(newIndex); 
-    setNombreMusica(inputSongs[newIndex].name); 
-    setNombreArtista(inputSongs[newIndex].artist); 
-    setPortadaAlbum(inputSongs[newIndex].cover); 
-    if (estaReproduciendo && audioRef.current) {
-        audioRef.current.currentTime = 0;
-        audioRef.current.play();
-    }
-};
+      const newIndex = (indiceCancionActual + 1) % canciones.length;
+      setIndiceCancionActual(newIndex); 
+      setNombreMusica(canciones[newIndex].nombre); 
+      setNombreArtista(canciones[newIndex].artista); 
+      setPortadaAlbum(canciones[newIndex].portada); 
+      if (estaReproduciendo && audioRef.current) {
+          audioRef.current.currentTime = 0;
+          audioRef.current.play();    
+      }
+  };
+  /**
+   * Cambia el volumen de la reproducción.
+   */
   const cambiarVolumen = (e) => {
-    const newVolumen = e.target.value; // Obtén el nuevo volumen del evento
-    setVolumen(newVolumen); // Actualiza el estado de volumen
+    const nuevoVolumen = e.target.value; // Obtén el nuevo volumen del evento
+    setVolumen(nuevoVolumen); // Actualiza el estado de volumen
     const audio = audioRef.current;
-    audio.volume = newVolumen / 100; // Actualiza el volumen del elemento de audio
-};
-  // Función para volver a la canción anterior
+    audio.volume = nuevoVolumen / 100; // Actualiza el volumen del elemento de audio
+  };
+
+  /**
+   * Cambia a la canción anterior.
+   */
   const cancionAnterior = () => {
-    setIndiceCancionActual((prevIndex) => (prevIndex - 1 + inputSongs.length) % inputSongs.length); // Retrocede a la canción anterior
+    setIndiceCancionActual((prevIndex) => (prevIndex - 1 + canciones.length) % canciones.length); // Retrocede a la canción anterior
+    // Si la música está reproduciéndose, inicia la reproducción de la nueva canción
     if(estaReproduciendo && audioRef.current) { 
-   // Si la música está reproduciéndose, inicia la reproducción de la nueva canción
     audioRef.current.play();
    }
-};
+  };
      
-    
   return (
-    <div className="music-player">
-      <div className="song-info">
-        <img src={portadaAlbum} alt="album cover" className="album-cover" />
-        <div className="song-details">
-          <span className="song-name">{nombreMusica}</span>
-          <span className="artist-name">{nombreArtista}</span>
+    <div className="reproductorMusica">
+      <div className="info-cancion">
+        <img src={portadaAlbum} alt="portada album" className="portada-album" />
+        <div className="detalles-musica">
+          <span className="nombre-musica">{nombreMusica}</span>
+          <span className="nombre-artista">{nombreArtista}</span>
         </div>
       </div>
     <div className="controls">
-    <audio ref={audioRef} src={inputSongs[indiceCancionActual].url} />
-
+    <audio ref={audioRef} src={canciones[indiceCancionActual].url} />
 
       {/* Reemplazamos el texto de los botones con los iconos */}
-      <button onClick={cancionAnterior} className="control-button">
-        <FaBackward />
+      <button onClick={cancionAnterior} className="boton-control">
+        <FaBackward/>
       </button>
-      <button onClick={clicReproducirPause} className="control-button">
+      <button onClick={clicReproducirPause} className="boton-control">
+
         {/* Se puede alternar entre los iconos de repro y pausar dependiendo del estado de reproducción */}
-        { estaReproduciendo ? <FaPause /> : <FaPlay /> }
+        { estaReproduciendo ? <FaPause/> : <FaPlay/> }
       </button>
-      <button onClick={sigCancion} className="control-button">
-        <FaForward />
+      <button onClick={sigCancion} className="boton-control">
+        <FaForward/> 
       </button>
     </div>
     <div className="volumen" >
@@ -92,6 +102,4 @@ const ReproducirCancion = ({ inputSongs  }) => {
   </div>
   );
 };
-
-
 export default ReproducirCancion;
