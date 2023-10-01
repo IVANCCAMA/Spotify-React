@@ -51,6 +51,21 @@ const ReproducirCancion = ({ canciones  }) => {
       }
   };
   /**
+   * Cambia a la canción anterior.
+   */
+  const cancionAnterior = () => {
+    const newIndex = ((indiceCancionActual - 1) + canciones.length) % canciones.length;
+    setIndiceCancionActual(newIndex); // Retrocede a la canción anterior
+    setNombreMusica(canciones[newIndex].nombre); 
+    setNombreArtista(canciones[newIndex].artista); 
+    setPortadaAlbum(canciones[newIndex].portada); 
+    // Si la música está reproduciéndose, inicia la reproducción de la nueva canción
+    if(estaReproduciendo && audioRef.current) { 
+      audioRef.current.currentTime = 0;
+       audioRef.current.play();
+   }
+  };
+  /**
    * Cambia el volumen de la reproducción.
    */
   const cambiarVolumen = (e) => {
@@ -59,18 +74,7 @@ const ReproducirCancion = ({ canciones  }) => {
     const audio = audioRef.current;
     audio.volume = nuevoVolumen / 100; // Actualiza el volumen del elemento de audio
   };
-
-  /**
-   * Cambia a la canción anterior.
-   */
-  const cancionAnterior = () => {
-    setIndiceCancionActual((prevIndex) => (prevIndex - 1 + canciones.length) % canciones.length); // Retrocede a la canción anterior
-    // Si la música está reproduciéndose, inicia la reproducción de la nueva canción
-    if(estaReproduciendo && audioRef.current) { 
-    audioRef.current.play();
-   }
-  };
-     
+   
   return (
     <div className="reproductorMusica">
       <div className="info-cancion">

@@ -17,6 +17,12 @@ function App() {
       nombre: 'Canción 2',
       artista: 'Artista 2',
       portada: 'url2.jpg'
+    },
+    {
+      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+      nombre: 'Canción 3',
+      artista: 'Artista 3',
+      portada: 'url2.jpg'
     }
   
   ];
