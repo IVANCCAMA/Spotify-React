@@ -31,6 +31,6 @@ function ListaAlbumes() {
     </div>
   );
 }
-
 export default ListaAlbumes;
+
 
