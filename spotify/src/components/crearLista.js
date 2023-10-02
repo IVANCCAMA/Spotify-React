@@ -20,9 +20,6 @@ function CrearLista() {
   const [colaborador, setColaborador] = useState('');
   const imagenInputRef = useRef(null);
   const [imagen, setImagen] = useState(null);
-
-  
-
   const titulo_listaInputRef = useRef(null);
 
   const handleCrearLista = async (event) => {
@@ -134,7 +131,6 @@ function CrearLista() {
 
     imagenInput.click();
   };
-  
 
   return (
     /* Form de álbum */
@@ -188,25 +184,24 @@ function CrearLista() {
             </div>
           </div>
           {/* SELECCIONAR ARCHIVO */}
-          <div className="campo">
+          <div className="campo campo-cargar-cancion">
             <div className="input-box">
-              <label htmlFor="portada">Portada del álbum</label>
-              <input
-                type="button"
-                className="btn-subir "
-                onClick={handleSubirArchivo}
-                value="Seleccionar imagen"
-              />
-              <input 
-                type="file" 
-                id="imagen" 
-                style={{ display: 'none' }} 
-                accept=".png, .jpg, .jpeg"
-                ref={imagenInputRef}  
-                onChange={(e) => handleImagenChange(e.target.files[0])}
-              />
-              <div>
-                <span className="nombreArchivo" id="nombreArchivo">Selecionar imagen</span> {/* Mostrar nombre del archivo */}
+              <label htmlFor="archivo">Portada del álbum</label>
+              <div className= "seleccionarArchivo">
+                <span className="nombreArchivo" id="nombreArchivo">Seleccionar archivo</span> {/* Mostrar nombre del archivo */}
+                <input
+                  type="file"
+                  id="archivo"
+                  style={{ display: 'none' }}
+                  accept=".png, .jpg, .jpeg"
+                  ref={imagenInputRef}  
+                />
+                <input
+                  type="button"
+                  className="btn-subir bg-white"
+                  onClick={handleSubirArchivo}
+                  value="Seleccionar archivo"
+                />
               </div>
             </div>
           </div>

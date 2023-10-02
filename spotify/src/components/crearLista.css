@@ -53,9 +53,27 @@
     padding: 0 10px;
 }
 
-.input-box select {
+.campo-cargar-cancion {
+    display: flex;
+    flex-direction: column; /* Cambiado a columna para colocar título encima del campo */
+    align-items: center; /* Alinear elementos a la izquierda */
+    text-align: center;
+}
+
+.campo-cargar-cancion .bg-white {
+    width: auto;
+}
+
+.campo-cargar-cancion .bg-white.active {
+    height: fit-content;
+    margin-left: 5%;
+}
+
+.campo-cargar-cancion .seleccionarArchivo {
+    height: 100%;
     width: 100%;
-    font-size: 16px;
+    display: flex;
+    justify-content: center;
 }
 
 /* Estilo de validación */
@@ -113,11 +131,9 @@
 }
 
 .nombreArchivo {
-    
+    display: none;
     font-size: 16px;
-    
-    color: #fff;
-    
+    color: #000000;
 }
  .btn-box {
     color: #fff;

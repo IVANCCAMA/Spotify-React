@@ -4,12 +4,13 @@ import { SubirCancion, deleteFile } from '../firebase/config';
 import './añadirCancion.css'
 
 const validarCampos = (campos) => {
-  if (campos.campo1 == "value1") {}
+  if (campos.campo1 == "value1") { }
   return true;
 }
 
 const validarFormatoArchivo = (archivo) => {
   const formatosPermitidos = ["mpeg", "wav"]; // mpeg === mp3
+  console.log(archivo);
   for (const formato of formatosPermitidos) {
     if (archivo.type.includes(formato)) {
       return true;
@@ -32,7 +33,7 @@ const subirBD = (archivo, url) => {
   return true;
 }
 
-const ValidarForm = async (e) => {
+const validarForm = async (e) => {
   e.preventDefault();
 
   // validar campos
@@ -56,13 +57,19 @@ const ValidarForm = async (e) => {
     return;
   }
 
+  // validar tamanio
+  if (archivo.size > (15 * 1000 * 1000)) { // megas
+    alert(`Tamanio del archivo no admitido.`);
+    return;
+  }
+
   try {
     // subir el archivo a Firebase
     const resultado = await SubirCancion(archivo);
     alert(`Archivo subido correctamente.`);
 
     // subir en la db
-    if (subirBD(campos, resultado)) {
+    if (!subirBD(campos, resultado)) {
       // Si ocurre un error al subir en la base de datos
       // eliminar el archivo subido en Firebase
       deleteFile(resultado.filepath);
@@ -79,33 +86,32 @@ const ValidarForm = async (e) => {
   }
 };
 
+const motrarNombreArchivo = () => {
+  const file = document.getElementById('archivo');
+
+  file.addEventListener('change', () => {
+    if (file.files && file.files.length > 0) {
+      const nombreArchivo = file.files[0].name;
+      file.previousElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
+      file.previousElementSibling.style.display = 'block';
+      file.nextElementSibling.value = "X";
+      file.nextElementSibling.classList.add('active');
+    }
+  });
+  file.click();
+};
+
 function AñadirCancion() {
   const [file, setFile] = useState(null);
 
-  // const handleSubirArchivo = () => {
+  // const motrarNombreArchivo = () => {
   //   const imagen = document.getElementById('archivo');
   //   imagen.click(); 
-
-  
   // };
 
-  const handleSubirArchivo = () => {
-    const imagenInput = document.getElementById('archivo');
-
-    imagenInput.addEventListener('change', () => {
-      if (imagenInput.files && imagenInput.files.length > 0) {
-        const nombreArchivo = imagenInput.files[0].name;
-        imagenInput.nextElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
-      } else {
-        imagenInput.nextElementSibling.innerText = 'Seleccionar imagen'; // Restaurar el texto original
-      }
-    });
-
-    imagenInput.click();
-  };  
   return (
     <div className="modal-añadir-cancion">
-      <form className="modal-box" onSubmit={ValidarForm}>
+      <form className="modal-box" onSubmit={validarForm}>
         <div className="inter-modal">
           <div className="campo">
             <div className="input-box">
@@ -134,46 +140,26 @@ function AñadirCancion() {
             </div>
           </div>
 
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="imagen" className="">Canción</label>
-              {/* <input type="file" className="w-full" name="archivo" id="archivo" onChange={e => SubirCancion(e.target.files[0])}/> */}
-              {/* accept="image/jpeg, image/png" */}
-              <input 
-                type="button"
-                className="bnt-subir bg-white"
-                onClick={handleSubirArchivo}
-                value="Seleccionar audio"
-              />
-              <input
-                 type="file" 
-                 className="" 
-                 name="archivo" 
-                 id="archivo" 
-                 accept=".mp3, audio/wav" 
-                 style={{display: 'none'}}
-                   />
-              <span id="nombreAudio">Seleccionar audio</span>
-            </div>
-          </div>
-
           {/* SELECCIONAR ARCHIVO */}
-          <div className="campo">
+          <div className="campo campo-cargar-cancion">
             <div className="input-box">
-              <label htmlFor="portada">Portada del álbum</label>
-              <input
-                type="button"
-                className="btn-subir bg-white"
-                onClick={handleSubirArchivo}
-                value="Seleccionar imagen"
-              />
-              <input 
-                type="file" 
-                id="imagen" 
-                style={{ display: 'none' }} 
-                accept=".png, .jpg, .jpeg"
-              />
-              <span id="nombreArchivo">Seleccionar imagen</span> {/* Mostrar nombre del archivo */}
+              <label htmlFor="archivo">Canción</label>
+              <div className= "seleccionarArchivo">
+                <span className="nombreArchivo" id="nombreArchivo">Seleccionar archivo</span> {/* Mostrar nombre del archivo */}
+                <input
+                  type="file"
+                  name="archivo"
+                  id="archivo"
+                  accept=".mp3, audio/wav"
+                  style={{ display: 'none' }}
+                />
+                <input
+                  type="button"
+                  className="btn-subir bg-white"
+                  onClick={motrarNombreArchivo}
+                  value="Seleccionar archivo"
+                />
+              </div>
             </div>
           </div>
 
@@ -181,7 +167,7 @@ function AñadirCancion() {
             <div className="btn-box">
               <button type="submit" className="btn-next">Aceptar</button>
               <button type="button" className="btn-next">Cancelar</button>
-              </div>
+            </div>
           </div>
         </div>
       </form>
