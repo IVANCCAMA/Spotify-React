@@ -53,6 +53,10 @@
     padding: 0 10px;
 }
 
+.input-box select {
+    font-weight: bold;
+}
+
 .campo-cargar-cancion {
     display: flex;
     flex-direction: column; /* Cambiado a columna para colocar título encima del campo */
