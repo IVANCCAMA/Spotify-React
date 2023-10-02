@@ -17,7 +17,12 @@ function ListaAlbumes() {
   ];
 
   return (
+    
+    
+
     <div className="album-list">
+      
+
       {albums.map((album, index) => (
         <Link to={`/detalle-album/${album.id}`} key={album.id} className="album-item">
           <img src={groupLogo} alt="Álbum" className="album-logo" />
@@ -27,8 +32,13 @@ function ListaAlbumes() {
             <div className="album-songs">0 canciones</div>
           </div>
         </Link>
+        
       ))}
+      
     </div>
+
+    
+
   );
 }
 export default ListaAlbumes;
