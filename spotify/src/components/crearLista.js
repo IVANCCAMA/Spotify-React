@@ -14,7 +14,8 @@ const artistas = [
 ]; */
 
 function CrearLista() {
-  const [id_usuario, setId_usuario] = useState('');
+ // const [id_usuario, setId_usuario] = useState('');
+  let id_usuarioArtista=0; // del
   const [nombreArtista, setNombreArtista] = useState('');
   const [titulo_lista, setTitulo_lista] = useState('');
   const [path_image, setPath_image] = useState('');
@@ -25,30 +26,28 @@ function CrearLista() {
 
   const handleCrearLista = async (event) => {
     event.preventDefault(); // Prevenir el comportamiento predeterminado del formulario
+    const nuevoAlbum = {
+      titulo_lista,
+      nombreArtista,
+      id_usuarioArtista,
+      colaborador,
+    };
     try {
-      const nuevoAlbum = {
-        titulo_lista,
-        nombreArtista,
-        id_usuario,
-        colaborador,
-      };
-
-      // Verificar si el título de la lista ya existe
       const tituloExistente = await esTituloCancionExistente(titulo_lista);
-      // Colocar MODAL ERROR
+
       if (tituloExistente) {
+        // MODAL
         alert('El título de la lista ya existe. Por favor, elige otro título.');
         return;
       }
 
-      // Verificar si nombre artista existe
       const artistaExistente = await ExisteArtista(nombreArtista);
-      // Colocar MODAL ERROR (opcional)
+
       if (!artistaExistente) {
-        alert('El artista no exite, intente con otro.');
+        alert('El artista no existe, intente con otro.');
         return;
       }
-      alert(nombreArtista);
+      console.log(">>"+id_usuarioArtista)
 
       /* Subir portada a Firebase */
       const portadaInfo = await SubirPortada(imageUpload); // 'imagen' debe ser el archivo de imagen
@@ -64,14 +63,15 @@ function CrearLista() {
       nuevoAlbum.path_image = pathImagen;
 
       console.log("Path recuperado de Firebase:", nuevoAlbum.path_image);
+      console.log(">>",nuevoAlbum)
 
       // Enviar la solicitud POST al backend para crear el álbum
       const response = await axios.post('http://localhost:4000/api/lista_canciones/', nuevoAlbum);
 
       // Manejar la respuesta del backend
       console.log("titulo lista:", titulo_lista);
-      console.log("id usuario:", id_usuario);
-      console.log("id usuario:", nombreArtista);
+      console.log("id usuario:", id_usuarioArtista);
+      console.log("nombre usuario:", nombreArtista);
       console.log("colaborador:",colaborador);
       console.log("path de imagen:", path_image);
 
@@ -87,7 +87,7 @@ function CrearLista() {
 
   const resetForm = () => {
     setTitulo_lista('');
-    setId_usuario('');
+    //setId_usuario('');
     setNombreArtista('');
     setColaborador('');
     setPath_image('');
@@ -135,15 +135,19 @@ function CrearLista() {
 
   const ExisteArtista = async (nombreArtista) => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/usuarios/search/ ?searchTerm=${nombreArtista}`);
+      const response = await axios.get(`http://localhost:4000/api/usuarios/search_nom/ ?searchTerm=${nombreArtista}`);
       const listaArtistas = response.data;
-      
+      console.log(listaArtistas.nombre_usuario);
       // importante atributo nombre_usuario tiene que ser igual a la BD
       // Verifica si el nombre del artista existe
       const artistaEncontrado = listaArtistas.find((artista) => artista.nombre_usuario === nombreArtista);
+      console.log(artistaEncontrado);
       if (artistaEncontrado) {
         // Si encontramos el artista, establecemos su ID en el estado
-        setId_usuario(artistaEncontrado.id_usuario);
+        //setId_usuario(artistaEncontrado.id_usuario);
+        id_usuarioArtista = artistaEncontrado.id_usuario
+        console.log(">"+id_usuarioArtista)
+        
         return true; // El artista existe
       } else {
         return false; // El artista no existe
