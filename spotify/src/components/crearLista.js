@@ -1,7 +1,8 @@
 import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
-import { SubirPortada, storage } from '../firebase/config';
-import './form.css';
+import { SubirPortada } from '../firebase/config';
+import './crearLista.css';
+
 
 // BORRAME TEMPORAL
 const artistas = [
@@ -18,8 +19,8 @@ function CrearLista() {
   const [path_image, setPath_image] = useState('');
   const [colaborador, setColaborador] = useState('');
   const imagenInputRef = useRef(null);
-  const [imagen, setImagen] = useState(null);
   const titulo_listaInputRef = useRef(null);
+  const [imageUpload, setImageUpload] = useState(null);
 
   const handleCrearLista = async (event) => {
     event.preventDefault(); // Prevenir el comportamiento predeterminado del formulario
@@ -30,12 +31,12 @@ function CrearLista() {
         colaborador,
       };
 
-      // Subir portada y obtener informacion
-        const portadaInfo = await SubirPortada(); // 'imagen' debe ser el archivo de imagen
-        console.log('Información de la imagen subida:', portadaInfo);
+       // Subir portada y obtener informacion a Firebase
+        const portadaInfo = await SubirPortada(imageUpload); // 'imagen' debe ser el archivo de imagen
+        console.log('Información de la imagen subida:', portadaInfo); 
 
-      // Obtener la URL de la imagen subida
-      const pathImagen = portadaInfo.url;
+      // Obtener la URL de la imagen subida   
+      const pathImagen = "portadaInfo.url";
 
       // Agregar la URL de la imagen al objeto nuevoAlbum
       nuevoAlbum.path_image = pathImagen;
@@ -97,10 +98,7 @@ function CrearLista() {
     }
   };
 
-  const handleImagenChange = (file) => {
-    setImagen(file);
-  };
-
+  /* Subir archivo a BD */
   const handleSubirArchivo = () => {
     // Accede a la referencia del input
     const imagenInput = imagenInputRef.current;
@@ -193,6 +191,9 @@ function CrearLista() {
                   id="archivo"
                   style={{ display: 'none' }}
                   accept=".png, .jpg, .jpeg"
+                  onChange={(event) => {
+                    setImageUpload(event.target.files[0]);
+                  }}
                   ref={imagenInputRef}  
                 />
                 <input
@@ -207,7 +208,7 @@ function CrearLista() {
 
           <div className="campo">
             <div className="btn-box">
-              <button type="submit" className="btn-next">
+              <button type="submit" className="btn-next" /* onClick={uploadFile} */>
                 Aceptar
               </button>
               <button className="btn-next">Cancelar</button>
