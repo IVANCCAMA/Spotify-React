@@ -1,204 +1,195 @@
 import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
-import { SubirPortada, storage } from '../firebase/config';
+import { SubirPortada, deleteFile } from '../firebase/config';
 import './form.css';
 
-// BORRAME TEMPORAL
-const artistas = [
-  { id: 1, nombre: 'Shakira' },
-  { id: 2, nombre: 'BadBuny' },
-  { id: 5, nombre: 'Rey' },
-  { id: 6, nombre: 'Carlos' },
-  // ... Agrega más artistas según sea necesario
-];
-
 function CrearLista() {
-  const [id_usuario, setId_usuario] = useState('');
-  const [titulo_lista, setTitulo_lista] = useState('');
-  const [path_image, setPath_image] = useState('');
-  const [colaborador, setColaborador] = useState('');
-  const imagenInputRef = useRef(null);
-  const [imagen, setImagen] = useState(null);
-  const titulo_listaInputRef = useRef(null);
+  const [file, setFile] = useState(null);
 
-  const handleCrearLista = async (event) => {
-    event.preventDefault(); // Prevenir el comportamiento predeterminado del formulario
+  const validarCampos = (campos) => {
+    if (campos.campo1 == "value1") { }
+    return true;
+  }
+
+  const validarFormatoArchivo = (archivo) => {
+    const formatosPermitidos = ["jpeg", "png"]; // jpeg === jpg
+    console.log(archivo);
+    for (const formato of formatosPermitidos) {
+      if (archivo.type.includes(formato)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const subirFirebase = async (archivo) => {
     try {
-      const nuevoAlbum = {
-        id_usuario,
-        titulo_lista,
-        colaborador,
-      };
-
-      // Subir portada y obtener informacion
-        const portadaInfo = await SubirPortada(); // 'imagen' debe ser el archivo de imagen
-        console.log('Información de la imagen subida:', portadaInfo);
-
-      // Obtener la URL de la imagen subida
-      const pathImagen = portadaInfo.url;
-
-      // Agregar la URL de la imagen al objeto nuevoAlbum
-      nuevoAlbum.path_image = pathImagen;
-
-      console.log("Path recuperado de Firebase:", nuevoAlbum.path_image);
-
-      // Enviar la solicitud POST al backend para crear el álbum
-      const response = await axios.post('http://localhost:4000/api/lista_canciones/', nuevoAlbum);
-
-      // Manejar la respuesta del backend
-      console.log("titulo lista:", titulo_lista);
-      console.log("id usuario:", id_usuario);
-      console.log("colaborador:",colaborador);
-      console.log("path de imagen:", path_image);
-
-      console.log('Álbum creado exitosamente:', response.data);
-      resetForm();
-      
+      const resultado = await SubirPortada(archivo);
+      return resultado;
     } catch (error) {
-      console.error('Error al crear el álbum:', error);
+      console.error('Error:', error);
+    }
+  }
+
+  const subirBD = (archivo, url) => {
+    // code
+    return true;
+  }
+
+  const validarForm = async (e) => {
+    e.preventDefault();
+
+    // validar campos
+    const campos = {
+      campo1: "value1",
+      campo2: "value2"
+    };
+    
+    if (!validarCampos(campos)) {
+      alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
+      return;
+    }
+
+    // validar formato del archivo
+    const archivos = document.getElementById('archivo');
+    if (archivos.files.length < 1) {
+      alert(`Seleccione un archivo.`);
+      return;
+    }
+    const archivo = archivos.files[0];
+
+    if (!validarFormatoArchivo(archivo)) {
+      alert(`Formato de imagen no válido.`);
+      return;
+    }
+
+    // validar tamanio
+    if (archivo.size > (5 * 1000 * 1000)) { // megas
+      alert(`Tamaño máximo de 5 MB excedido.`);
+      return;
+    }
+
+    try {
+      // subir el archivo a Firebase
+      const resultado = await SubirPortada(archivo);
+
+      // subir en la db
+      if (!subirBD(campos, resultado)) {
+        // Si ocurre un error al subir en la base de datos
+        // eliminar el archivo subido en Firebase
+        deleteFile(resultado.filepath);
+        alert(`Error al cargar la canción. Intente más tarde.`);
+        return;
+      }
+
+      alert(`Lista creada exitosamente.`);
+      window.location.reload();
+    } catch (error) {
+      console.error('Error:', error);
+      alert(`Error al subir o procesar el archivo.`);
     }
   };
 
-  const resetForm = () => {
-    setId_usuario('');
-    setColaborador('');
-    setPath_image('');
-    setTitulo_lista('');
-    // Limpiar el input de imagen
-    if (imagenInputRef.current) {
-      imagenInputRef.current.value = ''; 
-      imagenInputRef.current.nextElementSibling.innerText = 'Seleccionar imagen';
-    }
-  };
+  const motrarNombreArchivo = () => {
+    const file = document.getElementById('archivo');
 
-  useEffect(() => {
-    // Enfocar en la entrada de "Título del álbum" al cargar la página
-    if (titulo_listaInputRef.current) {
-      titulo_listaInputRef.current.focus();
-    }
-  }, []);
-
-  const handleTitulo_listaChange = (event) => {
-    const valor = event.target.value;
-    if (/^[a-zA-Z0-9\s]*$/.test(valor) && valor.length <= 20) {
-      setTitulo_lista(valor);
-    }
-  };
-  
-  const handleArtistaChange = (event) => {
-    const valorSeleccionado = event.target.value;
-    setId_usuario(valorSeleccionado);
-  };
-
-  const handleColaboradorChange = (event) => {
-    const valor = event.target.value;
-    if (/^[a-zA-Z0-9\s]*$/.test(valor) && valor.length <= 20) {
-      setColaborador(valor);
-    }
-  };
-
-  const handleImagenChange = (file) => {
-    setImagen(file);
-  };
-
-  const handleSubirArchivo = () => {
-    // Accede a la referencia del input
-    const imagenInput = imagenInputRef.current;
-
-    imagenInput.addEventListener('change', () => {
-      const file = imagenInput.files[0];
-
-      if (file) {
-        const maxSize = 5 * 1024 * 1024; // 5 MB en bytes
-
-        if (file.size > maxSize) {
-          // Mostrar un mensaje de error
-          alert('El tamaño del archivo no puede exceder 5 MB.');
-          imagenInput.value = ''; // Limpiar el input para permitir seleccionar otro archivo
-          imagenInput.nextElementSibling.innerText = 'Seleccionar imagen';
-          return;
-        }
-
-        const nombreArchivo = file.name;
-        imagenInput.nextElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
-        setPath_image(nombreArchivo);
-        console.log(nombreArchivo);
-      } else {
-        imagenInput.nextElementSibling.innerText = 'Seleccionar imagen'; // Restaurar el texto original
+    file.addEventListener('change', () => {
+      if (file.files && file.files.length > 0) {
+        const nombreArchivo = file.files[0].name;
+        file.previousElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
+        file.previousElementSibling.style.display = 'block';
+        file.nextElementSibling.value = "X";
+        file.nextElementSibling.classList.add('active');
       }
     });
+    file.click();
+  }
 
-    imagenInput.click();
-  };
+  const validar = (event) => {
+    const valor = event.target.value;
+    if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
+      event.target.classList.add('active');
+    } else if (valor.length > 20) {
+      event.target.classList.add('active');
+      alert(`Nombre debe tener entre 1 a 20 caracteres.`);
+    } else {
+      event.target.classList.remove('active');
+    }
+  }
+
+  const validarVarios = (event) => {
+    const valor = event.target.value;
+    if (/^[a-zA-Z0-9\s]*$/.test(valor)) {
+      event.target.classList.remove('active');
+    } else if (/,+[\s]*$/.test(valor)) {
+      event.target.classList.add('active');
+    } else if (/[,a-zA-Z0-9\s]*$/.test(valor)) {
+      event.target.classList.remove('active');
+    } else {
+      event.target.classList.add('active');
+    }
+  }
 
   return (
-    /* Form de álbum */
     <div className="modal-form">
-      <form className="modal-box" id="form" onSubmit={handleCrearLista}>
+      <form className="modal-box" id="form" onSubmit={validarForm}>
         <div className="inter-modal">
-
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo_lista">Título del álbum *</label>
-              <input
+              <input autoFocus required
                 type="text"
                 className="validar"
-                id="titulo_lista"
-                autoFocus
-                value={titulo_lista}
-                onChange={handleTitulo_listaChange}
-                required
-                ref={titulo_listaInputRef} // Referencia al input del título
+                name="titulo_lista"
+                placeholder="Escriba el título del álbum"
+                onChange={validar}
               />
-            </div>
-          </div>
-
-          {/* ARREGLAR, ENVIAR ID DE ARTISTA EN VALUE, RECUPERAR DESDE BACKEND */}
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="artista">Artista *</label>
-              <select id="artista" value={id_usuario} onChange={handleArtistaChange}>
-                <option value="" disabled>Selecciona un artista</option>
-                {artistas.map((artista) => (
-                  <option key={artista.id} value={artista.id}>
-                    {artista.nombre}
-                  </option>
-                ))}
-              </select>
             </div>
           </div>
 
           <div className="campo">
             <div className="input-box">
-              <label htmlFor="colaborador">Artista colaborador *</label> {/* Artistas colaboradores */}
-              <input
+              <label htmlFor="artista">Artista *</label>
+              <input required
                 type="text"
                 className="validar"
-                id="colaborador"
-                autoFocus
-                value={colaborador}
-                onChange={handleColaboradorChange}
-                required
+                name="artista"
+                placeholder="Escriba el nombre del artista"
+                onChange={validar}
               />
             </div>
           </div>
+
+          <div className="campo">
+            <div className="input-box">
+              <label htmlFor="colaborador">Artista colaborador *</label>
+              <input
+                type="text"
+                className="validar"
+                name="colaborador"
+                placeholder="Escriba el nombre de el/los artista/s"
+                onChange={validarVarios}
+              />
+            </div>
+          </div>
+
           {/* SELECCIONAR ARCHIVO */}
           <div className="campo campo-cargar-cancion">
             <div className="input-box">
               <label htmlFor="archivo">Portada del álbum</label>
-              <div className= "seleccionarArchivo">
-                <span className="nombreArchivo" id="nombreArchivo">Seleccionar archivo</span> {/* Mostrar nombre del archivo */}
+              <div className="seleccionarArchivo">
+                <span className="nombreArchivo" id="nombreArchivo"></span> {/* Mostrar nombre del archivo */}
                 <input
                   type="file"
+                  name="archivo"
                   id="archivo"
-                  style={{ display: 'none' }}
                   accept=".png, .jpg, .jpeg"
-                  ref={imagenInputRef}  
+                  style={{ display: 'none' }}
                 />
                 <input
                   type="button"
                   className="btn-subir bg-white"
-                  onClick={handleSubirArchivo}
+                  onClick={motrarNombreArchivo}
                   value="Seleccionar archivo"
                 />
               </div>
@@ -220,4 +211,3 @@ function CrearLista() {
 }
 
 export default CrearLista;
-    
