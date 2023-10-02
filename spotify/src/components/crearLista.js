@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
 import { SubirPortada } from '../firebase/config';
-import './crearLista.css';
+import './form.css';
 
 
 // BORRAME TEMPORAL
