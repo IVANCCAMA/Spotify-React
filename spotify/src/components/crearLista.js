@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SubirPortada } from '../firebase/config';
 import './crearLista.css';
 
+
 // BORRAME TEMPORAL
 const artistas = [
   { id: 1, nombre: 'Shakira' },
@@ -11,7 +12,6 @@ const artistas = [
   { id: 6, nombre: 'Carlos' },
   // ... Agrega más artistas según sea necesario
 ];
-
 
 function CrearLista() {
   const [id_usuario, setId_usuario] = useState('');
@@ -131,8 +131,8 @@ function CrearLista() {
 
   return (
     /* Form de álbum */
-    <div className="modal-crear-lista">
-      <form className="modal-box" onSubmit={handleCrearLista}>
+    <div className="modal-form">
+      <form className="modal-box" id="form" onSubmit={handleCrearLista}>
         <div className="inter-modal">
 
           <div className="campo">

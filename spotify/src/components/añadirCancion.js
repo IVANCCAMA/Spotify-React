@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { SubirCancion, deleteFile } from '../firebase/config';
-import './añadirCancion.css'
+import './form.css'
 
 const validarCampos = (campos) => {
   if (campos.campo1 == "value1") { }
@@ -104,14 +104,9 @@ const motrarNombreArchivo = () => {
 function AñadirCancion() {
   const [file, setFile] = useState(null);
 
-  // const motrarNombreArchivo = () => {
-  //   const imagen = document.getElementById('archivo');
-  //   imagen.click(); 
-  // };
-
   return (
-    <div className="modal-añadir-cancion">
-      <form className="modal-box" onSubmit={validarForm}>
+    <div className="modal-form">
+      <form className="modal-box" id="form" onSubmit={validarForm}>
         <div className="inter-modal">
           <div className="campo">
             <div className="input-box">
@@ -144,7 +139,7 @@ function AñadirCancion() {
           <div className="campo campo-cargar-cancion">
             <div className="input-box">
               <label htmlFor="archivo">Canción</label>
-              <div className= "seleccionarArchivo">
+              <div className="seleccionarArchivo">
                 <span className="nombreArchivo" id="nombreArchivo">Seleccionar archivo</span> {/* Mostrar nombre del archivo */}
                 <input
                   type="file"
