@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import './alerta.css.css'
+import './alerta.css'
 
 function abrirModal(mensaje) {
   const modal = document.getElementById('alerta');
