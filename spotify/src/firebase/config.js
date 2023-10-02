@@ -37,10 +37,19 @@ export function SubirCancion(file) {
 }
 
 export function SubirPortada(imageUpload) {
-  const imageRef = ref(storage, `Portadas/${imageUpload.name + v4()}`);
-    uploadBytes(imageRef, imageUpload).then(() => {
-      alert("subido a firebase exitosamente")
+  const imageName = `${imageUpload.name}-${v4()}`;
+  const imageRef = ref(storage, `Portadas/${imageName}`);
+  
+    return uploadBytes(imageRef, imageUpload).then(() => {
+      console.log("imagen subida a firebase exitosamente");
+      return imageName; // Retorna el nombre único de la imagen
     });
+}
+
+export function recuperarUrl(imageName){
+  const imageRef = ref(storage, `Portadas/${imageName}`);
+  console.log("url de imagen de firebase:", getDownloadURL(imageRef));
+  return getDownloadURL(imageRef);
 }
 
 async function updateFile(file, filepath) {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
-import { SubirPortada } from '../firebase/config';
+import { SubirPortada, recuperarUrl } from '../firebase/config';
 import './form.css';
 
 
@@ -35,8 +35,11 @@ function CrearLista() {
         const portadaInfo = await SubirPortada(imageUpload); // 'imagen' debe ser el archivo de imagen
         console.log('Información de la imagen subida:', portadaInfo); 
 
+      const imageUrl = await recuperarUrl(portadaInfo);
+      console.log("URL de la imagen en Firebase:", imageUrl);
+
       // Obtener la URL de la imagen subida   
-      const pathImagen = "portadaInfo.url";
+      const pathImagen = imageUrl;
 
       // Agregar la URL de la imagen al objeto nuevoAlbum
       nuevoAlbum.path_image = pathImagen;
