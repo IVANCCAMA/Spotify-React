@@ -46,14 +46,14 @@ function MenuLateral() {
           </Link>
         </div>
 
-        <div className="item">
+        {/* <div className="item">
           <Link to="/Sencillo">
             <div className="icon">
               <img src={disc} alt="Sencillo" width="30" />
             </div>
             <div className="title">Sencillo</div>
           </Link>
-        </div>
+        </div> */}
 
         <div className="item">
           <Link to="/añadirCancion">
