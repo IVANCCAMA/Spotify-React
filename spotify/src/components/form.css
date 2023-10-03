@@ -143,3 +143,7 @@
 .btn-box {
     color: #fff;
 }
+
+#selectList {
+    color: #000; /* Cambia el color del texto a negro (o el color que desees) */
+}
