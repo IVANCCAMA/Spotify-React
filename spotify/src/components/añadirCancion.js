@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
-import { SubirCancion, deleteFile } from '../firebase/config';
+import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrl, recuperarUrlCancion } from '../firebase/config';
 import './form.css'
 
 function AñadirCancion() {
@@ -49,8 +49,11 @@ function AñadirCancion() {
 
   const subirFirebase = async (archivo) => {
     try {
-      const resultado = await SubirCancion(archivo);
-      return resultado;
+      const cancionInfo = await SubirCancion(archivo);
+      const CancionUrl = await recuperarUrlCancion(cancionInfo);
+
+      console.log("url cancion >>>>", CancionUrl)
+      return CancionUrl;
     } catch (error) {
       console.error('Error:', error);
     }
@@ -70,7 +73,6 @@ function AñadirCancion() {
   }
 
   /* VALIDAR FORM PAR ASUBIR A BD */
-  /* VALIDAR FORM PARA SUBIR A BD */
 const validarForm = async (e) => {
   e.preventDefault();
 
@@ -103,16 +105,21 @@ const validarForm = async (e) => {
 
   try {
     // Subir el archivo a Firebase
-    const resultado = await SubirCancion(archivo);
-
+    const resultado = await subirFirebase(archivo);
+    nuevaCancion.path_cancion = resultado;
+    
+    // Recupera tiempo de duracion
+    const recuperarDuracionAudio = await RecuperarDuracion(archivo);
+    
+    console.log("tiempo duracion:", recuperarDuracionAudio);
     // Subir en la base de datos
     const nuevaCancion = {
       id_lista: idLista,
       nombre_cancion: tituloCancion,
       nombreArtista: nombreArtista,
       //genero: generoSeleccionado,
-      path_cancion: resultado.filePath, // Usar la ruta del archivo en Firebase
-      duracion: 0 // Puedes obtener la duración del archivo si es posible
+      /* path_cancion: resultado.filePath, // Usar la ruta del archivo en Firebase */
+      duracion: recuperarDuracionAudio // Puedes obtener la duración del archivo si es posible
     };
 
     const subidaExitosa = await subirBD(nuevaCancion);
@@ -293,7 +300,7 @@ const validarForm = async (e) => {
               <label htmlFor="ambum">Álbum *</label>
               <select name="album" id='selectList' required>
                 <option disabled hidden value="null" >Seleccionar lista</option>
-                <option disabled selected hidden value="null" >Ingrece el nombre del artista</option>
+                <option disabled selected hidden value="null" >Ingrese el nombre del artista</option>
                 {listas.map((lista) => (
                   <option key={lista.id} value={lista.id}>{lista.titulo_lista}</option>
                 ))}
