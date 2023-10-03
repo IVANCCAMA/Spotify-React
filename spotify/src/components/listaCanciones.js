@@ -1,65 +1,101 @@
 
 import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import './listaCanciones.css';
 import groupLogo from '../logos/group.png';
 import songLogo from '../logos/disc.png';
 import axios from "axios";
 
 function ListaCanciones() {
-  const albums = [
-    { id: 1, artist: "Nombre del Artista" }
-  ];
-
-  const [songs, setSongs] = useState([]);
+  const { id_lista } = useParams();
+  
+  const [listaCanciones, setListaCanciones] = useState([]);
+  const [listaAlbum, setListaAlbum] = useState([]); // Nuevo estado para lista de álbumes
+  /* Lista de canciones de un Album */
   useEffect(() => {
-   const fetchData = async () => {
-     try {
-       const response = await axios.get('http://localhost:4000/api/canciones/');
-       const listaCanciones = response.data;
-       setSongs(listaCanciones);
-     } catch (error) {
-       console.error('Error al obtener la lista de canciones:', error);
-     }
-   };
- 
-   fetchData();
- }, []);
+    const fetchData = async () => {
+      try {
+        const responseCanciones = await axios.get(`http://localhost:4000/api/canciones/completo_lista/${id_lista}`);
+        const listaCancionesAlbum = responseCanciones.data;
+        console.log("Listas de canciones recuperadas:", listaCancionesAlbum);
+        setListaCanciones(listaCancionesAlbum);
+      } catch (error) {
+        console.error('Error al obtener la lista de canciones:', error);
+      }
+    };
+/* Informacion de album */
+    const fetchAlbum = async () => {
+      try {
+        const responseAlbum = await axios.get(`http://localhost:4000/api/lista_canciones/${id_lista}`);
+        const listaAlbum = responseAlbum.data;
+        console.log("Listas de álbum recuperadas:", listaAlbum);
+        setListaAlbum(listaAlbum);
+      } catch (error) {
+        console.error('Error al obtener la lista de álbum:', error);
+      }
+    };
+
+    fetchData();
+    fetchAlbum();
+  }, [id_lista]); 
+
+  
 
   return (
-    
-    
-
-    <div className="album2-list">
-      {albums.map((album, index) => (
-        <Link to={`/detalle-album/1`} key={album.id} className="album2-item">
-          <img src={groupLogo} alt="Álbum" className="album2-logo" />
-          <div className="album2-details">
-            <div className="album2-title">Album {index+1}</div>
-            <div className="artist-name">{album.artist}</div>
-            <div className="album2-songs">5 canciones</div>
+    <div className="album-info">
+      {Array.isArray(listaAlbum) && listaAlbum.map((album, index) => (
+        <Link to={`/lista-canciones/${album.id_lista}`} key={album.id_lista} className="album-item">
+          <img
+            src={album.path_image}
+            alt="Álbum"
+            className="album-logo album-image" // Clase album-image para la imagen
+          />
+          <div className="album-details">
+            <div className="album-title">{album.titulo_lista}</div>
+            <div className="artist-name">{album.colaborador}</div>
+            <div className="album-songs">{album.cantidad_canciones} canciones</div>
           </div>
         </Link>
       ))}
-
-         <div className="song-list">
-         {songs.map((canciones, index) => (
-          <Link to={`/detalle-album/1`} key={canciones.id} className="album-item">
-            <img src={songLogo} alt="Álbum" className="song-logo" />
+      <div className="song-list">
+        {Array.isArray(listaCanciones) && listaCanciones.map((canciones, index) => (
+          <Link to={`/detalle-cancion/${canciones.id_cancion}`} key={canciones.id_cancion} className="album-item">
+            <img src={songLogo} 
+            alt="Álbum" 
+            className="song-logo" 
+            />
             <div className="album-details">
               <div className="song-title">{canciones.nombre_cancion}</div>
-              <div className="artist-name">{songs.artist}</div>
+              <div className="artist-name">{canciones.duracion}</div>
             </div>
           </Link> 
-    
-  ))}
-    </div>
+        ))}
+      </div>
     </div>
   );
+  
 }
 export default ListaCanciones;
 
-/* ${album.id}
+/* <div className="album-info">
+      
+      <div className="song-list">
+          {listaCanciones.map((canciones, index) => (
+            <Link to={`/detalle-cancion/${canciones.id_cancion}`} key={canciones.id_cancion} className="album-item">
+              <img src={songLogo} 
+              alt="Álbum" 
+              className="song-logo" 
+              />
+              <div className="album-details">
+              <div className="song-title">{canciones.nombre_cancion}</div>
+              <div className="artist-name">{canciones.duracion}</div>
+              </div>
+            </Link> 
+          ))}
+      </div>
+            
+    </div>
 
 */
+
 
