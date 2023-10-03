@@ -255,7 +255,7 @@ function CrearLista() {
               <button type="submit" className="btn-next">
                 Aceptar
               </button>
-              <button> <Link to="/Albumes" className="btn-next">Cancelar</Link></button>
+              <Link to="/Albumes" className="custom-link">Cancelar</Link>
             </div>
           </div>
         </div>
