@@ -74,6 +74,11 @@ export function SubirPortada(imageUpload) {
     });
 }
 
+export function recuperarUrlPortada(imageName){
+  const imageRef = ref(storage, `Portadas/${imageName}`);
+  return getDownloadURL(imageRef);
+}
+
 export function recuperarUrl(imageName){
   const imageRef = ref(storage, `Portadas/${imageName}`);
   return getDownloadURL(imageRef);

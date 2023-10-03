@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { Link } from "react-router-dom";
 import React, { useState, useEffect, useRef } from 'react';
-import { SubirPortada, deleteFile, recuperarUrl } from '../firebase/config';
+import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
+import { Link } from 'react-router-dom';
 import './form.css';
 
 function CrearLista() {
@@ -20,14 +20,14 @@ function CrearLista() {
     }
   };
 
-
   const ExisteArtista = async (nombreArtista) => {
     try {
       const response = await axios.get(`http://localhost:4000/api/usuarios/search_nom/ ?searchTerm=${nombreArtista}`);
-      return response.data[0].id_usuario;
+      console.log(response.data[0].id_usuario)
+      if(response.status ==200){  return response.data[0].id_usuario;}
     } catch (error) {
       console.error('Error al obtener la lista de usuarios:', error);
-      return "0"; // Hubo un error
+      return false; // Hubo un error
     }
   }; 
 
@@ -36,17 +36,26 @@ function CrearLista() {
 
     if (tituloExistente) {
       // MODAL
-      alert('El título de la lista ya existe. Por favor, elige otro título.');
+      alert('El nombre de la carpeta ya está en uso, intente otro');
       return false;
     }
 
-    const artistaExistente = await ExisteArtista(nuevoAlbum.nombreArtista);
+    const artistaExistente = await ExisteArtista(nuevoAlbum.nombre_usuario);
 
     console.log(artistaExistente);
     if (!artistaExistente) {
       alert('El artista no existe, intente con otro.');
       return false;
     } 
+    if(!/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.titulo_lista) // vericamos que esten con caracteres alfanumericos
+      | !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.nombre_usuario)
+      | !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.colaborador)
+      | nuevoAlbum.colaborador.length>20| nuevoAlbum.colaborador.length==0
+      | nuevoAlbum.titulo_lista.length>20| nuevoAlbum.titulo_lista.length==0
+      | nuevoAlbum.nombre_usuario.length>20| nuevoAlbum.nombre_usuario.length==0
+    ){
+      return false;
+    }
 
     nuevoAlbum.id_usuarioArtista = artistaExistente;
     return true;
@@ -65,7 +74,7 @@ function CrearLista() {
   const subirFirebase = async (archivo) => {
     try {
       const portadaInfo = await SubirPortada(archivo);
-      const imageUrl = await recuperarUrl(portadaInfo);
+      const imageUrl = await recuperarUrlPortada(portadaInfo);
       console.log(imageUrl);
       return imageUrl;
     } catch (error) {
@@ -84,14 +93,13 @@ function CrearLista() {
       return false; // Hubo un error
     }
   }
-
   const validarForm = async (e) => {
     e.preventDefault();
 
     // validar campos
     const nuevoAlbum = {
       titulo_lista: document.getElementById("titulo_lista").value,
-      nombreArtista: document.getElementById("artista").value,
+      nombre_usuario: document.getElementById("artista").value,
       colaborador: document.getElementById("colaborador").value
     };
     
@@ -107,14 +115,14 @@ function CrearLista() {
       return;
     }
     const archivo = archivos.files[0];
-
+    console.log(archivos)
     if (!await validarFormatoArchivo(archivo)) {
       alert(`Formato de imagen no válido.`);
       return;
     }
 
     // validar tamanio
-    if (archivo.size > (5 * 1000 * 1000)) { // megas
+    if (archivo.size > (5 *1024*1024)) { // megas
       alert(`Tamaño máximo de 5 MB excedido.`);
       return;
     }
@@ -132,15 +140,15 @@ function CrearLista() {
         alert(`Error al cargar la canción. Intente más tarde.`);
         return;
       }
-
-      alert(`Lista creada exitosamente.`);
+      
+      await alert(`Lista creada exitosamente.`);
+      window.location.replace("/inicio");
       // window.location.reload();
     } catch (error) {
       console.error('Error:', error);
       alert(`Error al subir o procesar el archivo.`);
     }
   };
-
   const motrarNombreArchivo = () => {
     const file = document.getElementById('archivo');
 
@@ -161,8 +169,10 @@ function CrearLista() {
     if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
       event.target.classList.add('active');
     } else if (valor.length > 20) {
+      event.target.value = valor.slice(0, 20);
       event.target.classList.add('active');
       alert(`Nombre debe tener entre 1 a 20 caracteres.`);
+      //event.target.classList.remove('active');
     } else {
       event.target.classList.remove('active');
     }
@@ -170,7 +180,9 @@ function CrearLista() {
 
   const validarVarios = (event) => {
     const valor = event.target.value;
-    if (/^[a-zA-Z0-9\s]*$/.test(valor)) {
+    if (!/^[a-zA-Z0-9\s,]*$/.test(valor)) {
+      event.target.classList.add('active');
+    }else if (/^[a-zA-Z0-9\s]*$/.test(valor)) {
       event.target.classList.remove('active');
     } else if (/,+[\s]*$/.test(valor)) {
       event.target.classList.add('active');
@@ -178,6 +190,13 @@ function CrearLista() {
       event.target.classList.remove('active');
     } else {
       event.target.classList.add('active');
+      
+    }
+    if (valor.length > 20) {
+      event.target.value = valor.slice(0, 20);
+      event.target.classList.add('active');
+      alert(`Nombre debe tener entre 1 a 20 caracteres.`);
+      //event.target.classList.remove('active');
     }
   }
 
@@ -216,7 +235,7 @@ function CrearLista() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="colaborador">Artista colaborador *</label>
-              <input
+              <input required
                 type="text"
                 className="validar"
                 id="colaborador"
@@ -255,7 +274,7 @@ function CrearLista() {
               <button type="submit" className="btn-next">
                 Aceptar
               </button>
-              <Link to="/Albumes" className="custom-link">Cancelar</Link>
+              <Link to="/Albumes"  ><button to="/Albumes" className="custom-link">Cancelar</button></Link>
             </div>
           </div>
         </div>
