@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const getListaCanciones = async () => 
-    await axios.get("http://localhost:8080/ListaCanciones");
+    await axios.get("https://backreactmusic.onrender.com/api/lista_canciones");
 
     await axios.post();
 

@@ -109,7 +109,14 @@ function CrearLista() {
     const valor = event.target.value;
     if (/^[a-zA-Z0-9\s]*$/.test(valor) && valor.length <= 20) {
         setTitulo_lista(valor);
+        event.target.classList.remove('active');
+    }else{ 
+      if(valor.length > 20){
+        alert("Nombre debe tener entre 1 a 20 caracteres.")
+      }
+      event.target.classList.add('active');
     }
+    
   };
   
 

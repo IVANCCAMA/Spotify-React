@@ -1,12 +1,14 @@
 import React from 'react';
 import { useState } from 'react';
 import { SubirCancion, deleteFile } from '../firebase/config';
+import { Switch, Router, Link} from 'react-router-dom'
 import './form.css'
 
 const validarCampos = (campos) => {
   if (campos.campo1 == "value1") { }
   return true;
 }
+
 
 const validarFormatoArchivo = (archivo) => {
   const formatosPermitidos = ["mpeg", "wav"]; // mpeg === mp3
@@ -108,11 +110,14 @@ const validar = (event) => {
   const valor = event.target.value;
   if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
     event.target.classList.add('active');
-  } else if (valor.length > 20) {
+  } else if (valor.length >= 19) {
     event.target.classList.add('active');
     alert(`Nombre debe tener entre 1 a 20 caracteres.`);
-  } else {
+    valor.value=valor.value+
+    "samuel";
+  }else{
     event.target.classList.remove('active');
+    
   }
 };
 
