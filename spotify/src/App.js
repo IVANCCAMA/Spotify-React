@@ -5,8 +5,8 @@ import AñadirCancion from './components/añadirCancion';
 import MenuLateral from './components/menuLateral';
 import './App.css';
 import ListaAlbumes from './components/listaAlbunes';
-import Sencillo from './components/sencillo';
-import Inicio from './components/inicioHome';
+/* import Sencillo from './components/sencillo';
+ */import Inicio from './components/inicioHome';
 
 
 function App() {
