@@ -1,7 +1,6 @@
 import axios from 'axios';
-import { Link } from "react-router-dom";
 import React, { useState, useEffect, useRef } from 'react';
-import { SubirPortada, deleteFile, recuperarUrl } from '../firebase/config';
+import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
 import './form.css';
 
 function CrearLista() {
@@ -19,7 +18,6 @@ function CrearLista() {
       return false;
     }
   };
-
 
   const ExisteArtista = async (nombreArtista) => {
     try {
@@ -65,7 +63,7 @@ function CrearLista() {
   const subirFirebase = async (archivo) => {
     try {
       const portadaInfo = await SubirPortada(archivo);
-      const imageUrl = await recuperarUrl(portadaInfo);
+      const imageUrl = await recuperarUrlPortada(portadaInfo);
       console.log(imageUrl);
       return imageUrl;
     } catch (error) {
@@ -255,7 +253,7 @@ function CrearLista() {
               <button type="submit" className="btn-next">
                 Aceptar
               </button>
-              <button> <Link to="/Albumes" className="btn-next">Cancelar</Link></button>
+              <button className="btn-next">Cancelar</button>
             </div>
           </div>
         </div>
