@@ -20,20 +20,11 @@ function CrearLista() {
     }
   };
 
-  const redirigirAlbumes =()=>{
-    //location.href="/Albumes"
-    window.location.reload()
-  };
-  
+
   const ExisteArtista = async (nombreArtista) => {
     try {
       const response = await axios.get(`http://localhost:4000/api/usuarios/search_nom/ ?searchTerm=${nombreArtista}`);
-      const listaArtistas = response.data;
-      console.log(listaArtistas.nombre_usuario);
-      // importante atributo nombre_usuario tiene que ser igual a la BD
-      // Verifica si el nombre del artista existe
-      const artistaEncontrado = listaArtistas.find((artista) => artista.nombre_usuario === nombreArtista);
-      return artistaEncontrado;
+      return response.data[0].id_usuario;
     } catch (error) {
       console.error('Error al obtener la lista de usuarios:', error);
       return "0"; // Hubo un error
@@ -51,11 +42,12 @@ function CrearLista() {
 
     const artistaExistente = await ExisteArtista(nuevoAlbum.nombreArtista);
 
-    if (artistaExistente) {
+    console.log(artistaExistente);
+    if (!artistaExistente) {
       alert('El artista no existe, intente con otro.');
       return false;
     } 
-    
+
     nuevoAlbum.id_usuarioArtista = artistaExistente;
     return true;
   }
@@ -74,6 +66,7 @@ function CrearLista() {
     try {
       const portadaInfo = await SubirPortada(archivo);
       const imageUrl = await recuperarUrl(portadaInfo);
+      console.log(imageUrl);
       return imageUrl;
     } catch (error) {
       console.error('Error:', error);
@@ -82,7 +75,8 @@ function CrearLista() {
 
   const subirBD = async (nuevoAlbum) => {
     try {
-      const response = await axios.post('http://localhost:4000/api/lista_canciones/', nuevoAlbum);
+      console.log(nuevoAlbum);
+      const response = await axios.post('http://localhost:4000/api/lista_canciones/createlist', nuevoAlbum);
       console.log('Álbum creado exitosamente:', response.data);
       return true;
     } catch (error) {
