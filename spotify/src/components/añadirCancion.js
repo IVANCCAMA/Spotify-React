@@ -6,6 +6,8 @@ import './form.css'
 function AñadirCancion() {
   /* const [file, setFile] = useState(null); */
   const [listas, setListas] = useState([]);
+  const [selectedAlbum, setSelectedAlbum] = useState(null);
+  const [idAlbum, setidAlbum] = useState(null);
   const [generoSeleccionado, setGeneroSeleccionado] = useState('');
   const timeoutRef = useRef(null);
   let idArtistaEncontrado;
@@ -77,16 +79,23 @@ const validarForm = async (e) => {
   e.preventDefault();
 
   // Obtener valores de los campos
-  const idLista = idArtistaEncontrado;
-  const tituloCancion = document.getElementById("titulo_Cancion").value;
-  const nombreArtista = document.getElementById("artista").value;
+
+  const nuevaCancion = {
+    id_lista: idAlbum,
+    duracion: "",
+    nombre_cancion: document.getElementById("titulo_Cancion").value,
+    nombreArtista: document.getElementById("artista").value,// Puedes obtener la duración del archivo si es posible
+    nombreAlbum: "",
+    genero: generoSeleccionado
+  };
+   
   //const generoSeleccionado = document.getElementById("generoSeleccionado").value;
   const archivos = document.getElementById('archivo').files;
   
   /* // Validar campos
   if (!idLista || !tituloCancion || !nombreArtista || archivos.length === 0) {
     alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
-    return;
+    return;idLista
   } */
 
   // Validar formato del archivo
@@ -110,17 +119,12 @@ const validarForm = async (e) => {
     
     // Recupera tiempo de duracion
     const recuperarDuracionAudio = await RecuperarDuracion(archivo);
-    
+    nuevaCancion.duracion = recuperarDuracionAudio
     console.log("tiempo duracion:", recuperarDuracionAudio);
     // Subir en la base de datos
-    const nuevaCancion = {
-      id_lista: idLista,
-      nombre_cancion: tituloCancion,
-      nombreArtista: nombreArtista,
-      //genero: generoSeleccionado,
-      /* path_cancion: resultado.filePath, // Usar la ruta del archivo en Firebase */
-      duracion: recuperarDuracionAudio // Puedes obtener la duración del archivo si es posible
-    };
+
+    /* const recuperarIdAlbum = await RecuperarIdAlbum(); */
+    
 
     const subidaExitosa = await subirBD(nuevaCancion);
     
@@ -180,6 +184,7 @@ const validarForm = async (e) => {
       try {
         // Obtén la lista del artista desde la base de datos
         idArtistaEncontrado = await ExisteArtista(nombreArtista);
+        
         console.log("nombre recupearadod>>><",nombreArtista);
         console.log("id de artista encontrado>>:", idArtistaEncontrado);
         if (idArtistaEncontrado == null) {
@@ -227,6 +232,7 @@ const validarForm = async (e) => {
   const ExisteArtista = async (nombreArtista) => {
     try {
       const response = await axios.get(`http://localhost:4000/api/usuarios/search_nom/ ?searchTerm=${nombreArtista}`);
+      
       const artistas = response.data;
   
       const artistaEncontrado = artistas.find((artista) => artista.nombre_usuario === nombreArtista);
@@ -259,7 +265,46 @@ const validarForm = async (e) => {
   };
 
   const handleGeneroChange = (event) => {
-    setGeneroSeleccionado(event.target.value);
+    /* setGeneroSeleccionado(event.target.value);  */
+    const selectedGenero = event.target.value;
+    setGeneroSeleccionado(selectedGenero);
+  };
+
+  const handleAlbumSelectChange = async (event) => {
+    const selectedId = event.target.value;
+    setSelectedAlbum(selectedId);
+    try {
+      const idAlbumEncontrado = await idArtistaAlbum(selectedId);
+      setidAlbum(idAlbumEncontrado);
+
+      if (idAlbumEncontrado == null) {
+        alert('El album no existe, intente con otro.');
+        return;
+      }
+    } catch (error) {
+      
+    }
+  };
+
+  const idArtistaAlbum = async (nombreAlbum) => {
+    try {
+      const response = await axios.get(`http://localhost:4000/api/lista_canciones/`);
+      
+      const listasAlbumes = response.data;
+  
+      const idAlbumEncontrado = listasAlbumes.find((album) => album.titulo_lista === nombreAlbum);
+
+    if (idAlbumEncontrado && idAlbumEncontrado.titulo_lista) {
+      console.log('Album encontrado con, ID:', idAlbumEncontrado.id_lista);
+      return idAlbumEncontrado.id_lista; // Devuelve el ID del artista si se encuentra
+    }
+  
+      console.log('Album no encontrado');
+      return null; // Devuelve null si no se encuentra el artista
+    } catch (error) {
+      console.error('Error al obtener la lista de Albumes:', error);
+      return null; // Maneja los errores devolviendo null
+    }
   };
 
   return (
@@ -296,23 +341,23 @@ const validarForm = async (e) => {
           </div>
 
           <div className="campo">
-            <div className="input-box">
-              <label htmlFor="ambum">Álbum *</label>
-              <select name="album" id='selectList' required>
-                <option disabled hidden value="null" >Seleccionar lista</option>
-                <option disabled selected hidden value="null" >Ingrese el nombre del artista</option>
-                {listas.map((lista) => (
-                  <option key={lista.id} value={lista.id}>{lista.titulo_lista}</option>
-                ))}
-              </select>
-            </div>
-          </div>
+      <div className="input-box">
+        <label htmlFor="album">Álbum *</label>
+        <select name="album" id='selectList' required onChange={handleAlbumSelectChange}>
+          <option disabled hidden value="null">Seleccionar lista</option>
+          <option disabled selected hidden value="null">Ingrese el nombre del artista</option>
+          {listas.map((lista) => (
+            <option key={lista.id} value={lista.id}>{lista.titulo_lista}</option>
+          ))}
+        </select>
+      </div>
+    </div>
          
 
           <div className="campo">
             <div className="input-box">
               <label htmlFor="genero">Género musical *</label>
-              <select name="genero" required onChange={handleGeneroChange} value={generoSeleccionado}>
+              <select name="genero" required onChange={handleGeneroChange} >
                 <option value="">Seleccionar género</option>
                 <option value="Pop">Pop</option>
                 <option value="id">Rock and Roll</option>
