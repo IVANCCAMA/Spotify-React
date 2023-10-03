@@ -29,12 +29,40 @@ function NombrarCancion(file) {
   return "Canciones/" + v4();
 }
 
-export function SubirCancion(file) {
-  // quisiera crear un directorio para cada cacion
-  // ejm: Canciones/name/audio
-  // Canciones/name/{audio, lyrics, description,...}
-  return updateFile(file, NombrarCancion(file));
+export async function RecuperarDuracion(file) {
+  return new Promise((resolve, reject) => {
+    const audio = document.createElement('audio');
+
+    // Obtén la URL del archivo
+    const fileURL = URL.createObjectURL(file);
+    
+    // Establece la fuente del elemento de audio con la URL del archivo
+    audio.src = fileURL;
+
+    // Escucha el evento 'loadedmetadata' para obtener la duración una vez que se haya cargado la metadata del audio
+    audio.addEventListener('loadedmetadata', () => {
+      // Obtén la duración en segundos
+      const duracionSegundos = audio.duration;
+
+      // Convierte a minutos con dos decimales
+      const duracionMinutos = (duracionSegundos / 60).toFixed(2);
+      
+      // Libera la URL creada para el archivo
+      URL.revokeObjectURL(fileURL);
+
+      // Resuelve la duración en minutos con dos decimales
+      resolve(duracionMinutos);
+    });
+
+    // Escucha el evento 'error' para manejar errores
+    audio.addEventListener('error', (error) => {
+      console.error('Error al cargar el archivo de audio:', error);
+      reject(error);
+    });
+  });
 }
+
+
 
 export function SubirPortada(imageUpload) {
   const imageName = `${imageUpload.name}-${v4()}`;
@@ -49,6 +77,22 @@ export function SubirPortada(imageUpload) {
 export function recuperarUrl(imageName){
   const imageRef = ref(storage, `Portadas/${imageName}`);
   return getDownloadURL(imageRef);
+}
+
+export function SubirCancion(cancionUpload) {
+  const cancionName = `${cancionUpload.name}-${v4()}`;
+  const cancionRef = ref(storage, `Canciones/${cancionName}`);
+  
+    return uploadBytes(cancionRef, cancionUpload).then(() => {
+      console.log("cancion subida a firebase exitosamente");
+      return cancionName; // Retorna el nombre único de la imagen
+    });
+}
+
+export function recuperarUrlCancion(cancionName){
+  const cancionRef = ref(storage, `Canciones/${cancionName}`);
+  
+  return getDownloadURL(cancionRef);
 }
 
 async function updateFile(file, filepath) {
