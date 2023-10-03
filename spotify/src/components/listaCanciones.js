@@ -47,9 +47,10 @@ function ListaCanciones() {
       {/* Info de álbum */}
   <div style={{ display: 'flex', alignItems: 'center' }}>
     {/* Columna 1: Imagen del álbum */}
-    <div key={infoAlbum.id_lista} className="album-logo album-image">
+    <div key={infoAlbum.id_lista} className="album-portada">
       <img
         src={infoAlbum.path_image}
+        /* className='album-image' */
         alt="Álbum"
         style={{ width: '100%', height: '100%', objectFit: 'cover' }}  // Ajustamos el estilo de la imagen
       />
@@ -57,7 +58,7 @@ function ListaCanciones() {
 
     {/* Columna 2: Datos del álbum */}
     <div className="album-details" style={{ marginLeft: '20px' }}>  {/* Añadimos un margen izquierdo */}
-      <div className="album-title">{infoAlbum.titulo_lista}</div>
+      <div className="album-title2">{infoAlbum.titulo_lista}</div>
       <div className="artist-name">{infoAlbum.nombre_usuario}</div> {/* ARREGLAR */}
       <div className="album-songs">{infoAlbum.cantidad_canciones} canciones</div>
     </div>
@@ -72,7 +73,7 @@ function ListaCanciones() {
               <img
                   src={canciones.path_image}
                   alt="Álbum"
-                  className="album-logo album-image"
+                  className="album-image2"
                 />
               <div className="song-details">
                 

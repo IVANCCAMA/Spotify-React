@@ -30,7 +30,7 @@ return (
         <img
           src={album.path_image}
           alt="Álbum"
-          className="album-logo album-image" // Clase album-image para la imagen
+          className="album-image" // Clase album-image para la imagen
         />
         <div className="album-details">
           <div className="album-title">{album.titulo_lista}</div>
