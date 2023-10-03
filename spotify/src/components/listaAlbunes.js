@@ -34,7 +34,7 @@ return (
         />
         <div className="album-details">
           <div className="album-title">{album.titulo_lista}</div>
-          <div className="artist-name">{album.colaborador}</div>
+          <div className="artist-name">{album.nombre_usuario}</div>
           <div className="album-songs">{album.cantidad_canciones} canciones</div>
         </div>
       </Link>

@@ -100,6 +100,7 @@ const validarForm = async (e) => {
   } */
 
   // Validar formato del archivo
+  if (archivos.length < 1) { return; }
   const archivo = archivos[0];
   if (!validarFormatoArchivo(archivo)) {
     alert(`Formato de archivo no válido.`);
