@@ -186,7 +186,7 @@ function AñadirCancion() {
 
           <div className="campo">
             <div className="input-box">
-              <label htmlFro="genero">Género musical *</label>
+              <label htmlFor="genero">Género musical *</label>
               <select name="genero" required>
                 <option value="id">Pop</option>
                 <option value="id">Rock and Roll</option>

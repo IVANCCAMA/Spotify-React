@@ -48,7 +48,6 @@ export function SubirPortada(imageUpload) {
 
 export function recuperarUrl(imageName){
   const imageRef = ref(storage, `Portadas/${imageName}`);
-  console.log("url de imagen de firebase:", getDownloadURL(imageRef));
   return getDownloadURL(imageRef);
 }
 
@@ -70,7 +69,7 @@ async function updateFile(file, filepath) {
 export function deleteFile(filepath) {
   const storageArchivoRef = ref(storage, filepath);
   deleteObject(storageArchivoRef).then(() => {
-      console.log('Archivo eliminado exitosamente.');
+      alert('Archivo eliminado exitosamente.');
     })
     .catch((error) => {
       console.error('Error al eliminar el archivo:', error);
