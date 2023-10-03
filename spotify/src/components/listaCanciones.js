@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 import './listaCanciones.css';
 import groupLogo from '../logos/group.png';
-import songLogo from '../logos/disc.png';
+import songLogo from '../logos/play-logo.png';
 import axios from "axios";
 
 function ListaCanciones() {
@@ -67,12 +67,23 @@ function ListaCanciones() {
       <div className="song-list">
         {Array.isArray(listaCanciones) && listaCanciones.map((canciones, index) => (
           <Link to={`/detalle-cancion/${canciones.id_cancion}`} key={canciones.id_cancion} className="album-item">
-            <img src={songLogo} alt="Álbum" className="song-logo" />
-            <div className="album-details">
-              <div className="song-title">{canciones.nombre_cancion}</div>
-              <div className="artist-name">{canciones.duracion}</div>
+
+            <div className="song-container">
+              <img
+                  src={canciones.path_image}
+                  alt="Álbum"
+                  className="album-logo album-image"
+                />
+              <div className="song-details">
+                
+                <div className="album-title">{canciones.nombre_cancion}</div>
+                <div className="album-title">{canciones.duracion}</div>
+              </div>
+              <img src={songLogo} alt="Álbum" className="album-logo" />
             </div>
-          </Link>
+            
+          </Link> 
+
         ))}
       </div>
 
