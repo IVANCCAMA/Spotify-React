@@ -57,7 +57,7 @@ function ListaCanciones() {
 
     {/* Columna 2: Datos del álbum */}
     <div className="album-details" style={{ marginLeft: '20px' }}>  {/* Añadimos un margen izquierdo */}
-      <div className="album-title">{infoAlbum.titulo_lista}</div>
+      <div className="album-title2">{infoAlbum.titulo_lista}</div>
       <div className="artist-name">{infoAlbum.nombre_usuario}</div> {/* ARREGLAR */}
       <div className="album-songs">{infoAlbum.cantidad_canciones} canciones</div>
     </div>

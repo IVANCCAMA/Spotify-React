@@ -62,6 +62,17 @@
     font-family: var(--fuente-1);
 }
 
+.album-title2 {
+  padding: 10px;
+    font-weight: bold;
+    font-size: 50px;
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    text-align: justify;
+    font-family: var(--fuente-1);
+}
+
 .artist-name {
   padding: 7px;
     font-weight: bold;
