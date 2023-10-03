@@ -50,13 +50,13 @@
     align-items: center;
     text-align: justify;
     font-family: var(--fuente-1);
-
-    
 }
 
+/* listaAlbunes.css */
 .album-image {
   width: 120px;
   height: 120px;
-  border: 5px solid white; 
-  
+  border: 5px solid white; /* Borde blanco de 2px alrededor de la imagen */
+  /* Otros estilos según sea necesario */
 }
+

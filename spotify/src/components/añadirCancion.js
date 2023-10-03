@@ -1,87 +1,143 @@
-import React from 'react';
-import { useState } from 'react';
-import { SubirCancion, deleteFile } from '../firebase/config';
+import axios from 'axios';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from "react-router-dom";
+import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrl, recuperarUrlCancion } from '../firebase/config';
 import './form.css'
 
-const validarCampos = (campos) => {
-  if (campos.campo1 == "value1") { }
-  return true;
-}
+function AñadirCancion() {
+  /* const [file, setFile] = useState(null); */
+  const [listas, setListas] = useState([]);
+  const [selectedAlbum, setSelectedAlbum] = useState(null);
+  const [idAlbum, setidAlbum] = useState(null);
+  const [generoSeleccionado, setGeneroSeleccionado] = useState('');
+  const timeoutRef = useRef(null);
+  let idArtistaEncontrado;
 
-const validarFormatoArchivo = (archivo) => {
-  const formatosPermitidos = ["mpeg", "wav"]; // mpeg === mp3
-  console.log(archivo);
-  for (const formato of formatosPermitidos) {
-    if (archivo.type.includes(formato)) {
-      return true;
+  const validarCampos = async (nuevaCancion) => {
+    const tituloExistente = await esTituloCancionExistente(nuevaCancion.titulo_lista);
+
+    if (tituloExistente) {
+      // MODAL
+      alert('El título de la canción ya existe. Por favor, elige otro título.');
+      return false;
+    }
+    return true;
+  }
+
+  const esTituloCancionExistente = async (titulo) => {
+    try {
+      const response = await axios.get('http://localhost:4000/api/canciones/');
+      const canciones = response.data;
+
+      console.log("objeto canciones>>", canciones);
+      // importante atributo titulo_lista tiene que ser igual a la BD
+
+      return canciones.some((cancion) => cancion.nombre_cancion === titulo);
+    } catch (error) {
+      alert('Error al obtener las canciones:', error);
+      return false;
+    }
+  };
+
+  const validarFormatoArchivo = (archivo) => {
+    const formatosPermitidos = ["mpeg", "wav"]; // mpeg === mp3
+    console.log(archivo);
+    for (const formato of formatosPermitidos) {
+      if (archivo.type.includes(formato)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const subirFirebase = async (archivo) => {
+    try {
+      const cancionInfo = await SubirCancion(archivo);
+      const CancionUrl = await recuperarUrlCancion(cancionInfo);
+
+      console.log("url cancion >>>>", CancionUrl)
+      return CancionUrl;
+    } catch (error) {
+      console.error('Error:', error);
     }
   }
-  return false;
-};
 
-const subirFirebase = async (archivo) => {
-  try {
-    const resultado = await SubirCancion(archivo);
-    return resultado;
-  } catch (error) {
-    console.error('Error:', error);
+  const subirBD = async (nuevaCancion) => {
+    try {
+      console.log("Datos recuperados:>>>>>> ",nuevaCancion);
+
+      const response = await axios.post('http://localhost:4000/api/canciones/', nuevaCancion);
+      console.log('Canción creado exitosamente:', response.data);
+      return true;
+    } catch (error) {
+      console.error('Error al subir a la base de datos:', error);
+      return false; // Hubo un error
+    }
   }
-}
 
-const subirBD = (archivo, url) => {
-  // code
-  return true;
-}
-
+  /* VALIDAR FORM PAR ASUBIR A BD */
 const validarForm = async (e) => {
   e.preventDefault();
 
-  // validar campos
-  const campos = {
-    campo1: "value1",
-    campo2: "value2"
+  // Obtener valores de los campos
+
+  const nuevaCancion = {
+    id_lista: idAlbum,
+    duracion: "",
+    nombre_cancion: document.getElementById("titulo_Cancion").value,
+    nombreArtista: document.getElementById("artista").value,// Puedes obtener la duración del archivo si es posible
+    nombreAlbum: "",
+    genero: generoSeleccionado
   };
-
-  if (!validarCampos(campos)) {
+   
+  //const generoSeleccionado = document.getElementById("generoSeleccionado").value;
+  const archivos = document.getElementById('archivo').files;
+  
+  /* // Validar campos
+  if (!idLista || !tituloCancion || !nombreArtista || archivos.length === 0) {
     alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
-    return;
-  }
+    return;idLista
+  } */
 
-  // validar formato del archivo
-  const archivos = document.getElementById('archivo');
-  if (archivos.files.length < 1) {
-    alert(`Seleccione un archivo.`);
-    return;
-  }
-  const archivo = archivos.files[0];
-
+  // Validar formato del archivo
+  const archivo = archivos[0];
   if (!validarFormatoArchivo(archivo)) {
-    alert(`Formato de imagen no válido.`);
+    alert(`Formato de archivo no válido.`);
     return;
   }
 
-  // validar tamanio
-  if (archivo.size > (15 * 1000 * 1000)) { // megas
+  // Validar tamaño del archivo (15 MB)
+  const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
+  if (archivo.size > maxSize) {
     alert(`Tamaño máximo de 15 MB excedido.`);
     return;
   }
 
   try {
-    // subir el archivo a Firebase
-    const resultado = await SubirCancion(archivo);
+    // Subir el archivo a Firebase
+    const resultado = await subirFirebase(archivo);
+    nuevaCancion.path_cancion = resultado;
+    
+    // Recupera tiempo de duracion
+    const recuperarDuracionAudio = await RecuperarDuracion(archivo);
+    nuevaCancion.duracion = recuperarDuracionAudio
+    console.log("tiempo duracion:", recuperarDuracionAudio);
+    // Subir en la base de datos
 
-    // subir en la db
-    if (!subirBD(campos, resultado)) {
+    /* const recuperarIdAlbum = await RecuperarIdAlbum(); */
+    
+
+    const subidaExitosa = await subirBD(nuevaCancion);
+    
+    if (!subidaExitosa) {
       // Si ocurre un error al subir en la base de datos
       // eliminar el archivo subido en Firebase
-      deleteFile(resultado.filepath);
+      deleteFile(resultado.filePath);
       alert(`Error al cargar la canción. Intente más tarde.`);
       return;
     }
-    alert(`Lista creada exitosamente.`);
-
-    // Ventana para confirmar la subida
-
+    
+    alert(`Canción creada exitosamente.`);
     window.location.reload();
   } catch (error) {
     console.error('Error:', error);
@@ -89,35 +145,168 @@ const validarForm = async (e) => {
   }
 };
 
-const motrarNombreArchivo = () => {
-  const file = document.getElementById('archivo');
 
-  file.addEventListener('change', () => {
-    if (file.files && file.files.length > 0) {
-      const nombreArchivo = file.files[0].name;
-      file.previousElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
-      file.previousElementSibling.style.display = 'block';
-      file.nextElementSibling.value = "X";
-      file.nextElementSibling.classList.add('active');
+  const motrarNombreArchivo = () => {
+    const file = document.getElementById('archivo');
+
+    file.addEventListener('change', () => {
+      if (file.files && file.files.length > 0) {
+        const nombreArchivo = file.files[0].name;
+        file.previousElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
+        file.previousElementSibling.style.display = 'block';
+        file.nextElementSibling.value = "X";
+        file.nextElementSibling.classList.add('active');
+      }
+    });
+    file.click();
+  };
+
+  const validar = (event) => {
+    const valor = event.target.value;
+    if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
+      event.target.classList.add('active');
+    } else if (valor.length > 20) {
+      event.target.classList.add('active');
+      alert(`Nombre debe tener entre 1 a 20 caracteres.`);
+    } else {
+      event.target.classList.remove('active');
     }
-  });
-  file.click();
-};
+  };
 
-const validar = (event) => {
-  const valor = event.target.value;
-  if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
-    event.target.classList.add('active');
-  } else if (valor.length > 20) {
-    event.target.classList.add('active');
-    alert(`Nombre debe tener entre 1 a 20 caracteres.`);
-  } else {
-    event.target.classList.remove('active');
-  }
-};
+  /* ------------- CARGAR LISTAS EN COMBOBOX --------------- */
+  const cargarListas = async () => {
+    const artista = document.getElementById('artista');
+    const selectElement = document.getElementById('selectList');
+  
+    const nombreArtista = artista.value;
+    console.log("nombre recupearadode imput",nombreArtista);
+  
+    if (nombreArtista.length > 0) {
+      try {
+        // Obtén la lista del artista desde la base de datos
+        idArtistaEncontrado = await ExisteArtista(nombreArtista);
+        
+        console.log("nombre recupearadod>>><",nombreArtista);
+        console.log("id de artista encontrado>>:", idArtistaEncontrado);
+        if (idArtistaEncontrado == null) {
+          alert('El artista no existe, intente con otro.');
+          return;
+        }
 
-function AñadirCancion() {
-  const [file, setFile] = useState(null);
+        const listaAlbumes = await listaAlbumesArtista(idArtistaEncontrado);
+        console.log("Lista de Albumes de usuario>>: ", listaAlbumes)
+        
+        // Usa la información del artista para establecer las listas
+        setListas(listaAlbumes);
+        console.log("Listas Albunes seteadas>>: ", listas)
+        
+  
+        // También puedes establecer otra información del artista si es necesario
+        // setIdUsuario(infoArtista.id_usuario);
+  
+        selectElement.selectedIndex = 0;
+      } catch (error) {
+        console.error('Error al verificar el artista:', error);
+      }
+    } else {
+      setListas([]);
+      selectElement.selectedIndex = 1;
+    }
+  };
+  
+  const listaAlbumesArtista = async (id_usuarioArtistaL) => {
+    try {
+      const response = await axios.get('http://localhost:4000/api/lista_canciones/');
+      const listaCompleta = response.data;
+  
+      // Filtrar álbumes por el id_usuario
+      const albumesUsuario = listaCompleta.filter((album) => album.id_usuario === id_usuarioArtistaL);
+      
+      return albumesUsuario;
+    } catch (error) {
+      console.error('Error al obtener la lista de álbumes:', error);
+      throw error; // Lanza el error para que pueda ser manejado por el código que llama a esta función
+    }
+  };
+  
+  
+  const ExisteArtista = async (nombreArtista) => {
+    try {
+      const response = await axios.get(`http://localhost:4000/api/usuarios/search_nom/ ?searchTerm=${nombreArtista}`);
+      
+      const artistas = response.data;
+  
+      const artistaEncontrado = artistas.find((artista) => artista.nombre_usuario === nombreArtista);
+
+    if (artistaEncontrado && artistaEncontrado.id_usuario) {
+      console.log('Artista encontrado, ID:', artistaEncontrado.id_usuario);
+      return artistaEncontrado.id_usuario; // Devuelve el ID del artista si se encuentra
+    }
+  
+      console.log('Artista no encontrado');
+      return null; // Devuelve null si no se encuentra el artista
+    } catch (error) {
+      console.error('Error al obtener la lista de usuarios:', error);
+      return null; // Maneja los errores devolviendo null
+    }
+  };
+
+  const handleArtistaChange = (e) => {
+    const nombreArtista = e.target.value;
+
+    // Cancelar el timeout anterior si existe
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    // Establecer un nuevo timeout para llamar a cargarListas después de un momento de inactividad
+    timeoutRef.current = setTimeout(() => {
+      cargarListas(nombreArtista);
+    }, 2000); // Espera 500 milisegundos (0.5 segundos) antes de llamar a cargarListas
+  };
+
+  const handleGeneroChange = (event) => {
+    /* setGeneroSeleccionado(event.target.value);  */
+    const selectedGenero = event.target.value;
+    setGeneroSeleccionado(selectedGenero);
+  };
+
+  const handleAlbumSelectChange = async (event) => {
+    const selectedId = event.target.value;
+    setSelectedAlbum(selectedId);
+    try {
+      const idAlbumEncontrado = await idArtistaAlbum(selectedId);
+      setidAlbum(idAlbumEncontrado);
+
+      if (idAlbumEncontrado == null) {
+        alert('El album no existe, intente con otro.');
+        return;
+      }
+    } catch (error) {
+      
+    }
+  };
+
+  const idArtistaAlbum = async (nombreAlbum) => {
+    try {
+      const response = await axios.get(`http://localhost:4000/api/lista_canciones/`);
+      
+      const listasAlbumes = response.data;
+  
+      const idAlbumEncontrado = listasAlbumes.find((album) => album.titulo_lista === nombreAlbum);
+
+    if (idAlbumEncontrado && idAlbumEncontrado.titulo_lista) {
+      console.log('Album encontrado con, ID:', idAlbumEncontrado.id_lista);
+      return idAlbumEncontrado.id_lista; // Devuelve el ID del artista si se encuentra
+    }
+  
+      console.log('Album no encontrado');
+      return null; // Devuelve null si no se encuentra el artista
+    } catch (error) {
+      console.error('Error al obtener la lista de Albumes:', error);
+      return null; // Maneja los errores devolviendo null
+    }
+  };
 
   return (
     <div className="modal-form">
@@ -126,24 +315,12 @@ function AñadirCancion() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo">Título de la canción *</label>
-              <input autoFocus required
-                type="text"
-                className="validar alfanumerico"
-                name="titulo"
-                placeholder="Escriba el título del álbum"
-                onChange={validar}
-              />
-            </div>
-          </div>
-
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="titulo">Nombre de artista *</label>
-              <input required
+              <input autoFocus 
                 type="text"
                 className="validar"
-                name="artista"
-                placeholder="Escriba el nombre del artista"
+                id="titulo_Cancion"
+                name="titulo"
+                placeholder="Escriba el título de la canción"
                 onChange={validar}
               />
             </div>
@@ -151,20 +328,38 @@ function AñadirCancion() {
 
           <div className="campo">
             <div className="input-box">
-              <label htmlFor="ambum">Álbum *</label>
-              <select name="album" required>
-                <option disabled selected hidden>Ingrece el nombre del artista</option>
-                {/* agregar dinamicamente la listas del artista recuperdas de la db */}
-                <option value="id_list">name_list</option>
-              </select>
+              <label htmlFor="artista">Nombre de artista *</label>
+              <input
+                type="text"
+                className="validar"
+                id="artista"
+                name="artista"
+                placeholder="Escriba el nombre del artista"
+                onChange={handleArtistaChange}
+              />
             </div>
           </div>
 
           <div className="campo">
+      <div className="input-box">
+        <label htmlFor="album">Álbum *</label>
+        <select name="album" id='selectList'  onChange={handleAlbumSelectChange}>
+          <option disabled hidden value="null">Seleccionar lista</option>
+          <option disabled selected hidden value="null">Ingrese el nombre del artista</option>
+          {listas.map((lista) => (
+            <option key={lista.id} value={lista.id}>{lista.titulo_lista}</option>
+          ))}
+        </select>
+      </div>
+    </div>
+         
+
+          <div className="campo">
             <div className="input-box">
-              <label htmlFro="genero">Género musical *</label>
-              <select name="genero" required>
-                <option value="id">Pop</option>
+              <label htmlFor="genero">Género musical *</label>
+              <select name="genero"  onChange={handleGeneroChange} >
+                <option value="">Seleccionar género</option>
+                <option value="Pop">Pop</option>
                 <option value="id">Rock and Roll</option>
                 <option value="id">Country</option>
                 <option value="id">Disco</option>
@@ -189,7 +384,7 @@ function AñadirCancion() {
               <label htmlFor="archivo">Canción</label>
               <div className="seleccionarArchivo">
                 <span className="nombreArchivo" id="nombreArchivo"></span> {/* Mostrar nombre del archivo */}
-                <input 
+                <input
                   type="file"
                   name="archivo"
                   id="archivo"
@@ -209,9 +404,10 @@ function AñadirCancion() {
           <div className="campo">
             <div className="btn-box">
               <button type="submit" className="btn-next">Aceptar</button>
-              <button type="button" className="btn-next">Cancelar</button>
+              <Link to="/Inicio" className="custom-link">Cancelar</Link>
             </div>
           </div>
+          
         </div>
       </form>
     </div>

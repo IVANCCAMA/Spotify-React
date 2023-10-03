@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import './listaCanciones.css';
@@ -32,8 +33,10 @@ function ListaCanciones() {
     <div className="album2-list">
 
 
+
       {albums.map((album, index) => (
         <Link to={'/detalle-album/1'} key={album.id} className="album2-item">
+
           <img src={groupLogo} alt="Álbum" className="album2-logo" />
           <div className="album2-details">
             <div className="album2-title">Album {index+1}</div>
@@ -63,10 +66,6 @@ function ListaCanciones() {
 
 
     </div>
-
-
-
-
 
   );
 }
