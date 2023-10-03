@@ -15,7 +15,7 @@ const artistas = [
 
 function CrearLista() {
  // const [id_usuario, setId_usuario] = useState('');
-  let id_usuarioArtista=0; // del
+ const [id_usuarioArtista, setId_usuarioArtista] = useState(0);
   const [nombreArtista, setNombreArtista] = useState('');
   const [titulo_lista, setTitulo_lista] = useState('');
   const [path_image, setPath_image] = useState('');
@@ -47,7 +47,7 @@ function CrearLista() {
         alert('El artista no existe, intente con otro.');
         return;
       }
-      console.log(">>"+id_usuarioArtista)
+      console.log(">>>>>>> id1:  "+id_usuarioArtista)
 
       /* Subir portada a Firebase */
       const portadaInfo = await SubirPortada(imageUpload); // 'imagen' debe ser el archivo de imagen
@@ -62,18 +62,13 @@ function CrearLista() {
       // Agregar la URL de la imagen al objeto nuevoAlbum
       nuevoAlbum.path_image = pathImagen;
 
-      console.log("Path recuperado de Firebase:", nuevoAlbum.path_image);
-      console.log(">>",nuevoAlbum)
+      //console.log("Path recuperado de Firebase:", nuevoAlbum.path_image);
+      console.log(">>", nuevoAlbum)
+      console.log(">>>>>>> id2:  "+id_usuarioArtista)
 
       // Enviar la solicitud POST al backend para crear el álbum
       const response = await axios.post('https://backreactmusic.onrender.com/api/lista_canciones/', nuevoAlbum);
 
-      // Manejar la respuesta del backend
-      console.log("titulo lista:", titulo_lista);
-      console.log("id usuario:", id_usuarioArtista);
-      console.log("nombre usuario:", nombreArtista);
-      console.log("colaborador:",colaborador);
-      console.log("path de imagen:", path_image);
 
       console.log('Álbum creado exitosamente:', response.data);
       resetForm();
@@ -145,7 +140,8 @@ function CrearLista() {
       if (artistaEncontrado) {
         // Si encontramos el artista, establecemos su ID en el estado
         //setId_usuario(artistaEncontrado.id_usuario);
-        id_usuarioArtista = artistaEncontrado.id_usuario
+        setId_usuarioArtista(artistaEncontrado.id_usuario);
+
         console.log(">"+id_usuarioArtista)
         
         return true; // El artista existe
