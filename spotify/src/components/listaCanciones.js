@@ -8,10 +8,10 @@ import axios from "axios";
 
 function ListaCanciones() {
   const { id_lista } = useParams();
-  
   const [listaCanciones, setListaCanciones] = useState([]);
-  const [listaAlbum, setListaAlbum] = useState([]); // Nuevo estado para lista de álbumes
-  /* Lista de canciones de un Album */
+  const [infoAlbum, setinfoAlbum] = useState([]); // Nuevo estado para lista de álbumes
+  
+  // Lista de canciones de un Álbum
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -23,43 +23,51 @@ function ListaCanciones() {
         console.error('Error al obtener la lista de canciones:', error);
       }
     };
-/* Informacion de album */
+    fetchData();
+  }, [id_lista]);
+
+  useEffect(() => {
     const fetchAlbum = async () => {
       try {
         const responseAlbum = await axios.get(`http://localhost:4000/api/lista_canciones/${id_lista}`);
-        const listaAlbum = responseAlbum.data;
-        console.log("Listas de álbum recuperadas:", listaAlbum);
-        setListaAlbum(listaAlbum);
+        const infoAlbum = responseAlbum.data;
+        console.log("INFORMACION ALBUM RECUPERADA:", infoAlbum);
+        setinfoAlbum(infoAlbum);
       } catch (error) {
         console.error('Error al obtener la lista de álbum:', error);
       }
     };
-
-    fetchData();
     fetchAlbum();
-  }, [id_lista]); 
+  }, [id_lista]);
 
   
 
   return (
-    <div className="album-info">
-      {Array.isArray(listaAlbum) && listaAlbum.map((album, index) => (
-        <Link to={`/lista-canciones/${album.id_lista}`} key={album.id_lista} className="album-item">
-          <img
-            src={album.path_image}
-            alt="Álbum"
-            className="album-logo album-image" // Clase album-image para la imagen
-          />
-          <div className="album-details">
-            <div className="album-title">{album.titulo_lista}</div>
-            <div className="artist-name">{album.colaborador}</div>
-            <div className="album-songs">{album.cantidad_canciones} canciones</div>
-          </div>
-        </Link>
-      ))}
+    <div>
+      {/* Info de álbum */}
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    {/* Columna 1: Imagen del álbum */}
+    <div key={infoAlbum.id_lista} className="album-logo album-image">
+      <img
+        src={infoAlbum.path_image}
+        alt="Álbum"
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}  // Ajustamos el estilo de la imagen
+      />
+    </div>
+
+    {/* Columna 2: Datos del álbum */}
+    <div className="album-details" style={{ marginLeft: '20px' }}>  {/* Añadimos un margen izquierdo */}
+      <div className="album-title">{infoAlbum.titulo_lista}</div>
+      <div className="artist-name">{infoAlbum.nombre_usuario}</div> {/* ARREGLAR */}
+      <div className="album-songs">{infoAlbum.cantidad_canciones} canciones</div>
+    </div>
+  </div>
+
+      {/* Listado de canciones de álbum */}
       <div className="song-list">
         {Array.isArray(listaCanciones) && listaCanciones.map((canciones, index) => (
           <Link to={`/detalle-cancion/${canciones.id_cancion}`} key={canciones.id_cancion} className="album-item">
+
             <div className="song-container">
               <img
                   src={canciones.path_image}
@@ -75,33 +83,16 @@ function ListaCanciones() {
             </div>
             
           </Link> 
+
         ))}
       </div>
+
+      
+      
+      
     </div>
   );
   
 }
 export default ListaCanciones;
-
-/* <div className="album-info">
-      
-      <div className="song-list">
-          {listaCanciones.map((canciones, index) => (
-            <Link to={`/detalle-cancion/${canciones.id_cancion}`} key={canciones.id_cancion} className="album-item">
-              <img src={songLogo} 
-              alt="Álbum" 
-              className="song-logo" 
-              />
-              <div className="album-details">
-              <div className="song-title">{canciones.nombre_cancion}</div>
-              <div className="artist-name">{canciones.duracion}</div>
-              </div>
-            </Link> 
-          ))}
-      </div>
-            
-    </div>
-
-*/
-
 
