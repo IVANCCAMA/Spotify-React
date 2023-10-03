@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link,Routes, Route } from "react-router-dom";
 import './listaAlbunes.css';
- import axios from "axios";
+import axios from "axios";
 import ListaCanciones from './listaCanciones';
 
 
