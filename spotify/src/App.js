@@ -9,7 +9,6 @@ import Sencillo from './components/sencillo';
 import Inicio from './components/inicioHome';
 import ListaCanciones from './components/listaCanciones';
 
-
 function App() {
   return (
     <div className="boby">

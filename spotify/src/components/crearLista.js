@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Link } from "react-router-dom";
 import React, { useState, useEffect, useRef } from 'react';
 import { SubirPortada, deleteFile, recuperarUrl } from '../firebase/config';
 import './form.css';
@@ -18,6 +19,7 @@ function CrearLista() {
       return false;
     }
   };
+
 
   const ExisteArtista = async (nombreArtista) => {
     try {
@@ -253,7 +255,7 @@ function CrearLista() {
               <button type="submit" className="btn-next">
                 Aceptar
               </button>
-              <button className="btn-next">Cancelar</button>
+              <button> <Link to="/Albumes" className="btn-next">Cancelar</Link></button>
             </div>
           </div>
         </div>
