@@ -70,33 +70,11 @@ function CrearLista() {
       const response = await axios.post('https://backreactmusic.onrender.com/api/lista_canciones/', nuevoAlbum);
 
 
-
-  const subirFirebase = async (archivo) => {
-    try {
-      const resultado = await SubirPortada(archivo);
-      return resultado;
+      console.log('Álbum creado exitosamente:', response.data);
+      resetForm();
+      
     } catch (error) {
-      console.error('Error:', error);
-    }
-  }
-
-  const subirBD = (archivo, url) => {
-    // code
-    return true;
-  }
-
-  const validarForm = async (e) => {
-    e.preventDefault();
-
-    // validar campos
-    const campos = {
-      campo1: "value1",
-      campo2: "value2"
-    };
-    
-    if (!validarCampos(campos)) {
-      alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
-      return;
+      console.error('Error al crear el álbum:', error);
     }
   };
   
@@ -112,14 +90,15 @@ function CrearLista() {
     if (imagenInputRef.current) {
       imagenInputRef.current.value = ''; 
       imagenInputRef.current.nextElementSibling.innerText = 'Seleccionar imagen';
-
     }
-    const archivo = archivos.files[0];
+  };
 
-    if (!validarFormatoArchivo(archivo)) {
-      alert(`Formato de imagen no válido.`);
-      return;
+  useEffect(() => {
+    // Enfocar en la entrada de "Título del álbum" al cargar la página
+    if (titulo_listaInputRef.current) {
+      titulo_listaInputRef.current.focus();
     }
+  }, []);
 
   const handleTitulo_listaChange = async (event) => {
     const valor = event.target.value;
@@ -208,48 +187,24 @@ function CrearLista() {
         console.log(nombreArchivo);
       } else {
         imagenInput.nextElementSibling.innerText = 'Seleccionar imagen'; // Restaurar el texto original
-
       }
     });
-    file.click();
-  }
 
-  const validar = (event) => {
-    const valor = event.target.value;
-    if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
-      event.target.classList.add('active');
-    } else if (valor.length > 20) {
-      event.target.classList.add('active');
-      alert(`Nombre debe tener entre 1 a 20 caracteres.`);
-    } else {
-      event.target.classList.remove('active');
-    }
-  }
-
-  const validarVarios = (event) => {
-    const valor = event.target.value;
-    if (/^[a-zA-Z0-9\s]*$/.test(valor)) {
-      event.target.classList.remove('active');
-    } else if (/,+[\s]*$/.test(valor)) {
-      event.target.classList.add('active');
-    } else if (/[,a-zA-Z0-9\s]*$/.test(valor)) {
-      event.target.classList.remove('active');
-    } else {
-      event.target.classList.add('active');
-    }
-  }
+    imagenInput.click();
+  };
 
   return (
+    /* Form de álbum */
     <div className="modal-form">
-      <form className="modal-box" id="form" onSubmit={validarForm}>
+      <form className="modal-box" id="form" onSubmit={handleCrearLista}>
         <div className="inter-modal">
+
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo_lista">Título del álbum *</label>
-              <input autoFocus required
+              <input
                 type="text"
                 className="validar"
-
                 id="titulo_lista"
                 placeholder='Escriba el título del álbum'
                 autoFocus
@@ -257,15 +212,14 @@ function CrearLista() {
                 onChange={handleTitulo_listaChange}
                 required
                 ref={titulo_listaInputRef} // Referencia al input del título
-
               />
             </div>
           </div>
 
+          {/* ARREGLAR, ENVIAR ID DE ARTISTA EN VALUE, RECUPERAR DESDE BACKEND */}
           <div className="campo">
             <div className="input-box">
               <label htmlFor="artista">Artista *</label>
-
               {/* <select id="artista" value={id_usuario} onChange={handleArtistaChange}>
                 <option value="" disabled>Selecciona un artista</option>
                 {artistas.map((artista) => (
@@ -283,13 +237,12 @@ function CrearLista() {
                 value={nombreArtista}
                 onChange={handleArtistaChange}
                 required
-
               />
             </div>
           </div>
+
           <div className="campo">
             <div className="input-box">
-
               <label htmlFor="colaborador">Artistas colaboradores</label> {/* Artistas colaboradores */}
               <input
                 type="text"
@@ -300,33 +253,29 @@ function CrearLista() {
                 value={colaborador}
                 onChange={handleColaboradorChange}
                 required
-
               />
             </div>
           </div>
-
           {/* SELECCIONAR ARCHIVO */}
           <div className="campo campo-cargar-cancion">
             <div className="input-box">
               <label htmlFor="archivo">Portada del álbum</label>
-              <div className="seleccionarArchivo">
-                <span className="nombreArchivo" id="nombreArchivo"></span> {/* Mostrar nombre del archivo */}
+              <div className= "seleccionarArchivo">
+                <span className="nombreArchivo" id="nombreArchivo">Seleccionar archivo</span> {/* Mostrar nombre del archivo */}
                 <input
                   type="file"
-                  name="archivo"
                   id="archivo"
+                  style={{ display: 'none' }}
                   accept=".png, .jpg, .jpeg"
-
                   onChange={(event) => {
                     setImageUpload(event.target.files[0]);
                   }}
                   ref={imagenInputRef}  
-
                 />
                 <input
                   type="button"
                   className="btn-subir bg-white"
-                  onClick={motrarNombreArchivo}
+                  onClick={handleSubirArchivo}
                   value="Seleccionar archivo"
                 />
               </div>
@@ -348,3 +297,4 @@ function CrearLista() {
 }
 
 export default CrearLista;
+    
