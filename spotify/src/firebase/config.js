@@ -51,6 +51,11 @@ export function recuperarUrlPortada(imageName){
   return getDownloadURL(imageRef);
 }
 
+export function recuperarUrlPortada(imageName){
+  const imageRef = ref(storage, `Portadas/${imageName}`);
+  return getDownloadURL(imageRef);
+}
+
 export function recuperarUrlCancion(imageName){
   const imageRef = ref(storage, `Caniones/${imageName}`);
   return getDownloadURL(imageRef);
