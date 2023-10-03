@@ -27,20 +27,10 @@ function CrearLista() {
       // importante atributo nombre_usuario tiene que ser igual a la BD
       // Verifica si el nombre del artista existe
       const artistaEncontrado = listaArtistas.find((artista) => artista.nombre_usuario === nombreArtista);
-      console.log(artistaEncontrado);
-      if (artistaEncontrado) {
-        // Si encontramos el artista, establecemos su ID en el estado
-        //setId_usuario(artistaEncontrado.id_usuario);
-        // id_usuarioArtista = artistaEncontrado.id_usuario
-        // console.log(">"+id_usuarioArtista)
-        
-        return true; // El artista existe
-      } else {
-        return false; // El artista no existe
-      }
+      return artistaEncontrado;
     } catch (error) {
       console.error('Error al obtener la lista de usuarios:', error);
-      return false; // Hubo un error
+      return "0"; // Hubo un error
     }
   }; 
 
@@ -55,11 +45,12 @@ function CrearLista() {
 
     const artistaExistente = await ExisteArtista(nuevoAlbum.nombreArtista);
 
-    if (!artistaExistente) {
+    if (artistaExistente) {
       alert('El artista no existe, intente con otro.');
       return false;
-    }
-
+    } 
+    
+    nuevoAlbum.id_usuarioArtista = artistaExistente;
     return true;
   }
 
@@ -101,7 +92,6 @@ function CrearLista() {
     const nuevoAlbum = {
       titulo_lista: document.getElementById("titulo_lista").value,
       nombreArtista: document.getElementById("artista").value,
-      id_usuarioArtista: "0",
       colaborador: document.getElementById("colaborador").value
     };
     
