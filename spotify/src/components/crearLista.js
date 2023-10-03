@@ -18,6 +18,11 @@ function CrearLista() {
       return false;
     }
   };
+
+  const redirigirAlbumes =()=>{
+    //location.href="/Albumes"
+    window.location.reload()
+  };
   
   const ExisteArtista = async (nombreArtista) => {
     try {
@@ -255,7 +260,7 @@ function CrearLista() {
               <button type="submit" className="btn-next">
                 Aceptar
               </button>
-              <button className="btn-next">Cancelar</button>
+              <button type="button" onClick={redirigirAlbumes} className="b-next">Cancelar</button>
             </div>
           </div>
         </div>

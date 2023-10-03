@@ -8,7 +8,6 @@ import ListaAlbumes from './components/listaAlbunes';
 import Sencillo from './components/sencillo';
 import Inicio from './components/inicioHome';
 
-
 function App() {
   return (
     <div className="boby">
