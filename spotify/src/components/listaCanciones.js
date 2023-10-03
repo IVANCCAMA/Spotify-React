@@ -27,12 +27,16 @@ function ListaCanciones() {
  }, []);
 
   return (
-    
-    
+
+
 
     <div className="album2-list">
+
+
+
       {albums.map((album, index) => (
-        <Link to={`/detalle-album/1`} key={album.id} className="album2-item">
+        <Link to={'/detalle-album/1'} key={album.id} className="album2-item">
+
           <img src={groupLogo} alt="Álbum" className="album2-logo" />
           <div className="album2-details">
             <div className="album2-title">Album {index+1}</div>
@@ -40,21 +44,29 @@ function ListaCanciones() {
             <div className="album2-songs">5 canciones</div>
           </div>
         </Link>
+
       ))}
 
          <div className="song-list">
+
          {songs.map((canciones, index) => (
-          <Link to={`/detalle-album/1`} key={canciones.id} className="album-item">
-            <img src={songLogo} alt="Álbum" className="song-logo" />
-            <div className="album-details">
-              <div className="song-title">{canciones.nombre_cancion}</div>
-              <div className="artist-name">{songs.artist}</div>
-            </div>
-          </Link> 
-    
+    <Link to={'/detalle-album/1'} key={canciones.id} className="album-item">
+      <img src={songLogo} alt="Álbum" className="song-logo" />
+      <div className="album-details">
+        <div className="song-title">{canciones.nombre_cancion}</div>
+        <div className="artist-name">{songs.artist}</div>
+      </div>
+    </Link> 
+
   ))}
+
+
+
     </div>
+
+
     </div>
+
   );
 }
 export default ListaCanciones;
@@ -62,4 +74,5 @@ export default ListaCanciones;
 /* ${album.id}
 
 */
+
 

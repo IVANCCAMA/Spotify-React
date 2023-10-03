@@ -29,12 +29,12 @@ return (
         <img
           src={album.path_image}
           alt="Álbum"
-          className="album-logo album-image"
+          className="album-logo album-image" // Clase album-image para la imagen
         />
         <div className="album-details">
           <div className="album-title">{album.titulo_lista}</div>
           <div className="artist-name">{album.colaborador}</div>
-          <div className="album-songs">{album.cantidad_canciones} canciones</div>
+          <div className="album-songs">{album.cantidad_canciones}</div>
           <Routes>
             <Route path={`/detalle-album/${album.id_lista}`} element={<ListaCanciones />} />
           </Routes>
@@ -43,6 +43,7 @@ return (
     ))}
   </div>
 );
+
 
 }
 
