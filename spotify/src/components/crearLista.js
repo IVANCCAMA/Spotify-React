@@ -63,9 +63,8 @@ function CrearLista() {
     return true;
   }
 
-  const validarFormatoArchivo = (archivo) => {
+  const validarFormatoArchivo = async (archivo) => {
     const formatosPermitidos = ["jpeg", "png"]; // jpeg === jpg
-    console.log(archivo);
     for (const formato of formatosPermitidos) {
       if (archivo.type.includes(formato)) {
         return true;
@@ -85,9 +84,14 @@ function CrearLista() {
   }
 
   const subirBD = async (nuevoAlbum) => {
-    const response = await axios.post('http://localhost:4000/api/lista_canciones/', nuevoAlbum);
-    console.log('Álbum creado exitosamente:', response.data);
-    return true;
+    try {
+      const response = await axios.post('http://localhost:4000/api/lista_canciones/', nuevoAlbum);
+      console.log('Álbum creado exitosamente:', response.data);
+      return true;
+    } catch (error) {
+      console.error('Error al obtener la lista de usuarios:', error);
+      return false; // Hubo un error
+    }
   }
 
   const validarForm = async (e) => {
@@ -101,7 +105,7 @@ function CrearLista() {
       colaborador: document.getElementById("colaborador").value
     };
     
-    if (!validarCampos(nuevoAlbum)) {
+    if (!await validarCampos(nuevoAlbum)) {
       alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
       return;
     }
@@ -114,7 +118,7 @@ function CrearLista() {
     }
     const archivo = archivos.files[0];
 
-    if (!validarFormatoArchivo(archivo)) {
+    if (!await validarFormatoArchivo(archivo)) {
       alert(`Formato de imagen no válido.`);
       return;
     }
@@ -131,7 +135,7 @@ function CrearLista() {
       nuevoAlbum.path_image = resultado;
 
       // subir en la db
-      if (!subirBD(nuevoAlbum)) {
+      if (!await subirBD(nuevoAlbum)) {
         // Si ocurre un error al subir en la base de datos
         // eliminar el archivo subido en Firebase
         deleteFile(resultado.filepath);
@@ -140,7 +144,7 @@ function CrearLista() {
       }
 
       alert(`Lista creada exitosamente.`);
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error('Error:', error);
       alert(`Error al subir o procesar el archivo.`);
@@ -194,7 +198,7 @@ function CrearLista() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo_lista">Título del álbum *</label>
-              <input autoFocus 
+              <input autoFocus required
                 type="text"
                 className="validar"
                 id="titulo_lista"
@@ -208,7 +212,7 @@ function CrearLista() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="artista">Artista *</label>
-              <input 
+              <input required
                 type="text"
                 className="validar"
                 id="artista"

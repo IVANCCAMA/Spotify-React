@@ -1,25 +1,38 @@
 .album2-list {
   padding: 20px;
   border-radius: 10px;
-  display:block;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
   gap: 20px;
   max-width: 1000px;
-  margin: 0 0 0 0;
+  margin: 50px 0 0 200px;
   grid-auto-rows: minmax(100px, auto); 
   grid-auto-flow: row; 
 }
 
-.album2-item {
-  display:flex;
-  flex-direction: row; 
-  align-items:end;
+.song-list {
+  padding: 10px;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 20px;
+  max-width: 1000px;
+  margin: 50px 0 0 200px;
+  grid-auto-rows: minmax(100px, auto); 
+  grid-auto-flow: row; 
 }
 
-.album2-logo {
+.album-item {
+  display: flex;
+  flex-direction: row; 
+  align-items: center; 
+}
+
+.album-logo {
   margin-right: 25px; 
 }
 
-.album2-title {
+.album-title {
   padding: 10px;
     font-weight: bold;
     font-size: 25px;
@@ -30,32 +43,10 @@
     font-family: var(--fuente-1);
 }
 
-.song-list {
-  padding: 10px;
-  border-radius: 10px;
-  display: grid;
-  grid-template-rows: repeat(1, 1fr);
-  gap: 1px;
-  max-width: 1000px;
-  margin: 50px 0 0 1px;
-  grid-auto-rows: minmax(100px, auto); 
-  grid-auto-flow: row; 
-}
-
-.song-item {
-  display:flex;
-  flex-direction: row; 
-  align-items: center; 
-}
-
-.song-logo {
-  margin-right: 10px; 
-}
-
 .song-title {
   padding: 10px;
     font-weight: bold;
-    font-size: 20px;
+    font-size: 25px;
     color: #FFFFFF;
     display: flex;
     align-items: center;
@@ -73,7 +64,7 @@
     text-align: justify;
     font-family: var(--fuente-1);
 }
-.album2-songs {
+.album-songs {
   padding: 7px;
     font-weight: bold;
     font-size: 16px;

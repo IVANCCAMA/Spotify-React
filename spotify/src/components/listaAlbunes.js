@@ -44,8 +44,6 @@ return (
   </div>
 );
 
-
 }
+
 export default ListaAlbumes;
-
-
