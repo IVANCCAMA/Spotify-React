@@ -5,8 +5,9 @@ import AñadirCancion from './components/añadirCancion';
 import MenuLateral from './components/menuLateral';
 import './App.css';
 import ListaAlbumes from './components/listaAlbunes';
-/* import Sencillo from './components/sencillo';
- */import Inicio from './components/inicioHome';
+import Sencillo from './components/sencillo';
+import Inicio from './components/inicioHome';
+import ListaCanciones from './components/listaCanciones';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
             <Route path="/crearAlbum" element={<CrearLista />} />
             {/* <Route path="/Sencillo" element={<Sencillo />} /> */}
             <Route path="/añadirCancion" element={<AñadirCancion />} />
+            <Route path="/detalle-album/1" element={<ListaCanciones />} />
           </Routes>
         </div>
       </div>
