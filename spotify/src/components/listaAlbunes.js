@@ -38,8 +38,8 @@ function ListaAlbumes() {
 return (
   <div className="album-list">
     {albumes.map((album, index) => (
-      <Link to={`/detalle-album/${album.id}`} key={album.id} className="album-item">
-        <img src={groupLogo} alt="Álbum" className="album-logo" />
+      <Link to={`/detalle-album/${album.id_lista}`} key={album.id_lista} className="album-item">
+        <img src={album.path_image} alt="Álbum" className="album-logo" />
         <div className="album-details">
           <div className="album-title">{album.titulo_lista}</div> {/* Reemplaza 'albumName' con el nombre real del atributo */}
           <div className="artist-name">{album.colaborador}</div>
