@@ -1,6 +1,5 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { v4 } from "uuid";
 
@@ -21,9 +20,8 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 
-const storage = getStorage(app);
+export const storage = getStorage(app);
 
 function NombrarCancion(file) {
   // Como se manejaran los nombres?
@@ -38,16 +36,20 @@ export function SubirCancion(file) {
   return updateFile(file, NombrarCancion(file));
 }
 
-function NombrarPortada(file) {
-  // Como se manejaran los nombres?
-  // name unicas
-  return "Portadas/" + v4();
+export function SubirPortada(imageUpload) {
+  const imageName = `${imageUpload.name}-${v4()}`;
+  const imageRef = ref(storage, `Portadas/${imageName}`);
+  
+    return uploadBytes(imageRef, imageUpload).then(() => {
+      console.log("imagen subida a firebase exitosamente");
+      return imageName; // Retorna el nombre único de la imagen
+    });
 }
 
-export function SubirPortada(file) {
-  // quisiera crear un directorio para cada portada
-  // ejm: Portadas/name/imagen
-  return updateFile(file, NombrarPortada(file));
+export function recuperarUrl(imageName){
+  const imageRef = ref(storage, `Portadas/${imageName}`);
+  console.log("url de imagen de firebase:", getDownloadURL(imageRef));
+  return getDownloadURL(imageRef);
 }
 
 async function updateFile(file, filepath) {

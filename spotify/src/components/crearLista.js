@@ -1,26 +1,80 @@
 import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
-import { SubirPortada, deleteFile } from '../firebase/config';
+import { SubirPortada, recuperarUrl } from '../firebase/config';
 import './form.css';
 
+
+/* // BORRAME TEMPORAL
+const artistas = [
+  { id: 1, nombre: 'Shakira' },
+  { id: 2, nombre: 'BadBuny' },
+  { id: 5, nombre: 'Rey' },
+  { id: 6, nombre: 'Carlos' },
+  // ... Agrega más artistas según sea necesario
+]; */
+
 function CrearLista() {
-  const [file, setFile] = useState(null);
+ // const [id_usuario, setId_usuario] = useState('');
+  let id_usuarioArtista=0; // del
+  const [nombreArtista, setNombreArtista] = useState('');
+  const [titulo_lista, setTitulo_lista] = useState('');
+  const [path_image, setPath_image] = useState('');
+  const [colaborador, setColaborador] = useState('');
+  const imagenInputRef = useRef(null);
+  const titulo_listaInputRef = useRef(null);
+  const [imageUpload, setImageUpload] = useState(null);
 
-  const validarCampos = (campos) => {
-    if (campos.campo1 == "value1") { }
-    return true;
-  }
+  const handleCrearLista = async (event) => {
+    event.preventDefault(); // Prevenir el comportamiento predeterminado del formulario
+    const nuevoAlbum = {
+      titulo_lista,
+      nombreArtista,
+      id_usuarioArtista,
+      colaborador,
+    };
+    try {
+      const tituloExistente = await esTituloCancionExistente(titulo_lista);
 
-  const validarFormatoArchivo = (archivo) => {
-    const formatosPermitidos = ["jpeg", "png"]; // jpeg === jpg
-    console.log(archivo);
-    for (const formato of formatosPermitidos) {
-      if (archivo.type.includes(formato)) {
-        return true;
+      if (tituloExistente) {
+        // MODAL
+        alert('El título de la lista ya existe. Por favor, elige otro título.');
+        return;
       }
-    }
-    return false;
-  };
+
+      const artistaExistente = await ExisteArtista(nombreArtista);
+
+      if (!artistaExistente) {
+        alert('El artista no existe, intente con otro.');
+        return;
+      }
+      console.log(">>"+id_usuarioArtista)
+
+      /* Subir portada a Firebase */
+      const portadaInfo = await SubirPortada(imageUpload); // 'imagen' debe ser el archivo de imagen
+      console.log('Información de la imagen subida:', portadaInfo); 
+      /* Recupera url generada por Firebase */
+      const imageUrl = await recuperarUrl(portadaInfo);
+      console.log("URL de la imagen en Firebase:", imageUrl);
+
+      // Obtener la URL de la imagen subida   
+      const pathImagen = imageUrl;
+
+      // Agregar la URL de la imagen al objeto nuevoAlbum
+      nuevoAlbum.path_image = pathImagen;
+
+      console.log("Path recuperado de Firebase:", nuevoAlbum.path_image);
+      console.log(">>",nuevoAlbum)
+
+      // Enviar la solicitud POST al backend para crear el álbum
+      const response = await axios.post('http://localhost:4000/api/lista_canciones/', nuevoAlbum);
+
+      // Manejar la respuesta del backend
+      console.log("titulo lista:", titulo_lista);
+      console.log("id usuario:", id_usuarioArtista);
+      console.log("nombre usuario:", nombreArtista);
+      console.log("colaborador:",colaborador);
+      console.log("path de imagen:", path_image);
+
 
   const subirFirebase = async (archivo) => {
     try {
@@ -49,12 +103,21 @@ function CrearLista() {
       alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
       return;
     }
+  };
+  
+  
 
-    // validar formato del archivo
-    const archivos = document.getElementById('archivo');
-    if (archivos.files.length < 1) {
-      alert(`Seleccione un archivo.`);
-      return;
+  const resetForm = () => {
+    setTitulo_lista('');
+    //setId_usuario('');
+    setNombreArtista('');
+    setColaborador('');
+    setPath_image('');
+    // Limpiar el input de imagen
+    if (imagenInputRef.current) {
+      imagenInputRef.current.value = ''; 
+      imagenInputRef.current.nextElementSibling.innerText = 'Seleccionar imagen';
+
     }
     const archivo = archivos.files[0];
 
@@ -63,43 +126,93 @@ function CrearLista() {
       return;
     }
 
-    // validar tamanio
-    if (archivo.size > (5 * 1000 * 1000)) { // megas
-      alert(`Tamaño máximo de 5 MB excedido.`);
-      return;
+  const handleTitulo_listaChange = async (event) => {
+    const valor = event.target.value;
+    if (/^[a-zA-Z0-9\s]*$/.test(valor) && valor.length <= 20) {
+        setTitulo_lista(valor);
     }
+  };
+  
 
+  const esTituloCancionExistente = async (titulo) => {
     try {
-      // subir el archivo a Firebase
-      const resultado = await SubirPortada(archivo);
+      const response = await axios.get('http://localhost:4000/api/lista_canciones/');
+      const listaCanciones = response.data;
 
-      // subir en la db
-      if (!subirBD(campos, resultado)) {
-        // Si ocurre un error al subir en la base de datos
-        // eliminar el archivo subido en Firebase
-        deleteFile(resultado.filepath);
-        alert(`Error al cargar la canción. Intente más tarde.`);
-        return;
-      }
-
-      alert(`Lista creada exitosamente.`);
-      window.location.reload();
+      // importante atributo titulo_lista tiene que ser igual a la BD
+      return listaCanciones.some((cancion) => cancion.titulo_lista === titulo);
     } catch (error) {
-      console.error('Error:', error);
-      alert(`Error al subir o procesar el archivo.`);
+      alert('Error al obtener la lista de canciones:', error);
+      return false;
+    }
+  };
+  
+  const handleArtistaChange = (event) => {
+    const valor = event.target.value;
+    if (/^[a-zA-Z0-9\s]*$/.test(valor) && valor.length <= 20) {
+      setNombreArtista(valor);
     }
   };
 
-  const motrarNombreArchivo = () => {
-    const file = document.getElementById('archivo');
+  const ExisteArtista = async (nombreArtista) => {
+    try {
+      const response = await axios.get(`http://localhost:4000/api/usuarios/search_nom/ ?searchTerm=${nombreArtista}`);
+      const listaArtistas = response.data;
+      console.log(listaArtistas.nombre_usuario);
+      // importante atributo nombre_usuario tiene que ser igual a la BD
+      // Verifica si el nombre del artista existe
+      const artistaEncontrado = listaArtistas.find((artista) => artista.nombre_usuario === nombreArtista);
+      console.log(artistaEncontrado);
+      if (artistaEncontrado) {
+        // Si encontramos el artista, establecemos su ID en el estado
+        //setId_usuario(artistaEncontrado.id_usuario);
+        id_usuarioArtista = artistaEncontrado.id_usuario
+        console.log(">"+id_usuarioArtista)
+        
+        return true; // El artista existe
+      } else {
+        return false; // El artista no existe
+      }
+    } catch (error) {
+      console.error('Error al obtener la lista de usuarios:', error);
+      return false; // Hubo un error
+    }
+  }; 
 
-    file.addEventListener('change', () => {
-      if (file.files && file.files.length > 0) {
-        const nombreArchivo = file.files[0].name;
-        file.previousElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
-        file.previousElementSibling.style.display = 'block';
-        file.nextElementSibling.value = "X";
-        file.nextElementSibling.classList.add('active');
+  const handleColaboradorChange = (event) => {
+    const valor = event.target.value;
+    if (/^[a-zA-Z0-9\s]*$/.test(valor) && valor.length <= 20) {
+      setColaborador(valor);
+    }
+  };
+
+
+  /* Subir archivo a BD */
+  const handleSubirArchivo = () => {
+    // Accede a la referencia del input
+    const imagenInput = imagenInputRef.current;
+
+    imagenInput.addEventListener('change', () => {
+      const file = imagenInput.files[0];
+
+      if (file) {
+        const maxSize = 5 * 1024 * 1024; // 5 MB en bytes
+
+        if (file.size > maxSize) {
+          // Mostrar un mensaje de error
+          alert('El tamaño del archivo no puede exceder 5 MB.');
+          imagenInput.value = ''; // Limpiar el input para permitir seleccionar otro archivo
+          imagenInput.nextElementSibling.innerText = 'Seleccionar imagen';
+          return;
+        }
+
+        const nombreArchivo = file.name;
+        imagenInput.nextElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
+        setPath_image(nombreArchivo);
+        console.log(nombreArchivo);
+      } else {
+        imagenInput.nextElementSibling.innerText = 'Seleccionar imagen'; // Restaurar el texto original
+
       }
     });
     file.click();
@@ -140,9 +253,15 @@ function CrearLista() {
               <input autoFocus required
                 type="text"
                 className="validar"
-                name="titulo_lista"
-                placeholder="Escriba el título del álbum"
-                onChange={validar}
+
+                id="titulo_lista"
+                placeholder='Escriba el título del álbum'
+                autoFocus
+                value={titulo_lista}
+                onChange={handleTitulo_listaChange}
+                required
+                ref={titulo_listaInputRef} // Referencia al input del título
+
               />
             </div>
           </div>
@@ -150,25 +269,42 @@ function CrearLista() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="artista">Artista *</label>
-              <input required
-                type="text"
-                className="validar"
-                name="artista"
-                placeholder="Escriba el nombre del artista"
-                onChange={validar}
-              />
-            </div>
-          </div>
 
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="colaborador">Artista colaborador *</label>
+              {/* <select id="artista" value={id_usuario} onChange={handleArtistaChange}>
+                <option value="" disabled>Selecciona un artista</option>
+                {artistas.map((artista) => (
+                  <option key={artista.id} value={artista.id}>
+                    {artista.nombre}
+                  </option>
+                ))}
+              </select> */}
               <input
                 type="text"
                 className="validar"
-                name="colaborador"
-                placeholder="Escriba el nombre de el/los artista/s"
-                onChange={validarVarios}
+                id="artista"
+                placeholder='Escriba el nombre del artista'
+                autoFocus
+                value={nombreArtista}
+                onChange={handleArtistaChange}
+                required
+
+              />
+            </div>
+          </div>
+          <div className="campo">
+            <div className="input-box">
+
+              <label htmlFor="colaborador">Artistas colaboradores</label> {/* Artistas colaboradores */}
+              <input
+                type="text"
+                className="validar"
+                id="colaborador"
+                placeholder='Escriba el nombre del colaborador'
+                autoFocus
+                value={colaborador}
+                onChange={handleColaboradorChange}
+                required
+
               />
             </div>
           </div>
@@ -184,7 +320,12 @@ function CrearLista() {
                   name="archivo"
                   id="archivo"
                   accept=".png, .jpg, .jpeg"
-                  style={{ display: 'none' }}
+
+                  onChange={(event) => {
+                    setImageUpload(event.target.files[0]);
+                  }}
+                  ref={imagenInputRef}  
+
                 />
                 <input
                   type="button"
@@ -198,7 +339,7 @@ function CrearLista() {
 
           <div className="campo">
             <div className="btn-box">
-              <button type="submit" className="btn-next">
+              <button type="submit" className="btn-next" /* onClick={uploadFile} */>
                 Aceptar
               </button>
               <button className="btn-next">Cancelar</button>
