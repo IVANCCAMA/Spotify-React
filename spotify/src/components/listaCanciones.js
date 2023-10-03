@@ -51,7 +51,7 @@ function ListaCanciones() {
     <Link to={`/detalle-album/1`} key={canciones.id} className="album-item">
       <img src={songLogo} alt="Álbum" className="song-logo" />
       <div className="album-details">
-        <div className="song-title">Nombre de la {index+1} Cancion</div>
+        <div className="song-title">{canciones.nombre_cancion}</div>
         <div className="artist-name">{songs.artist}</div>
       </div>
     </Link> 
