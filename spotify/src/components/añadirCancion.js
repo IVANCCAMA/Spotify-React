@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from "react-router-dom";
 import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrl, recuperarUrlCancion } from '../firebase/config';
 import './form.css'
 
@@ -314,7 +315,7 @@ const validarForm = async (e) => {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo">Título de la canción *</label>
-              <input autoFocus required
+              <input autoFocus 
                 type="text"
                 className="validar"
                 id="titulo_Cancion"
@@ -329,7 +330,6 @@ const validarForm = async (e) => {
             <div className="input-box">
               <label htmlFor="artista">Nombre de artista *</label>
               <input
-                required
                 type="text"
                 className="validar"
                 id="artista"
@@ -343,7 +343,7 @@ const validarForm = async (e) => {
           <div className="campo">
       <div className="input-box">
         <label htmlFor="album">Álbum *</label>
-        <select name="album" id='selectList' required onChange={handleAlbumSelectChange}>
+        <select name="album" id='selectList'  onChange={handleAlbumSelectChange}>
           <option disabled hidden value="null">Seleccionar lista</option>
           <option disabled selected hidden value="null">Ingrese el nombre del artista</option>
           {listas.map((lista) => (
@@ -357,7 +357,7 @@ const validarForm = async (e) => {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="genero">Género musical *</label>
-              <select name="genero" required onChange={handleGeneroChange} >
+              <select name="genero"  onChange={handleGeneroChange} >
                 <option value="">Seleccionar género</option>
                 <option value="Pop">Pop</option>
                 <option value="id">Rock and Roll</option>
@@ -404,9 +404,10 @@ const validarForm = async (e) => {
           <div className="campo">
             <div className="btn-box">
               <button type="submit" className="btn-next">Aceptar</button>
-              <button type="button" className="btn-next">Cancelar</button>
+              <Link to="/Inicio" className="custom-link">Cancelar</Link>
             </div>
           </div>
+          
         </div>
       </form>
     </div>
