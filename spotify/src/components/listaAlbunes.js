@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link,Routes, Route } from "react-router-dom";
 import './listaAlbunes.css';
-import groupLogo from '../logos/group.png';
-import axios from "axios";
+ import axios from "axios";
+import ListaCanciones from './listaCanciones';
 
 
 function ListaAlbumes() {
@@ -29,12 +29,15 @@ return (
         <img
           src={album.path_image}
           alt="Álbum"
-          className="album-logo album-image" // Clase album-image para la imagen
+          className="album-logo album-image"
         />
         <div className="album-details">
           <div className="album-title">{album.titulo_lista}</div>
           <div className="artist-name">{album.colaborador}</div>
-          <div className="album-songs">{album.cantidad_canciones}</div>
+          <div className="album-songs">{album.cantidad_canciones} canciones</div>
+          <Routes>
+            <Route path={`/detalle-album/${album.id_lista}`} element={<ListaCanciones />} />
+          </Routes>
         </div>
       </Link>
     ))}
