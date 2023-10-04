@@ -11,7 +11,7 @@ function ListaAlbumes() {
   useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/lista_canciones/');
+      const response = await axios.get('https://backreactmusic.onrender.com/api/lista_canciones/');
       const listaCanciones = response.data;
       setAlbumes(listaCanciones);
     } catch (error) {
@@ -30,11 +30,11 @@ return (
         <img
           src={album.path_image}
           alt="Álbum"
-          className="album-logo album-image" // Clase album-image para la imagen
+          className="album-image" // Clase album-image para la imagen
         />
         <div className="album-details">
           <div className="album-title">{album.titulo_lista}</div>
-          <div className="artist-name">{album.colaborador}</div>
+          <div className="artist-name">{album.nombre_usuario}</div>
           <div className="album-songs">{album.cantidad_canciones} canciones</div>
         </div>
       </Link>

@@ -9002,6 +9002,7 @@ node_modules/uuid/dist/esm-node/v5.js
 node_modules/uuid/dist/esm-node/v35.js
 node_modules/uuid/dist/esm-node/validate.js
 node_modules/uuid/dist/esm-node/version.js
+<<<<<<< HEAD
 node_modules/asynckit/bench.js
 node_modules/asynckit/index.js
 node_modules/asynckit/LICENSE
@@ -9013,6 +9014,51 @@ node_modules/asynckit/serialOrdered.js
 node_modules/asynckit/stream.js
 node_modules/asynckit/lib/abort.js
 node_modules/asynckit/lib/async.js
+=======
+package-lock.json
+package-lock.json
+package-lock.json
+package-lock.json
+package-lock.json
+package-lock.json
+package-lock.json
+package-lock.json
+package-lock.json
+package-lock.json
+node_modules/asynckit/index.js
+package.json
+node_modules/asynckit/bench.js
+node_modules/asynckit/LICENSE
+node_modules/asynckit/serial.js
+node_modules/asynckit/parallel.js
+node_modules/asynckit/README.md
+node_modules/asynckit/stream.js
+node_modules/asynckit/LICENSE
+node_modules/asynckit/lib/async.js
+node_modules/asynckit/README.md
+node_modules/asynckit/serial.js
+node_modules/asynckit/stream.js
+package-lock.json
+package.json
+node_modules/asynckit/serialOrdered.js
+node_modules/asynckit/lib/abort.js
+node_modules/asynckit/lib/defer.js
+node_modules/asynckit/lib/iterate.js
+node_modules/asynckit/lib/readable_asynckit.js
+node_modules/asynckit/lib/readable_parallel.js
+node_modules/asynckit/lib/readable_serial_ordered.js
+node_modules/asynckit/lib/readable_serial.js
+node_modules/asynckit/lib/state.js
+node_modules/asynckit/lib/streamify.js
+node_modules/asynckit/lib/terminator.js
+node_modules/axios/CHANGELOG.md
+node_modules/axios/index.d.cts
+node_modules/axios/index.d.ts
+package-lock.json
+package.json
+node_modules/asynckit/serialOrdered.js
+node_modules/asynckit/lib/abort.js
+>>>>>>> 754c61721ccf6f89587036aaf4db3806d9c75f8c
 node_modules/asynckit/lib/defer.js
 node_modules/asynckit/lib/iterate.js
 node_modules/asynckit/lib/readable_asynckit.js
@@ -9028,7 +9074,10 @@ node_modules/axios/index.d.ts
 node_modules/axios/index.js
 node_modules/axios/LICENSE
 node_modules/axios/MIGRATION_GUIDE.md
+<<<<<<< HEAD
 node_modules/axios/package.json
+=======
+>>>>>>> 754c61721ccf6f89587036aaf4db3806d9c75f8c
 node_modules/axios/README.md
 node_modules/axios/SECURITY.md
 node_modules/axios/dist/axios.js
@@ -9103,14 +9152,20 @@ node_modules/axios/lib/platform/node/index.js
 node_modules/axios/lib/platform/node/classes/FormData.js
 node_modules/axios/lib/platform/node/classes/URLSearchParams.js
 node_modules/combined-stream/License
+<<<<<<< HEAD
 node_modules/combined-stream/package.json
+=======
+>>>>>>> 754c61721ccf6f89587036aaf4db3806d9c75f8c
 node_modules/combined-stream/Readme.md
 node_modules/combined-stream/yarn.lock
 node_modules/combined-stream/lib/combined_stream.js
 node_modules/delayed-stream/.npmignore
 node_modules/delayed-stream/License
 node_modules/delayed-stream/Makefile
+<<<<<<< HEAD
 node_modules/delayed-stream/package.json
+=======
+>>>>>>> 754c61721ccf6f89587036aaf4db3806d9c75f8c
 node_modules/delayed-stream/Readme.md
 node_modules/delayed-stream/lib/delayed_stream.js
 node_modules/follow-redirects/debug.js
@@ -9118,11 +9173,17 @@ node_modules/follow-redirects/http.js
 node_modules/follow-redirects/https.js
 node_modules/follow-redirects/index.js
 node_modules/follow-redirects/LICENSE
+<<<<<<< HEAD
 node_modules/follow-redirects/package.json
 node_modules/follow-redirects/README.md
 node_modules/form-data/index.d.ts
 node_modules/form-data/License
 node_modules/form-data/package.json
+=======
+node_modules/follow-redirects/README.md
+node_modules/form-data/index.d.ts
+node_modules/form-data/License
+>>>>>>> 754c61721ccf6f89587036aaf4db3806d9c75f8c
 node_modules/form-data/Readme.md
 node_modules/form-data/README.md.bak
 node_modules/form-data/lib/browser.js
@@ -9132,17 +9193,36 @@ node_modules/mime-db/db.json
 node_modules/mime-db/HISTORY.md
 node_modules/mime-db/index.js
 node_modules/mime-db/LICENSE
+<<<<<<< HEAD
 node_modules/mime-db/package.json
+=======
+>>>>>>> 754c61721ccf6f89587036aaf4db3806d9c75f8c
 node_modules/mime-db/README.md
 node_modules/mime-types/HISTORY.md
 node_modules/mime-types/index.js
 node_modules/mime-types/LICENSE
+<<<<<<< HEAD
 node_modules/mime-types/package.json
+=======
+>>>>>>> 754c61721ccf6f89587036aaf4db3806d9c75f8c
 node_modules/mime-types/README.md
 node_modules/proxy-from-env/.eslintrc
 node_modules/proxy-from-env/.travis.yml
 node_modules/proxy-from-env/index.js
 node_modules/proxy-from-env/LICENSE
+<<<<<<< HEAD
 node_modules/proxy-from-env/package.json
 node_modules/proxy-from-env/README.md
 node_modules/proxy-from-env/test.js
+=======
+node_modules/proxy-from-env/README.md
+node_modules/proxy-from-env/test.js
+spotify/src/components/añadirCancion.js
+package-lock.json
+package.json
+package-lock.json
+package.json
+package-lock.json
+package.json
+.gitignore
+>>>>>>> 754c61721ccf6f89587036aaf4db3806d9c75f8c

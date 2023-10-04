@@ -9,7 +9,7 @@ function CrearLista() {
 
   const esTituloCancionExistente = async (titulo) => {
     try {
-      const response = await axios.get('http://localhost:4000/api/lista_canciones/');
+      const response = await axios.get('https://backreactmusic.onrender.com/api/lista_canciones/');
       const listaCanciones = response.data;
 
       // importante atributo titulo_lista tiene que ser igual a la BD
@@ -22,7 +22,7 @@ function CrearLista() {
 
   const ExisteArtista = async (nombreArtista) => {
     try {
-      const response = await axios.get(`http://localhost:4000/api/usuarios/search_nom/ ?searchTerm=${nombreArtista}`);
+      const response = await axios.get(`https://backreactmusic.onrender.com/api/usuarios/search_nom/ ?searchTerm=${nombreArtista}`);
       console.log(response.data[0].id_usuario)
       if(response.status ==200){  return response.data[0].id_usuario;}
     } catch (error) {
@@ -85,7 +85,7 @@ function CrearLista() {
   const subirBD = async (nuevoAlbum) => {
     try {
       console.log(nuevoAlbum);
-      const response = await axios.post('http://localhost:4000/api/lista_canciones/createlist', nuevoAlbum);
+      const response = await axios.post('https://backreactmusic.onrender.com/api/lista_canciones/createlist', nuevoAlbum);
       console.log('Álbum creado exitosamente:', response.data);
       return true;
     } catch (error) {
