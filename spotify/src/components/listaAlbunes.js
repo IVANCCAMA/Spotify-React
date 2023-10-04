@@ -11,7 +11,7 @@ function ListaAlbumes() {
   useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:4000/api/lista_canciones/');
+      const response = await axios.get('https://backreactmusic.onrender.com/api/lista_canciones/');
       const listaCanciones = response.data;
       setAlbumes(listaCanciones);
     } catch (error) {

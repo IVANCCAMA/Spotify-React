@@ -15,7 +15,7 @@ function ListaCanciones() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responseCanciones = await axios.get(`http://localhost:4000/api/canciones/completo_lista/${id_lista}`);
+        const responseCanciones = await axios.get(`https://backreactmusic.onrender.com/api/canciones/completo_lista/${id_lista}`);
         const listaCancionesAlbum = responseCanciones.data;
         console.log("Listas de canciones recuperadas:", listaCancionesAlbum);
         setListaCanciones(listaCancionesAlbum);
@@ -29,7 +29,7 @@ function ListaCanciones() {
   useEffect(() => {
     const fetchAlbum = async () => {
       try {
-        const responseAlbum = await axios.get(`http://localhost:4000/api/lista_canciones/${id_lista}`);
+        const responseAlbum = await axios.get(`https://backreactmusic.onrender.com/api/lista_canciones/${id_lista}`);
         const infoAlbum = responseAlbum.data;
         console.log("INFORMACION ALBUM RECUPERADA:", infoAlbum);
         setinfoAlbum(infoAlbum);
