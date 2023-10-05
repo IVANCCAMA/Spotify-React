@@ -6,7 +6,7 @@ import './form.css';
 
 function CrearLista() {
   const database = 'https://backreactmusic.onrender.com/api';
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState([]);
 
   const esTituloCancionExistente = async (titulo) => {
     try {
@@ -26,13 +26,12 @@ function CrearLista() {
     try {
       const query = `/usuarios/search_nom/ ?searchTerm=${nombreArtista}`;
       const response = await axios.get(`${database}${query}`);
-      console.log(response.data[0].id_usuario)
-      if(response.status ==200){  return response.data[0].id_usuario;}
+      if (response.status == 200) { return response.data[0].id_usuario; }
     } catch (error) {
       console.error('Error al obtener la lista de usuarios:', error);
       return false; // Hubo un error
     }
-  }; 
+  };
 
   const validarCampos = async (nuevoAlbum) => {
     const tituloExistente = await esTituloCancionExistente(nuevoAlbum.titulo_lista);
@@ -49,14 +48,14 @@ function CrearLista() {
     if (!artistaExistente) {
       alert('El artista no existe, intente con otro.');
       return false;
-    } 
-    if(!/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.titulo_lista) // vericamos que esten con caracteres alfanumericos
+    }
+    if (!/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.titulo_lista) // vericamos que esten con caracteres alfanumericos
       | !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.nombre_usuario)
       | !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.colaborador)
-      | nuevoAlbum.colaborador.length>20| nuevoAlbum.colaborador.length==0
-      | nuevoAlbum.titulo_lista.length>20| nuevoAlbum.titulo_lista.length==0
-      | nuevoAlbum.nombre_usuario.length>20| nuevoAlbum.nombre_usuario.length==0
-    ){
+      | nuevoAlbum.colaborador.length > 20 | nuevoAlbum.colaborador.length == 0
+      | nuevoAlbum.titulo_lista.length > 20 | nuevoAlbum.titulo_lista.length == 0
+      | nuevoAlbum.nombre_usuario.length > 20 | nuevoAlbum.nombre_usuario.length == 0
+    ) {
       return false;
     }
 
@@ -78,7 +77,6 @@ function CrearLista() {
     try {
       const portadaInfo = await SubirPortada(archivo);
       const imageUrl = await recuperarUrlPortada(portadaInfo);
-      console.log(imageUrl);
       return imageUrl;
     } catch (error) {
       console.error('Error:', error);
@@ -100,40 +98,37 @@ function CrearLista() {
   const validarForm = async (e) => {
     e.preventDefault();
 
-    // validar campos
     const nuevoAlbum = {
       titulo_lista: document.getElementById("titulo_lista").value,
       nombre_usuario: document.getElementById("artista").value,
       colaborador: document.getElementById("colaborador").value
     };
-    
+
     if (!await validarCampos(nuevoAlbum)) {
       alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
       return;
     }
 
-    // validar formato del archivo
     const archivos = document.getElementById('archivo');
     if (archivos.files.length < 1) {
       alert(`Seleccione un archivo.`);
       return;
     }
     const archivo = archivos.files[0];
-    console.log(archivos)
     if (!await validarFormatoArchivo(archivo)) {
       alert(`Formato de imagen no válido.`);
       return;
     }
 
     // validar tamanio
-    if (archivo.size > (5 *1024*1024)) { // megas
+    if (archivo.size > (5 * 1024 * 1024)) { // megas
       alert(`Tamaño máximo de 5 MB excedido.`);
       return;
     }
 
     try {
       // subir el archivo a Firebase
-      const resultado = await subirFirebase(archivo); 
+      const resultado = await subirFirebase(archivo);
       nuevoAlbum.path_image = resultado;
 
       // subir en la db
@@ -144,7 +139,7 @@ function CrearLista() {
         alert(`Error al cargar la canción. Intente más tarde.`);
         return;
       }
-      
+
       await alert(`Lista creada exitosamente.`);
       window.location.replace("/inicio");
       // window.location.reload();
@@ -153,40 +148,37 @@ function CrearLista() {
       alert(`Error al subir o procesar el archivo.`);
     }
   };
-  const motrarNombreArchivo = () => {
+
+  const mostrarNombreArchivo = async () => {
     const file = document.getElementById('archivo');
 
-    file.addEventListener('change', () => {
-      if (file.files && file.files.length > 0) {
-        const nombreArchivo = file.files[0].name;
-        file.previousElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
-        file.previousElementSibling.style.display = 'block';
-        file.nextElementSibling.value = "X";
-        file.nextElementSibling.classList.add('active');
-      }
-    });
-    file.click();
-  }
+    if (file.files && file.files.length > 0) {
+      file.previousElementSibling.innerText = file.files[0].name;
+      file.previousElementSibling.style.display = 'block';
+      file.nextElementSibling.value = "X";
+      file.nextElementSibling.classList.add('active');
+    }
+  };
 
   const validar = (event) => {
     const valor = event.target.value;
     if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
       event.target.classList.add('active');
     } else if (valor.length > 20) {
-      event.target.value = valor.slice(0, 20);
       event.target.classList.add('active');
       alert(`Nombre debe tener entre 1 a 20 caracteres.`);
+      event.target.value = valor.slice(0, 20);
       //event.target.classList.remove('active');
     } else {
       event.target.classList.remove('active');
     }
-  }
+  };
 
   const validarVarios = (event) => {
     const valor = event.target.value;
     if (!/^[a-zA-Z0-9\s,]*$/.test(valor)) {
       event.target.classList.add('active');
-    }else if (/^[a-zA-Z0-9\s]*$/.test(valor)) {
+    } else if (/^[a-zA-Z0-9\s]*$/.test(valor)) {
       event.target.classList.remove('active');
     } else if (/,+[\s]*$/.test(valor)) {
       event.target.classList.add('active');
@@ -194,7 +186,6 @@ function CrearLista() {
       event.target.classList.remove('active');
     } else {
       event.target.classList.add('active');
-      
     }
     if (valor.length > 20) {
       event.target.value = valor.slice(0, 20);
@@ -202,7 +193,7 @@ function CrearLista() {
       alert(`Nombre debe tener entre 1 a 20 caracteres.`);
       //event.target.classList.remove('active');
     }
-  }
+  };
 
   return (
     <div className="modal-form">
@@ -262,11 +253,21 @@ function CrearLista() {
                   id="archivo"
                   accept=".png, .jpg, .jpeg"
                   style={{ display: 'none' }}
+                  onChange={async (e) => {
+                    const archivos = Array.from(e.target.files);
+                    const archivosFiltrados = archivos.filter(validarFormatoArchivo);
+
+                    if (archivosFiltrados.length > 0) {
+                      await setFile(archivosFiltrados);
+                      mostrarNombreArchivo();
+                    } else { await setFile(); }
+                  }
+                  }
                 />
                 <input
                   type="button"
                   className="btn-subir bg-white"
-                  onClick={motrarNombreArchivo}
+                  onClick={() => { document.getElementById('archivo').click(); }}
                   value="Seleccionar archivo"
                 />
               </div>

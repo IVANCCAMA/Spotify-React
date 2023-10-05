@@ -5,10 +5,10 @@ import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from
 import './form.css'
 
 function AñadirCancion() {
-  const generos = [ 'Pop', 'Rock and Roll', 'Disco', 'Country', 'Techno', 
-                    'Reggae', 'Salsa', 'Flamenco', 'Ranchera', 'Hip hop/Rap', 
-                    'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica' ];
-  /* const [file, setFile] = useState(null); */
+  const generos = ['Pop', 'Rock and Roll', 'Disco', 'Country', 'Techno',
+    'Reggae', 'Salsa', 'Flamenco', 'Ranchera', 'Hip hop/Rap',
+    'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica'];
+  const [file, setFile] = useState(null);
   const [listas, setListas] = useState([]);
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [idAlbum, setidAlbum] = useState(null);
@@ -82,8 +82,6 @@ function AñadirCancion() {
   const validarForm = async (e) => {
     e.preventDefault();
 
-    // Obtener valores de los campos
-
     const nuevaCancion = {
       id_lista: idAlbum,
       duracion: "",
@@ -93,14 +91,13 @@ function AñadirCancion() {
       genero: generoSeleccionado
     };
 
+    if (!validarCampos(nuevaCancion)) {
+      alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
+      return;
+    }
+
     //const generoSeleccionado = document.getElementById("generoSeleccionado").value;
     const archivos = document.getElementById('archivo').files;
-
-    /* // Validar campos
-    if (!idLista || !tituloCancion || !nombreArtista || archivos.length === 0) {
-      alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
-      return;idLista
-    } */
 
     // Validar formato del archivo
     if (archivos.length < 1) { return; }
@@ -109,7 +106,7 @@ function AñadirCancion() {
       alert(`Formato de archivo no válido.`);
       return;
     }
- 
+
     // Validar tamaño del archivo (15 MB)
     const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
     if (archivo.size > maxSize) {
@@ -172,6 +169,8 @@ function AñadirCancion() {
     } else if (valor.length > 20) {
       event.target.classList.add('active');
       alert(`Nombre debe tener entre 1 a 20 caracteres.`);
+      event.target.value = valor.slice(0, 20);
+      //event.target.classList.remove('active');
     } else {
       event.target.classList.remove('active');
     }
@@ -319,11 +318,11 @@ function AñadirCancion() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo">Título de la canción *</label>
-              <input autoFocus
+              <input autoFocus required
                 type="text"
                 className="validar"
                 id="titulo_Cancion"
-                name="titulo"
+                name="titulo_Cancion"
                 placeholder="Escriba el título de la canción"
                 onChange={validar}
               />
@@ -333,13 +332,13 @@ function AñadirCancion() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="artista">Nombre de artista *</label>
-              <input
+              <input required
                 type="text"
                 className="validar"
                 id="artista"
                 name="artista"
                 placeholder="Escriba el nombre del artista"
-                onChange={handleArtistaChange}
+                onChange={validar}
               />
             </div>
           </div>
