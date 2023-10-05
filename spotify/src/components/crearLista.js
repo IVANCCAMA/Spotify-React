@@ -31,21 +31,20 @@ function CrearLista() {
       console.error('Error al obtener la lista de usuarios:', error);
       return false; // Hubo un error
     }
-  }; 
+  };
 
-  const quitarEspacios= async(titulo)=>{
-
-    
-    titulo=titulo.trim();
-    while (titulo.search("  ")!=-1){
-      titulo=titulo.replace("  "," ");
+  const quitarEspacios = (titulo) => {
+    titulo = titulo.trim();
+    while (titulo.search("  ") != -1) {
+      titulo = titulo.replace("  ", " ");
     }
     return titulo;
-  }
-  const validarCampos = async (nuevoAlbum) => {
-    nuevoAlbum.titulo_lista=quitarEspacios(nuevoAlbum.titulo_listaTem);
+  };
 
-    console.log(nuevoAlbum.titulo_lista)
+  const validarCampos = async (nuevoAlbum) => {
+    nuevoAlbum.titulo_lista = quitarEspacios(nuevoAlbum.titulo_listaTem);
+
+    console.log(nuevoAlbum)
 
     const tituloExistente = await esTituloCancionExistente(nuevoAlbum.titulo_lista);
 
@@ -62,19 +61,19 @@ function CrearLista() {
       alert('El artista no existe, intente con otro.');
       return false;
     }
-    if (!/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.titulo_lista) // vericamos que esten con caracteres alfanumericos
-      | !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.nombre_usuario)
-      | !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.colaborador)
-      | nuevoAlbum.colaborador.length > 20 | nuevoAlbum.colaborador.length == 0
-      | nuevoAlbum.titulo_lista.length > 20 | nuevoAlbum.titulo_lista.length == 0
-      | nuevoAlbum.nombre_usuario.length > 20 | nuevoAlbum.nombre_usuario.length == 0
+    if (!/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.titulo_lista)
+      || !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.nombre_usuario)
+      || !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.colaborador)
+      || nuevoAlbum.colaborador.length > 20 || nuevoAlbum.colaborador.length < 1
+      || nuevoAlbum.titulo_lista.length > 20 || nuevoAlbum.titulo_lista.length < 1
+      || nuevoAlbum.nombre_usuario.length > 20 || nuevoAlbum.nombre_usuario.length < 1
     ) {
       return false;
     }
 
     nuevoAlbum.id_usuarioArtista = artistaExistente;
     return true;
-  }
+  };
 
   const validarFormatoArchivo = async (archivo) => {
     const formatosPermitidos = ["jpeg", "png"]; // jpeg === jpg
@@ -94,7 +93,7 @@ function CrearLista() {
     } catch (error) {
       console.error('Error:', error);
     }
-  }
+  };
 
   const subirBD = async (nuevoAlbum) => {
     try {
@@ -107,7 +106,8 @@ function CrearLista() {
       console.error('Error al obtener la lista de usuarios:', error);
       return false; // Hubo un error
     }
-  }
+  };
+  
   const validarForm = async (e) => {
     e.preventDefault();
 

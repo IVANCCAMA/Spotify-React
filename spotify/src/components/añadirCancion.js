@@ -5,10 +5,11 @@ import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from
 import './form.css'
 
 function AñadirCancion() {
+  const database = 'https://spfisbackend-production.up.railway.app/api';
   const generos = ['Pop', 'Rock and Roll', 'Disco', 'Country', 'Techno',
     'Reggae', 'Salsa', 'Flamenco', 'Ranchera', 'Hip hop/Rap',
     'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica'];
-  const [file, setFile] = useState(null);
+  // const [file, setFile] = useState(null);
   const [listas, setListas] = useState([]);
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [idAlbum, setidAlbum] = useState(null);
@@ -29,7 +30,8 @@ function AñadirCancion() {
 
   const esTituloCancionExistente = async (titulo) => {
     try {
-      const response = await axios.get('https://spfisbackend-production.up.railway.app/api/canciones/');
+      const query = `/canciones/`;
+      const response = await axios.get(`${database}${query}`);
       const canciones = response.data;
 
       console.log("objeto canciones>>", canciones);
@@ -69,7 +71,8 @@ function AñadirCancion() {
     try {
       console.log("Datos recuperados:>>>>>> ", nuevaCancion);
 
-      const response = await axios.post('https://spfisbackend-production.up.railway.app/api/canciones/', nuevaCancion);
+      const query = `/canciones/`;
+      const response = await axios.post(`${database}${query}`, nuevaCancion);
       console.log('Canción creado exitosamente:', response.data);
       return true;
     } catch (error) {
@@ -147,19 +150,16 @@ function AñadirCancion() {
   };
 
 
-  const motrarNombreArchivo = () => {
+  const mostrarNombreArchivo = () => {
     const file = document.getElementById('archivo');
 
-    file.addEventListener('change', () => {
-      if (file.files && file.files.length > 0) {
-        const nombreArchivo = file.files[0].name;
-        file.previousElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
-        file.previousElementSibling.style.display = 'block';
-        file.nextElementSibling.value = "X";
-        file.nextElementSibling.classList.add('active');
-      }
-    });
-    file.click();
+    if (file.files && file.files.length > 0) {
+      const nombreArchivo = file.files[0].name;
+      file.previousElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
+      file.previousElementSibling.style.display = 'block';
+      file.nextElementSibling.value = "X";
+      file.nextElementSibling.classList.add('active');
+    }
   };
 
   const validar = (event) => {
@@ -189,37 +189,31 @@ function AñadirCancion() {
         // Obtén la lista del artista desde la base de datos
         idArtistaEncontrado = await ExisteArtista(nombreArtista);
 
-        console.log("nombre recupearadod>>><", nombreArtista);
-        console.log("id de artista encontrado>>:", idArtistaEncontrado);
         if (idArtistaEncontrado == null) {
           alert('El artista no existe, intente con otro.');
           return;
         }
 
         const listaAlbumes = await listaAlbumesArtista(idArtistaEncontrado);
-        console.log("Lista de Albumes de usuario>>: ", listaAlbumes)
 
-        // Usa la información del artista para establecer las listas
-        setListas(listaAlbumes);
-        console.log("Listas Albunes seteadas>>: ", listas)
-
-
-        // También puedes establecer otra información del artista si es necesario
-        // setIdUsuario(infoArtista.id_usuario);
-
-        selectElement.selectedIndex = 0;
+        await setListas(listaAlbumes);
       } catch (error) {
+        await setListas([]);
         console.error('Error al verificar el artista:', error);
       }
+      mostrarNombreArchivo();
+      document.getElementById('selectList').selectedIndex = 0;
     } else {
-      setListas([]);
-      selectElement.selectedIndex = 1;
+      await setListas([]);
+      mostrarNombreArchivo();
+      document.getElementById('selectList').selectedIndex = 1;
     }
   };
 
   const listaAlbumesArtista = async (id_usuarioArtistaL) => {
     try {
-      const response = await axios.get('https://spfisbackend-production.up.railway.app/api/lista_canciones/');
+      const query = `/lista_canciones/`;
+      const response = await axios.get(`${database}${query}`);
       const listaCompleta = response.data;
 
       // Filtrar álbumes por el id_usuario
@@ -228,14 +222,15 @@ function AñadirCancion() {
       return albumesUsuario;
     } catch (error) {
       console.error('Error al obtener la lista de álbumes:', error);
-      throw error; // Lanza el error para que pueda ser manejado por el código que llama a esta función
+      throw error;
     }
   };
 
 
   const ExisteArtista = async (nombreArtista) => {
     try {
-      const response = await axios.get(`https://spfisbackend-production.up.railway.app/api/usuarios/search_nom/ ?searchTerm=${nombreArtista}`);
+      const query = `/usuarios/search_nom/ ?searchTerm=${nombreArtista}`;
+      const response = await axios.get(`${database}${query}`);
 
       const artistas = response.data;
 
@@ -264,7 +259,7 @@ function AñadirCancion() {
 
     // Establecer un nuevo timeout para llamar a cargarListas después de un momento de inactividad
     timeoutRef.current = setTimeout(() => {
-      cargarListas(nombreArtista);
+      cargarListas();
     }, 2000); // Espera 500 milisegundos (0.5 segundos) antes de llamar a cargarListas
   };
 
@@ -292,7 +287,8 @@ function AñadirCancion() {
 
   const idArtistaAlbum = async (nombreAlbum) => {
     try {
-      const response = await axios.get(`https://spfisbackend-production.up.railway.app/api/lista_canciones/`);
+      const query = `/lista_canciones/`;
+      const response = await axios.get(`${database}${query}`);
 
       const listasAlbumes = response.data;
 
@@ -338,7 +334,15 @@ function AñadirCancion() {
                 id="artista"
                 name="artista"
                 placeholder="Escriba el nombre del artista"
-                onChange={validar}
+                onChange={(e) => {
+                  validar(e);
+                  if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current);
+                  }
+                  timeoutRef.current = setTimeout(() => {
+                    cargarListas();
+                  }, 2000);
+                }}
               />
             </div>
           </div>
@@ -346,7 +350,7 @@ function AñadirCancion() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="album">Álbum *</label>
-              <select name="album" id='selectList' onChange={handleAlbumSelectChange}>
+              <select name="album" id='selectList'>
                 <option disabled hidden value="null">Seleccionar lista</option>
                 <option disabled selected hidden value="null">Ingrese el nombre del artista</option>
                 {listas.map((lista) => (
@@ -359,8 +363,8 @@ function AñadirCancion() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="genero">Género musical *</label>
-              <select name="genero" onChange={handleGeneroChange} >
-                <option value="">Seleccionar género</option>
+              <select name="genero" required>
+                <option disabled selected hidden value="null" >Seleccionar género</option>
                 {generos.map((genero, index) => (
                   <option key={index} value={genero}>{genero}</option>
                 ))}
@@ -373,18 +377,19 @@ function AñadirCancion() {
             <div className="input-box">
               <label htmlFor="archivo">Canción</label>
               <div className="seleccionarArchivo">
-                <span className="nombreArchivo" id="nombreArchivo"></span> {/* Mostrar nombre del archivo */}
+                <span className="nombreArchivo" id="nombreArchivo"></span>
                 <input
                   type="file"
                   name="archivo"
                   id="archivo"
                   accept=".mp3, audio/wav"
                   style={{ display: 'none' }}
+                  onChange={mostrarNombreArchivo}
                 />
                 <input
                   type="button"
                   className="btn-subir bg-white"
-                  onClick={motrarNombreArchivo}
+                  onClick={() => { document.getElementById('archivo').click(); }}
                   value="Seleccionar archivo"
                 />
               </div>
