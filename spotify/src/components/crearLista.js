@@ -7,6 +7,7 @@ import './form.css';
 function CrearLista() {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const [file, setFile] = useState(null);
+  const [botonHabilitado, setBotonHabilitado] = useState(true);
 
   const esTituloCancionExistente = async (titulo) => {
     try {
@@ -33,20 +34,8 @@ function CrearLista() {
       return false; // Hubo un error
     }
   }; 
-  const quitarEspacios= async(titulo)=>{
 
-    
-    titulo=titulo.trim();
-    while (titulo.search("  ")!=-1){
-      titulo=titulo.replace("  "," ");
-    }
-    return titulo;
-  }
   const validarCampos = async (nuevoAlbum) => {
-    nuevoAlbum.titulo_lista=quitarEspacios(nuevoAlbum.titulo_listaTem);
-
-    console.log(nuevoAlbum.titulo_lista)
-
     const tituloExistente = await esTituloCancionExistente(nuevoAlbum.titulo_lista);
 
     if (tituloExistente) {
@@ -110,11 +99,13 @@ function CrearLista() {
     }
   }
   const validarForm = async (e) => {
-    e.preventDefault();
+    // Deshabilitar el botón
+    setBotonHabilitado(false);
 
-    // validar campos
+    try {
+    e.preventDefault();
     const nuevoAlbum = {
-      titulo_listaTem: document.getElementById("titulo_lista").value,
+      titulo_lista: document.getElementById("titulo_lista").value,
       nombre_usuario: document.getElementById("artista").value,
       colaborador: document.getElementById("colaborador").value
     };
@@ -164,6 +155,13 @@ function CrearLista() {
       console.error('Error:', error);
       alert(`Error al subir o procesar el archivo.`);
     }
+    } catch (error) {
+      console.error('Error al enviar la solicitud:', error);
+    } finally {
+      // Una vez que se complete, habilitar el botón nuevamente
+      setBotonHabilitado(true);
+    }
+    
   };
   const motrarNombreArchivo = () => {
     const file = document.getElementById('archivo');
@@ -287,7 +285,7 @@ function CrearLista() {
 
           <div className="campo">
             <div className="btn-box">
-              <button type="submit" className="btn-next">
+              <button type="submit" className="btn-next" disabled={!botonHabilitado}>
                 Aceptar
               </button>
               <Link to="/Albumes"  ><button to="/Albumes" className="custom-link">Cancelar</button></Link>
