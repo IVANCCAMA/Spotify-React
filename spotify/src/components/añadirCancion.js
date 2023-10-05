@@ -14,10 +14,11 @@ function AñadirCancion() {
   const [idAlbum, setidAlbum] = useState(null);
   const [generoSeleccionado, setGeneroSeleccionado] = useState('');
   const timeoutRef = useRef(null);
+  const [botonHabilitado, setBotonHabilitado] = useState(true);
   let idArtistaEncontrado;
 
   const validarCampos = async (nuevaCancion) => {
-    const tituloExistente = await esTituloCancionExistente(nuevaCancion.titulo_lista);
+    const tituloExistente = await esTituloCancionExistente(nuevaCancion.nombre_cancion);
 
     if (tituloExistente) {
       // MODAL
@@ -80,7 +81,10 @@ function AñadirCancion() {
 
   /* VALIDAR FORM PAR ASUBIR A BD */
   const validarForm = async (e) => {
-    e.preventDefault();
+    // Deshabilitar el botón
+    setBotonHabilitado(false);
+    try {
+      e.preventDefault();
 
     // Obtener valores de los campos
 
@@ -101,6 +105,11 @@ function AñadirCancion() {
       alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
       return;idLista
     } */
+
+    if (!await validarCampos(nuevaCancion)) {
+      alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
+      return;
+    }
 
     // Validar formato del archivo
     if (archivos.length < 1) { return; }
@@ -147,6 +156,13 @@ function AñadirCancion() {
       console.error('Error:', error);
       alert(`Error al subir o procesar el archivo.`);
     }
+    } catch (error) {
+      console.error('Error al enviar la solicitud:', error);
+    } finally {
+      // Una vez que se complete, habilitar el botón nuevamente
+      setBotonHabilitado(true);
+    }
+    
   };
 
 
@@ -394,7 +410,7 @@ function AñadirCancion() {
 
           <div className="campo">
             <div className="btn-box">
-              <button type="submit" className="btn-next">Aceptar</button>
+              <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
               <Link to="/Inicio" className="custom-link">Cancelar</Link>
             </div>
           </div>
