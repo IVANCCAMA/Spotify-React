@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from "react-router-dom";
-import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrl, recuperarUrlCancion } from '../firebase/config';
+import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import './form.css'
 
 function AñadirCancion() {
@@ -109,7 +109,7 @@ function AñadirCancion() {
       alert(`Formato de archivo no válido.`);
       return;
     }
-
+ 
     // Validar tamaño del archivo (15 MB)
     const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
     if (archivo.size > maxSize) {
