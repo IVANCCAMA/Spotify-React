@@ -33,9 +33,9 @@ function CrearLista() {
       return false; // Hubo un error
     }
   }; 
-  const quitarEspacios= async(nuevoAlbum)=>{
-    const titulo=nuevoAlbum.titulo_lista;
-    //remplazar 2 veces 
+  const quitarEspacios= async(titulo)=>{
+
+    
     titulo=titulo.trim();
     while (titulo.search("  ")!=-1){
       titulo=titulo.replace("  "," ");
@@ -43,8 +43,7 @@ function CrearLista() {
     return titulo;
   }
   const validarCampos = async (nuevoAlbum) => {
-    console.log(nuevoAlbum.titulo_lista)
-    nuevoAlbum.titulo_lista=quitarEspacios(nuevoAlbum);
+    nuevoAlbum.titulo_lista=quitarEspacios(nuevoAlbum.titulo_listaTem);
     console.log(nuevoAlbum.titulo_lista)
     const tituloExistente = await esTituloCancionExistente(nuevoAlbum.titulo_lista);
 
@@ -113,7 +112,7 @@ function CrearLista() {
 
     // validar campos
     const nuevoAlbum = {
-      titulo_lista: document.getElementById("titulo_lista").value,
+      titulo_listaTem: document.getElementById("titulo_lista").value,
       nombre_usuario: document.getElementById("artista").value,
       colaborador: document.getElementById("colaborador").value
     };
