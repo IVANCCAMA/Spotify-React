@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import logo from '../logos/logo.png';
 import home from '../logos/home.png';
-import disc from '../logos/disc.png';
 import group from '../logos/group.png';
 import plus from '../logos/plus.png';
 import './menuLateral.css';
@@ -13,7 +12,6 @@ function MenuLateral() {
     { separador: true },
     { to: '/Albumes', src: group, alt: 'Álbumes', title: 'Álbumes' },
     { to: '/crearAlbum', src: plus, alt: 'Crear álbum', title: 'Crear álbum' },
-    // { to: '/Sencillo', src: disc, alt: 'Sencillo', title: 'Sencillo' },
     { to: '/añadirCancion', src: plus, alt: 'Cargar canción', title: 'Cargar canción' }
   ];
 
@@ -26,11 +24,11 @@ function MenuLateral() {
       </div>
 
       <div className="menu-items">
-        {menuOptions.map((menuOption) => (
+        {menuOptions.map((menuOption, index) => (
           menuOption.separador ? (
-            <div className="item separador border-b-5 border-black"></div>
+            <div key={index} className="item separador border-b-5 border-black"></div>
           ) : (
-            <div className="item">
+            <div key={index} className="item">
               <Link to={menuOption.to}>
                 <div className="icon">
                   <img src={menuOption.src} alt={menuOption.alt} width="30" />
