@@ -349,7 +349,7 @@ function AñadirCancion() {
               <label htmlFor="album">Álbum *</label>
               <select name="album" id='selectList' onChange={handleAlbumSelectChange}>
                 <option disabled hidden value="null">Seleccionar lista</option>
-                <option disabled selected hidden value="null">Ingrese el nombre del artista</option>
+                <option disabled hidden value="null">Ingrese el nombre del artista</option>
                 {listas.map((lista) => (
                   <option key={lista.id} value={lista.id}>{lista.titulo_lista}</option>
                 ))}
