@@ -44,7 +44,9 @@ function CrearLista() {
   }
   const validarCampos = async (nuevoAlbum) => {
     nuevoAlbum.titulo_lista=quitarEspacios(nuevoAlbum.titulo_listaTem);
-    
+
+    console.log(nuevoAlbum.titulo_lista)
+
     const tituloExistente = await esTituloCancionExistente(nuevoAlbum.titulo_lista);
 
     if (tituloExistente) {
