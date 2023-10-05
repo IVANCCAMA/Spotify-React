@@ -338,7 +338,7 @@ function AñadirCancion() {
                 className="validar"
                 id="artista"
                 name="artista"
-                placeholder="Escriba el nombre del artista"
+                placeholder="Nombre del artista"
                 onChange={handleArtistaChange}
               />
             </div>
