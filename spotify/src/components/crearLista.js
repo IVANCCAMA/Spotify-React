@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import './form.css';
 
 function CrearLista() {
-  const database = 'https://backreactmusic.onrender.com/api';
+  const database = 'https://spfisbackend-production.up.railway.app/api';
   const [file, setFile] = useState([]);
 
   const esTituloCancionExistente = async (titulo) => {
@@ -31,9 +31,22 @@ function CrearLista() {
       console.error('Error al obtener la lista de usuarios:', error);
       return false; // Hubo un error
     }
-  };
+  }; 
 
+  const quitarEspacios= async(titulo)=>{
+
+    
+    titulo=titulo.trim();
+    while (titulo.search("  ")!=-1){
+      titulo=titulo.replace("  "," ");
+    }
+    return titulo;
+  }
   const validarCampos = async (nuevoAlbum) => {
+    nuevoAlbum.titulo_lista=quitarEspacios(nuevoAlbum.titulo_listaTem);
+
+    console.log(nuevoAlbum.titulo_lista)
+
     const tituloExistente = await esTituloCancionExistente(nuevoAlbum.titulo_lista);
 
     if (tituloExistente) {
@@ -99,7 +112,7 @@ function CrearLista() {
     e.preventDefault();
 
     const nuevoAlbum = {
-      titulo_lista: document.getElementById("titulo_lista").value,
+      titulo_listaTem: document.getElementById("titulo_lista").value,
       nombre_usuario: document.getElementById("artista").value,
       colaborador: document.getElementById("colaborador").value
     };
