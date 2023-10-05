@@ -29,7 +29,7 @@ function AñadirCancion() {
 
   const esTituloCancionExistente = async (titulo) => {
     try {
-      const response = await axios.get('https://backreactmusic.onrender.com/api/canciones/');
+      const response = await axios.get('https://spfisbackend-production.up.railway.app/api/canciones/');
       const canciones = response.data;
 
       console.log("objeto canciones>>", canciones);
@@ -69,7 +69,7 @@ function AñadirCancion() {
     try {
       console.log("Datos recuperados:>>>>>> ", nuevaCancion);
 
-      const response = await axios.post('https://backreactmusic.onrender.com/api/canciones/', nuevaCancion);
+      const response = await axios.post('https://spfisbackend-production.up.railway.app/api/canciones/', nuevaCancion);
       console.log('Canción creado exitosamente:', response.data);
       return true;
     } catch (error) {
@@ -220,7 +220,7 @@ function AñadirCancion() {
 
   const listaAlbumesArtista = async (id_usuarioArtistaL) => {
     try {
-      const response = await axios.get('https://backreactmusic.onrender.com/api/lista_canciones/');
+      const response = await axios.get('https://spfisbackend-production.up.railway.app/api/lista_canciones/');
       const listaCompleta = response.data;
 
       // Filtrar álbumes por el id_usuario
@@ -236,7 +236,7 @@ function AñadirCancion() {
 
   const ExisteArtista = async (nombreArtista) => {
     try {
-      const response = await axios.get(`https://backreactmusic.onrender.com/api/usuarios/search_nom/ ?searchTerm=${nombreArtista}`);
+      const response = await axios.get(`https://spfisbackend-production.up.railway.app/api/usuarios/search_nom/ ?searchTerm=${nombreArtista}`);
 
       const artistas = response.data;
 
@@ -293,7 +293,7 @@ function AñadirCancion() {
 
   const idArtistaAlbum = async (nombreAlbum) => {
     try {
-      const response = await axios.get(`https://backreactmusic.onrender.com/api/lista_canciones/`);
+      const response = await axios.get(`https://spfisbackend-production.up.railway.app/api/lista_canciones/`);
 
       const listasAlbumes = response.data;
 
@@ -338,7 +338,7 @@ function AñadirCancion() {
                 className="validar"
                 id="artista"
                 name="artista"
-                placeholder="Escriba el nombre del artista"
+                placeholder="Nombre del artista"
                 onChange={handleArtistaChange}
               />
             </div>
