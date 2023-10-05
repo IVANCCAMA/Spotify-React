@@ -117,6 +117,8 @@
 }
 
 .album-image2 {
+  position: absolute;
+  left: 580px;
   width: 40px;
   height: 40px;
   border: 3px solid white; /* Borde blanco de 2px alrededor de la imagen */
@@ -143,21 +145,47 @@
   position: absolute;
   right: 330px;
   width: 40px;
+  height: 25px;
+  /* Otros estilos según sea necesario */
+}
+
+/*alineamiento de titulo de cancion*/
+.titulo-cancion-logo {
+  position: absolute;
+  left: 620px;
+  width: 530px;
   height: 40px;
+  font-family: var(--fuente-1);
+  padding: 10px;
+  font-weight: bold;
+  font-size: 25px;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  text-align: justify;
   /* Otros estilos según sea necesario */
 }
 
 .song-container {
   display: flex;
   align-items: center;
-  gap: 60px;
   overflow-x: auto; /* Para habilitar el desplazamiento horizontal si es necesario */
   white-space: nowrap; /* Evita que los elementos se envuelvan a la siguiente línea */
+  margin-top: 25px;
+  margin-bottom: 25px;
+  cursor: pointer;
+  transition: color 2s;
 }
 
 .song-details {
   display: flex;
   align-items: center;
+}
+
+.song-container:hover div{   
+  color:white;
+  cursor:pointer;
+  background-color: #008080;
 }
 
 .album-portada {
