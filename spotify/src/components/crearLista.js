@@ -112,7 +112,7 @@ function CrearLista() {
     e.preventDefault();
 
     const nuevoAlbum = {
-      titulo_listaTem: document.getElementById("titulo_lista").value,
+      titulo_lista: document.getElementById("titulo_lista").value,
       nombre_usuario: document.getElementById("artista").value,
       colaborador: document.getElementById("colaborador").value
     };

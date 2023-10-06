@@ -127,7 +127,7 @@ function AñadirCancion() {
       artista: document.getElementById('artista').value,
       album: document.getElementById('album').value,
       genero: document.getElementById('genero').value,
-      archivo: document.getElementById('archivo').files
+      archivo: document.getElementById('archivo').files 
     };
 
     const nuevaCancion = await validarCampos(campos);
@@ -292,7 +292,7 @@ function AñadirCancion() {
                 className="validar"
                 id="artista"
                 name="artista"
-                placeholder="Escriba el nombre del artista"
+                placeholder="Nombre del artista"
                 onChange={(e) => { handle(e); cargarListas(); }}
                 onBlur={(e) => { e.target.value = e.target.value.trim(); }}
               />
