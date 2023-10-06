@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import { alfanumerico } from './form.js';
@@ -12,15 +12,17 @@ function AñadirCancion() {
     'Reggae', 'Salsa', 'Flamenco', 'Ranchera', 'Hip hop/Rap',
     'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica'];
   const [listas, setListas] = useState([]);
+  const [botonHabilitado, setBotonHabilitado] = useState(true);
+  let idArtistaEncontrado;
   useEffect(() => { mostrarNombreArchivo(); }, [listas]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  let idArtistaEncontrado;
 
   const validarCampos = async (campos) => {
     if (campos.titulo.length > 20 || campos.titulo.length < 1 || !alfanumerico(campos.titulo)) {
       document.getElementById('titulo_Cancion').classList.add('active');
       return null;
+
     }
     if (campos.artista.length > 20 || campos.artista.length < 1 || !alfanumerico(campos.artista)) {
       document.getElementById('artista').classList.add('active');
@@ -120,25 +122,29 @@ function AñadirCancion() {
   }
 
   const validarForm = async (e) => {
-    e.preventDefault();
+    // Deshabilitar el botón
+    setBotonHabilitado(false);
+    try {
+      e.preventDefault();
 
     const campos = {
       titulo: document.getElementById('titulo_Cancion').value,
       artista: document.getElementById('artista').value,
       album: document.getElementById('album').value,
       genero: document.getElementById('genero').value,
-      archivo: document.getElementById('archivo').files
+      archivo: document.getElementById('archivo').files 
     };
 
     const nuevaCancion = await validarCampos(campos);
+    
     if (nuevaCancion === null) {
       setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
       setIsModalOpen(true);
       return;
     }
 
-    const archivo = archivo.files[0];
-    if (!validarFormatoArchivo(archivo)) {
+    const archivo = campos.archivo.files[0];
+    if (!await validarFormatoArchivo(archivo)) {
       setModalMessage(`Formato de archivo no válido.`);
       setIsModalOpen(true);
       return;
@@ -173,6 +179,12 @@ function AñadirCancion() {
       console.error('Error:', error);
       setModalMessage(`Error al subir o procesar el archivo.`);
       setIsModalOpen(true);
+    }
+    } catch (error) {
+      console.error('Error al enviar la solicitud:', error);
+    } finally {
+      // Una vez que se complete, habilitar el botón nuevamente
+      setBotonHabilitado(true);
     }
   };
 
@@ -292,7 +304,7 @@ function AñadirCancion() {
                 className="validar"
                 id="artista"
                 name="artista"
-                placeholder="Escriba el nombre del artista"
+                placeholder="Nombre del artista"
                 onChange={(e) => { handle(e); cargarListas(); }}
                 onBlur={(e) => { e.target.value = e.target.value.trim(); }}
               />
@@ -349,7 +361,7 @@ function AñadirCancion() {
 
           <div className="campo">
             <div className="btn-box">
-              <button type="submit" className="btn-next">Aceptar</button>
+              <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
               <Link to="/Inicio" className="custom-link">Cancelar</Link>
             </div>
           </div>

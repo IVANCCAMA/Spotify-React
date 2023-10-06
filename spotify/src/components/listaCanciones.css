@@ -1,3 +1,5 @@
+
+
 .album-info {
   padding: 20px;
   border-radius: 10px;
@@ -10,6 +12,16 @@
   grid-auto-flow: column; /* Cambia de "row" a "column" */
 }
 
+.album-config{
+  position: relative;
+  display: flex; 
+  left: 100px;
+}
+
+.album-details{
+  position: relative;
+  top: 35px;
+}
 
 /* .song-list {
   padding: 2px;
@@ -22,6 +34,12 @@
   grid-auto-rows: minmax(100px, auto); 
   grid-auto-flow: row; 
 } */
+
+
+.song-list {
+  position: relative;
+  left: 100px;
+}
 
 .album-item {
   display: flex;
@@ -51,51 +69,58 @@
   margin-right: 25px; 
 }
 
-.play-logo {
-  margin-right: 25px; 
-}
-
 .album-title {
   padding: 10px;
-    font-weight: bold;
-    font-size: 25px;
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    text-align: justify;
-    font-family: var(--fuente-1);
+  font-weight: bold;
+  font-size: 25px;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  text-align: justify;
+  font-family: var(--fuente-1);
 }
 
 .album-title2 {
+  position: relative;
+  left: 10px;
+  bottom: 35px;
   padding: 10px;
-    font-weight: bold;
-    font-size: 50px;
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    text-align: justify;
-    font-family: var(--fuente-1);  
+
+  font-weight: bold;
+  font-size: 50px;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  text-align: justify;
+  font-family: var(--fuente-1);
+
 }
 
 .artist-name {
+  position: relative;
+  left: 15px;
+  bottom: 50px;
   padding: 7px;
-    font-weight: bold;
-    font-size: 16px;
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    text-align: justify;
-    font-family: var(--fuente-1);
+  font-weight: bold;
+  font-size: 16px;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  text-align: justify;
+  font-family: var(--fuente-1);
 }
 .album-songs {
+  position: relative;
+  left: 15px;
+  bottom: 50px;
   padding: 7px;
-    font-weight: bold;
-    font-size: 16px;
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    text-align: justify;
-    font-family: var(--fuente-1);
+  font-weight: bold;
+  font-size: 16px;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  text-align: justify;
+  font-family: var(--fuente-1);
 }
 
 .song-title {
@@ -110,6 +135,7 @@
 }
 
 .album-image {
+  position: relative;
   width: 120px;
   height: 120px;
   border: 5px solid white; /* Borde blanco de 2px alrededor de la imagen */
@@ -117,6 +143,7 @@
 }
 
 .album-image2 {
+  position: relative;
   width: 40px;
   height: 40px;
   border: 3px solid white; /* Borde blanco de 2px alrededor de la imagen */
@@ -131,8 +158,9 @@
 
 /*alineamiento del boton de play*/
 .play-logo {
-  position: absolute;
-  right: 230px;
+  position: relative;
+  right: 50px;
+
   width: 40px;
   height: 40px;
   /* Otros estilos según sea necesario */
@@ -140,19 +168,38 @@
 
 /*alineamiento de tiempo de duracion*/
 .duracion-logo {
-  position: absolute;
-  right: 330px;
+  position: relative;
+  right: 70px;
   width: 40px;
+  height: 25px;
+  /* Otros estilos según sea necesario */
+}
+
+/*alineamiento de titulo de cancion*/
+.titulo-cancion-logo {
+  position: relative;
+  width: 500px;
   height: 40px;
+  font-family: var(--fuente-1);
+  padding: 10px;
+  font-weight: bold;
+  font-size: 25px;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  text-align: justify;
   /* Otros estilos según sea necesario */
 }
 
 .song-container {
   display: flex;
   align-items: center;
-  gap: 60px;
   overflow-x: auto; /* Para habilitar el desplazamiento horizontal si es necesario */
   white-space: nowrap; /* Evita que los elementos se envuelvan a la siguiente línea */
+  margin-top: 5px;
+  margin-bottom: 5px;
+  cursor: pointer;
+  transition: color 2s;
 }
 
 .song-details {
@@ -160,7 +207,15 @@
   align-items: center;
 }
 
+.song-container:hover div{   
+  color:white;
+  cursor:pointer;
+  background-color: #008080;
+}
+
 .album-portada {
+  position: relative;
+  top: 30px;
   width: 120px;
   height: 120px;
   border: 5px solid white; /* Borde blanco de 2px alrededor de la imagen */

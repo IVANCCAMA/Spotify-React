@@ -1,15 +1,19 @@
 import axios from 'axios';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
 import { Link } from 'react-router-dom';
 import './form.css';
+import { alfanumerico } from './form.js';
 import Alerta from './alerta';
 
 function CrearLista() {
   const database = 'https://spfisbackend-production.up.railway.app/api';
-  const [file, setFile] = useState([]);
+  const [file, setFile] = useState(null);
+  const [botonHabilitado, setBotonHabilitado] = useState(true);
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+
 
   const esTituloCancionExistente = async (titulo) => {
     try {
@@ -35,24 +39,9 @@ function CrearLista() {
       console.error('Error al obtener la lista de usuarios:', error);
       return false; // Hubo un error
     }
+  }; 
 
-  };
-
-  const quitarEspacios = async (nuevoAlbum) => {
-
-    var titulo = nuevoAlbum.titulo_listaTem;
-    titulo = titulo.trim();
-    while (titulo.search("  ") != -1) {
-      titulo = titulo.replace("  ", " ");
-    }
-    nuevoAlbum.titulo_lista = titulo;
-  }
   const validarCampos = async (nuevoAlbum) => {
-    quitarEspacios(nuevoAlbum);
-
-
-
-    console.log(nuevoAlbum)
 
     const tituloExistente = await esTituloCancionExistente(nuevoAlbum.titulo_lista);
     console.log(nuevoAlbum.titulo_lista);
@@ -119,10 +108,13 @@ function CrearLista() {
   };
 
   const validarForm = async (e) => {
+    // Deshabilitar el botón
+    setBotonHabilitado(false);
+    try {
     e.preventDefault();
 
     const nuevoAlbum = {
-      titulo_listaTem: document.getElementById("titulo_lista").value,
+      titulo_lista: document.getElementById("titulo_lista").value,
       nombre_usuario: document.getElementById("artista").value,
       colaborador: document.getElementById("colaborador").value
     };
@@ -176,6 +168,13 @@ function CrearLista() {
       setModalMessage(`Error al subir o procesar el archivo.`);
       setIsModalOpen(true);
     }
+    } catch (error) {
+      console.error('Error al enviar la solicitud:', error);
+    } finally {
+      // Una vez que se complete, habilitar el botón nuevamente
+      setBotonHabilitado(true);
+    }
+    
   };
 
   const mostrarNombreArchivo = async () => {
@@ -188,22 +187,29 @@ function CrearLista() {
       file.nextElementSibling.classList.add('active');
     }
   };
-
-  const validar = (event) => {
-    const valor = event.target.value;
-    if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
-      event.target.classList.add('active');
-    } else if (valor.length > 20) {
-      event.target.classList.add('active');
+  const eliminarEspacios = (value) => {
+    if (value === " ") {
+      return "";
+    }
+    return value.replace(/\s+/g, ' ');
+  };
+  
+  const handle = async (e) => {
+    let newValue = eliminarEspacios(e.target.value);
+    if (alfanumerico(newValue)) {
+      e.target.classList.remove('active');
+    } else {
+      e.target.classList.add('active');
+    }
+    if (newValue.length > 20) {
+      e.target.classList.add('active');
       setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
       setIsModalOpen(true);
-      event.target.value = valor.slice(0, 20);
-      event.target.classList.remove('active');
-    } else {
-      event.target.classList.remove('active');
+      newValue = newValue.slice(0, 20);
+      e.target.classList.remove('active');
     }
+    e.target.value = newValue;
   };
-
   const validarVarios = (event) => {
     const valor = event.target.value;
     if (!/^[a-zA-Z0-9\s,]*$/.test(valor)) {
@@ -239,7 +245,7 @@ function CrearLista() {
                 id="titulo_lista"
                 name="titulo_lista"
                 placeholder="Escriba el título del álbum"
-                onChange={validar}
+                onChange={handle}
               />
             </div>
           </div>
@@ -253,7 +259,7 @@ function CrearLista() {
                 id="artista"
                 name="artista"
                 placeholder="Escriba el nombre del artista"
-                onChange={validar}
+                onChange={handle}
               />
             </div>
           </div>
@@ -307,7 +313,7 @@ function CrearLista() {
 
           <div className="campo">
             <div className="btn-box">
-              <button type="submit" className="btn-next">
+              <button type="submit" className="btn-next" disabled={!botonHabilitado}>
                 Aceptar
               </button>
               <Link to="/Albumes"  ><button to="/Albumes" className="custom-link">Cancelar</button></Link>

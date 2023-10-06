@@ -45,19 +45,19 @@ function ListaCanciones() {
   return (
     <div>
       {/* Info de álbum */}
-  <div style={{ display: 'flex', alignItems: 'center' }}>
+  <div className='album-config'>
     {/* Columna 1: Imagen del álbum */}
     <div key={infoAlbum.id_lista} className="album-portada">
       <img
         src={infoAlbum.path_image}
         /* className='album-image' */
         alt="Álbum"
-        style={{ width: '100%', height: '100%', objectFit: 'cover' }}  // Ajustamos el estilo de la imagen
+        style={{ width: '111px', height: '111px', objectFit: 'cover' }}  // Ajustamos el estilo de la imagen
       />
     </div>
 
     {/* Columna 2: Datos del álbum */}
-    <div className="album-details" style={{ marginLeft: '20px' }}>  {/* Añadimos un margen izquierdo */}
+    <div className="album-details">  {/* Añadimos un margen izquierdo */}
       <div className="album-title2">{infoAlbum.titulo_lista}</div>
       <div className="artist-name">{infoAlbum.nombre_usuario}</div> {/* ARREGLAR */}
       <div className="album-songs">{infoAlbum.cantidad_canciones} canciones</div>
@@ -70,14 +70,13 @@ function ListaCanciones() {
           <Link to={`/detalle-cancion/${canciones.id_cancion}`} key={canciones.id_cancion} className="album-item">
 
             <div className="song-container">
+              <div className="song-details">
               <img
                   src={canciones.path_image}
                   alt="Álbum"
                   className="album-image2"
                 />
-              <div className="song-details">
-                
-                <div className="album-title">{canciones.nombre_cancion}</div>
+                <div className="titulo-cancion-logo">{canciones.nombre_cancion}</div>
                 <div className="duracion-logo">{canciones.duracion}</div>
               </div>
               <img src={songLogo} alt="Álbum" className="play-logo" />
