@@ -1,11 +1,11 @@
-const alfanumerico = (valor) => {
+export const alfanumerico = (valor) => {
   if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
     return false;
   }
   return true;
 };
 
-const alfanumericoVarios = (valor) => {
+export const alfanumericoVarios = (valor) => {
   if (!/^[a-zA-Z0-9\s,]*$/.test(valor)) {
     return false;
   } else if (/^[a-zA-Z0-9\s]*$/.test(valor)) {
