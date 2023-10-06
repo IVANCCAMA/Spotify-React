@@ -1,4 +1,20 @@
 
+.general-config{
+  position: absolute;
+}
+
+.album-config{
+  position: relative;
+  display: flex;
+  right: 175px; 
+  bottom: 350px;
+}
+
+.song-config {
+  position: relative;
+  right: 175px;
+  bottom: 350px;
+}
 
 .album-info {
   padding: 20px;
@@ -12,11 +28,7 @@
   grid-auto-flow: column; /* Cambia de "row" a "column" */
 }
 
-.album-config{
-  position: relative;
-  display: flex; 
-  left: 100px;
-}
+
 
 .album-details{
   position: relative;
@@ -35,11 +47,6 @@
   grid-auto-flow: row; 
 } */
 
-
-.song-list {
-  position: relative;
-  left: 100px;
-}
 
 .album-item {
   display: flex;
@@ -178,7 +185,7 @@
 /*alineamiento de titulo de cancion*/
 .titulo-cancion-logo {
   position: relative;
-  width: 500px;
+  width: 550px;
   height: 40px;
   font-family: var(--fuente-1);
   padding: 10px;
