@@ -9,7 +9,12 @@
     flex-direction: column; /* Cambiado a columna para colocar títulos encima de campos */
     align-items: center;
     overflow: hidden;
-    margin-left: auto;  
+    margin-left: auto;
+    position: absolute;
+    left: 50%;
+    right: 50%;
+    translate: 74% -50%;
+    margin-right: 0;
 }
 
 /* Contenedor del formulario */
@@ -31,6 +36,8 @@
 /* Campos de entrada */
 .campo {
     margin-bottom: 20px;
+   
+    /* padding: 20px; */
 }
 
 .input-box {
@@ -101,7 +108,7 @@
 .btn-box {
     display: flex;
     justify-content: space-between;
-    padding: 30px;
+    padding: 44px;
     gap: 50px;
 }
 
@@ -131,6 +138,7 @@
     background: #fff;
     color: #000000;
     justify-content: center;
+    
     
 }
 

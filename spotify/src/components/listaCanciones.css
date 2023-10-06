@@ -85,6 +85,7 @@
   left: 10px;
   bottom: 35px;
   padding: 10px;
+
   font-weight: bold;
   font-size: 50px;
   color: #FFFFFF;
@@ -92,6 +93,7 @@
   align-items: center;
   text-align: justify;
   font-family: var(--fuente-1);
+
 }
 
 .artist-name {
@@ -158,6 +160,7 @@
 .play-logo {
   position: relative;
   right: 50px;
+
   width: 40px;
   height: 40px;
   /* Otros estilos según sea necesario */
