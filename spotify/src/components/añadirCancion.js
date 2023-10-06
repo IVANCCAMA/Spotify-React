@@ -364,8 +364,7 @@ function AñadirCancion() {
             <div className="input-box">
               <label htmlFor="album">Álbum *</label>
               <select name="album" id='selectList' onChange={handleAlbumSelectChange}>
-                <option disabled hidden value="null">Seleccionar lista</option>
-                <option disabled hidden value="null">Ingrese el nombre del artista</option>
+                <option key="default" disabled hidden value="null">Seleccionar lista</option>
                 {listas.map((lista) => (
                   <option key={lista.id} value={lista.id}>{lista.titulo_lista}</option>
                 ))}
@@ -376,8 +375,8 @@ function AñadirCancion() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="genero">Género musical *</label>
-              <select name="genero" onChange={handleGeneroChange} >
-                <option value="">Seleccionar género</option>
+              <select name="genero" id="selectGenero" onChange={handleGeneroChange} >
+                <option key="default" value="">Seleccionar género</option>
                 {generos.map((genero, index) => (
                   <option key={index} value={genero}>{genero}</option>
                 ))}
