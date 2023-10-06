@@ -1,26 +1,31 @@
-.album-list {
+.albumes-list {
   padding: 20px;
   border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 0px;
   max-width: 1000px;
   margin: 50px 0 0 200px;
-  grid-auto-rows: minmax(100px, auto); 
+  grid-auto-rows: minmax(150px, 180px); 
   grid-auto-flow: row; 
 }
 
-.album-item {
+.albumes-details {
+  position: relative;
+
+}
+
+.albumes-item {
   display: flex;
   flex-direction: row; 
   align-items: center; 
 }
 
-.album-logo {
+.albumes-logo {
   margin-right: 25px; 
 }
 
-.album-title {
+.albumes-title {
   padding: 10px;
     font-weight: bold;
     font-size: 25px;
@@ -31,17 +36,18 @@
     font-family: var(--fuente-1);
 }
 
-.artist-name {
-  padding: 7px;
-    font-weight: bold;
-    font-size: 16px;
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    text-align: justify;
-    font-family: var(--fuente-1);
+.artistas-name {
+  position: relative;
+  top: 0px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  text-align: justify;
+  font-family: var(--fuente-1);
 }
-.album-songs {
+.albumes-songs {
   padding: 7px;
     font-weight: bold;
     font-size: 16px;
@@ -53,7 +59,7 @@
 }
 
 /* listaAlbunes.css */
-.album-image {
+.albumes-image {
   width: 120px;
   height: 120px;
   border: 5px solid white; /* Borde blanco de 2px alrededor de la imagen */
