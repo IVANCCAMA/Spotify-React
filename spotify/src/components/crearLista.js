@@ -40,7 +40,14 @@ function CrearLista() {
       return false; // Hubo un error
     }
   }; 
-
+  const validarArtistaColaborador=async(nuevoAlbum)=>{
+    var colab=nuevoAlbum.colaborador;
+    var artis=nuevoAlbum.nombre_usuario;
+    console.log(colab,artis)
+    colab=colab.trim().toLocaleLowerCase()
+    artis=artis.trim().toLocaleLowerCase()
+    return colab.includes(artis)
+  }
   const validarCampos = async (nuevoAlbum) => {
 
     const tituloExistente = await esTituloCancionExistente(nuevoAlbum.titulo_lista);
@@ -53,8 +60,9 @@ function CrearLista() {
     }
 
     const artistaExistente = await ExisteArtista(nuevoAlbum.nombre_usuario);
+    const artisIgualCol=await validarArtistaColaborador(nuevoAlbum);
 
-    console.log(artistaExistente);
+    console.log(artistaExistente,artisIgualCol);
     if (!artistaExistente) {
       setModalMessage('El artista no existe, intente con otro.');
       setIsModalOpen(true);
@@ -66,6 +74,7 @@ function CrearLista() {
       || nuevoAlbum.colaborador.length > 20 || nuevoAlbum.colaborador.length < 1
       || nuevoAlbum.titulo_lista.length > 20 || nuevoAlbum.titulo_lista.length < 1
       || nuevoAlbum.nombre_usuario.length > 20 || nuevoAlbum.nombre_usuario.length < 1
+      || artisIgualCol
     ) {
       return false;
     }
