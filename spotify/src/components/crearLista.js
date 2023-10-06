@@ -31,23 +31,27 @@ function CrearLista() {
       console.error('Error al obtener la lista de usuarios:', error);
       return false; // Hubo un error
     }
-  };
 
-  const quitarEspacios = (titulo) => {
-    titulo = titulo.trim();
-    while (titulo.search("  ") != -1) {
-      titulo = titulo.replace("  ", " ");
+  }; 
+
+  const quitarEspacios= async(nuevoAlbum)=>{
+
+    var titulo=nuevoAlbum.titulo_listaTem;
+    titulo=titulo.trim();
+    while (titulo.search("  ")!=-1){
+      titulo=titulo.replace("  "," ");
     }
-    return titulo;
-  };
-
+    nuevoAlbum.titulo_lista=titulo;
+  }
   const validarCampos = async (nuevoAlbum) => {
-    nuevoAlbum.titulo_lista = quitarEspacios(nuevoAlbum.titulo_listaTem);
+    quitarEspacios(nuevoAlbum);
+    
+
 
     console.log(nuevoAlbum)
 
     const tituloExistente = await esTituloCancionExistente(nuevoAlbum.titulo_lista);
-
+    console.log(nuevoAlbum.titulo_lista);
     if (tituloExistente) {
       // MODAL
       alert('El nombre de la carpeta ya está en uso, intente otro');
@@ -143,7 +147,7 @@ function CrearLista() {
       // subir el archivo a Firebase
       const resultado = await subirFirebase(archivo);
       nuevoAlbum.path_image = resultado;
-
+      
       // subir en la db
       if (!await subirBD(nuevoAlbum)) {
         // Si ocurre un error al subir en la base de datos
@@ -152,7 +156,7 @@ function CrearLista() {
         alert(`Error al cargar la canción. Intente más tarde.`);
         return;
       }
-
+      console.log(nuevoAlbum)
       await alert(`Lista creada exitosamente.`);
       window.location.replace("/inicio");
       // window.location.reload();
