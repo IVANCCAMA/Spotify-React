@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
 import { Link } from 'react-router-dom';
 import './form.css';
+import { alfanumerico } from './form.js';
 import Alerta from './alerta';
 
 function CrearLista() {
@@ -37,18 +38,7 @@ function CrearLista() {
     }
 
   };
-
-  const quitarEspacios = async (nuevoAlbum) => {
-
-    var titulo = nuevoAlbum.titulo_listaTem;
-    titulo = titulo.trim();
-    while (titulo.search("  ") != -1) {
-      titulo = titulo.replace("  ", " ");
-    }
-    nuevoAlbum.titulo_lista = titulo;
-  }
   const validarCampos = async (nuevoAlbum) => {
-    quitarEspacios(nuevoAlbum);
 
 
 
@@ -188,22 +178,29 @@ function CrearLista() {
       file.nextElementSibling.classList.add('active');
     }
   };
-
-  const validar = (event) => {
-    const valor = event.target.value;
-    if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
-      event.target.classList.add('active');
-    } else if (valor.length > 20) {
-      event.target.classList.add('active');
+  const eliminarEspacios = (value) => {
+    if (value === " ") {
+      return "";
+    }
+    return value.replace(/\s+/g, ' ');
+  };
+  
+  const handle = async (e) => {
+    let newValue = eliminarEspacios(e.target.value);
+    if (alfanumerico(newValue)) {
+      e.target.classList.remove('active');
+    } else {
+      e.target.classList.add('active');
+    }
+    if (newValue.length > 20) {
+      e.target.classList.add('active');
       setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
       setIsModalOpen(true);
-      event.target.value = valor.slice(0, 20);
-      event.target.classList.remove('active');
-    } else {
-      event.target.classList.remove('active');
+      newValue = newValue.slice(0, 20);
+      e.target.classList.remove('active');
     }
+    e.target.value = newValue;
   };
-
   const validarVarios = (event) => {
     const valor = event.target.value;
     if (!/^[a-zA-Z0-9\s,]*$/.test(valor)) {
@@ -239,7 +236,7 @@ function CrearLista() {
                 id="titulo_lista"
                 name="titulo_lista"
                 placeholder="Escriba el título del álbum"
-                onChange={validar}
+                onChange={handle}
               />
             </div>
           </div>
@@ -253,7 +250,7 @@ function CrearLista() {
                 id="artista"
                 name="artista"
                 placeholder="Escriba el nombre del artista"
-                onChange={validar}
+                onChange={handle}
               />
             </div>
           </div>
