@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from "react-router-dom";
 import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import './form.css'
@@ -25,6 +25,15 @@ function AñadirCancion() {
       alert('El título de la canción ya existe. Por favor, elige otro título.');
       return false;
     }
+
+    if(!/^[a-zA-Z0-9\s]*$/.test(nuevaCancion.nombre_cancion) // vericamos que esten con caracteres alfanumericos
+      | !/^[a-zA-Z0-9\s]*$/.test(nuevaCancion.nombreArtista)
+      | nuevaCancion.nombre_cancion.length>20| nuevaCancion.nombre_cancion.length===0
+      | nuevaCancion.nombreArtista.length>20| nuevaCancion.nombreArtista.length===0
+    ){
+      return false;
+    }
+    
     return true;
   }
 
@@ -186,8 +195,10 @@ function AñadirCancion() {
     if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
       event.target.classList.add('active');
     } else if (valor.length > 20) {
+      event.target.value = valor.slice(0, 20);
       event.target.classList.add('active');
       alert(`Nombre debe tener entre 1 a 20 caracteres.`);
+      //event.target.classList.remove('active');
     } else {
       event.target.classList.remove('active');
     }
