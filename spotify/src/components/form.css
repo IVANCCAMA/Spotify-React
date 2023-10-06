@@ -1,7 +1,7 @@
 /* Formulario */
 .modal-form {
     width: 100%;
-    max-width: 500px;
+    max-width: 425px;
     height: auto; /* Cambiado a altura automática */
     background: #008080;
     border: 4px solid #000000;
@@ -13,7 +13,7 @@
     position: absolute;
     left: 50%;
     right: 50%;
-    translate: 74% -50%;
+    translate: 77.5% -50%;
     margin-right: 0;
 }
 
@@ -109,12 +109,12 @@
     display: flex;
     justify-content: space-between;
     padding: 44px;
-    gap: 50px;
+    gap: 40px;
 }
 
 .btn-box button {
     width: 150px;
-    height: 50px;
+    height:  50px;
     background: #FFFFFF;
     outline: none;
     cursor: pointer;
