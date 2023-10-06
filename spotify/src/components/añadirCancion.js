@@ -15,7 +15,9 @@ function AñadirCancion() {
   const [generoSeleccionado, setGeneroSeleccionado] = useState('');
   const timeoutRef = useRef(null);
   const [botonHabilitado, setBotonHabilitado] = useState(true);
+  const [inputValue, setInputValue] = useState('');
   let idArtistaEncontrado;
+  let corregido;
 
   const validarCampos = async (nuevaCancion) => {
     const tituloExistente = await esTituloCancionExistente(nuevaCancion.nombre_cancion);
@@ -26,14 +28,22 @@ function AñadirCancion() {
       return false;
     }
 
-    if(!/^[a-zA-Z0-9\s]*$/.test(nuevaCancion.nombre_cancion) // vericamos que esten con caracteres alfanumericos
-      | !/^[a-zA-Z0-9\s]*$/.test(nuevaCancion.nombreArtista)
-      | nuevaCancion.nombre_cancion.length>20| nuevaCancion.nombre_cancion.length===0
-      | nuevaCancion.nombreArtista.length>20| nuevaCancion.nombreArtista.length===0
-    ){
+    if (
+      !/^[a-zA-Z0-9\s]*$/.test(nuevaCancion.nombre_cancion) ||
+      !/^[a-zA-Z0-9\s]*$/.test(nuevaCancion.nombreArtista) ||
+      nuevaCancion.nombre_cancion.length > 20 ||
+      nuevaCancion.nombre_cancion.trim() === '' ||  // Verifica si es una cadena vacía después de quitar espacios
+      nuevaCancion.nombreArtista.length > 20 ||
+      nuevaCancion.nombreArtista.trim() === '' ||  // Verifica si es una cadena vacía después de quitar espacios
+      inputValue.trim() === ''  // Verifica si el input es una cadena vacía después de quitar espacios
+    ) {
       return false;
     }
-    
+    // correccion de espaciados 
+    console.log("ingresado: ", nuevaCancion.nombre_cancion)
+    corregido = nuevaCancion.nombre_cancion.replace(/\s+/g, ' ');
+    nuevaCancion.nombre_cancion = corregido;
+    console.log("corregido: ", nuevaCancion.nombre_cancion)
     return true;
   }
 
@@ -192,6 +202,7 @@ function AñadirCancion() {
 
   const validar = (event) => {
     const valor = event.target.value;
+    setInputValue(valor)
     if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
       event.target.classList.add('active');
     } else if (valor.length > 20) {
@@ -349,6 +360,7 @@ function AñadirCancion() {
               <input autoFocus
                 type="text"
                 className="validar"
+                value={inputValue}
                 id="titulo_Cancion"
                 name="titulo"
                 placeholder="Escriba el título de la canción"
@@ -367,6 +379,7 @@ function AñadirCancion() {
                 name="artista"
                 placeholder="Nombre del artista"
                 onChange={handleArtistaChange}
+                
               />
             </div>
           </div>
