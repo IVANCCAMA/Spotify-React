@@ -54,7 +54,6 @@ export async function SubirPortada(imageUpload) {
   const imageRef = ref(storage, `Portadas/${imageName}`);
 
   await uploadBytes(imageRef, imageUpload);
-  console.log("imagen subida a firebase exitosamente");
   return imageName;
 }
 
@@ -68,7 +67,6 @@ export async function SubirCancion(cancionUpload) {
   const cancionRef = ref(storage, `Canciones/${cancionName}`);
 
   await uploadBytes(cancionRef, cancionUpload);
-  console.log("cancion subida a firebase exitosamente");
   return cancionName;
 }
 
