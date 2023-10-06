@@ -34,7 +34,7 @@
     font-size: 25px;
     color: #FFFFFF;
     display: flex;
-    align-items: center;
+    align-items: baseline;
     text-align: left;
     font-family: var(--fuente-1);
     
