@@ -375,7 +375,7 @@ function AñadirCancion() {
           {/* SELECCIONAR ARCHIVO */}
           <div className="campo campo-cargar-cancion">
             <div className="input-box">
-              <label htmlFor="archivo">Canción</label>
+              <label htmlFor="archivo">Seleccionar canción *</label>
               <div className="seleccionarArchivo">
                 <span className="nombreArchivo" id="nombreArchivo"></span>
                 <input
@@ -392,8 +392,8 @@ function AñadirCancion() {
                   onClick={() => { document.getElementById('archivo').click(); }}
                   value="Seleccionar archivo"
                 />
-              </div>
-            </div>
+              </div>             
+            </div>         
           </div>
 
           <div className="campo">

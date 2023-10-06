@@ -74,7 +74,7 @@
     display: flex;
     align-items: center;
     text-align: justify;
-    font-family: var(--fuente-1);
+    font-family: var(--fuente-1);  
 }
 
 .artist-name {
@@ -132,7 +132,7 @@
 /*alineamiento del boton de play*/
 .play-logo {
   position: absolute;
-  right: 250px;
+  right: 230px;
   width: 40px;
   height: 40px;
   /* Otros estilos según sea necesario */
