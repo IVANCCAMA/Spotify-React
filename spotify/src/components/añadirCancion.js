@@ -355,8 +355,8 @@ function AñadirCancion() {
                   onClick={() => { document.getElementById('archivo').click(); }}
                   value="Seleccionar archivo"
                 />
-              </div>             
-            </div>         
+              </div>
+            </div>
           </div>
 
           <div className="campo">
