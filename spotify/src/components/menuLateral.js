@@ -26,14 +26,14 @@ function MenuLateral() {
       <div className="menu-items">
         {menuOptions.map((menuOption, index) => (
           menuOption.separador ? (
-            <div key={index} className="item separador border-b-5 border-black"></div>
+            <div key={'separador-' + index} className="item separador border-b-5 border-black"></div>
           ) : (
-            <div key={index} className="item">
-              <Link to={menuOption.to}>
-                <div className="icon">
-                  <img src={menuOption.src} alt={menuOption.alt} width="30" />
+            <div key={'item-' + index} className="item">
+              <Link key={'link-' + index} to={menuOption.to}>
+                <div key={'icon-' + index} className="icon">
+                  <img key={'img-' + index} src={menuOption.src} alt={menuOption.alt} width="30" />
                 </div>
-                <div className="title">{menuOption.title}</div>
+                <div key={'title-' + index} className="title">{menuOption.title}</div>
               </Link>
             </div>
           )

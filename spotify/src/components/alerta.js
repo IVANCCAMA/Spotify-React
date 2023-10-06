@@ -1,61 +1,24 @@
 import React from 'react';
-import { useState } from 'react';
 import './alerta.css'
 
-function abrirModal(mensaje) {
-  const modal = document.getElementById('alerta');
-  const modalMensaje = document.getElementById('modal-mensaje');
-  modalMensaje.textContent = mensaje;
-
-  modal.style.display = 'block';
-  deshabilitarFormulario('crear-lista');
-}
-
-function cerrarModal() {
-  const modal = document.getElementById('alerta');
-  const modalMensaje = document.getElementById('modal-mensaje');
-
-  if (modalMensaje.getAttribute("form-valido") === "true") {
-      // redireccionar
-      window.location.reload();
-  } else {
-      habilitarFormulario('crear-lista')
-      modal.style.display = 'none';
+function Alerta({ isOpen, mensaje, onClose }) {
+  // Si isOpen es false, entonces no se renderizamos nada.
+  if (!isOpen) {
+    return null;
   }
-}
 
-function habilitarFormulario() {
-  const formulario = document.getElementById("form");
-  const elementos = formulario.elements;
-
-  for (let i = 0; i < elementos.length; i++) {
-      elementos[i].disabled = false;
-  }
-}
-
-function deshabilitarFormulario() {
-  const formulario = document.getElementById("form");
-  const elementos = formulario.elements;
-
-  for (let i = 0; i < elementos.length; i++) {
-      elementos[i].disabled = true;
-  }
-}
-
-function Alerta() {
-  const [file, setFile] = useState(null);
-
+  // Si isOpen es true, entonces vamos mostrando el modal.
   return (
     <div className="modal-alerta" id="alerta">
         <div className="modal-alert-content">
             <div className="contenedor-p">
-                <span id="modal-mensaje" form-valido="false"></span>
+                <span id="modal-mensaje">{mensaje}</span>
             </div>
             <div className="separador"></div>
-            <button onclick="cerrarModal() ">OK</button>
+            <button onClick={onClose}>OK</button>
         </div>
     </div>
   );
-};
+}
 
 export default Alerta;
