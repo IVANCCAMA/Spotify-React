@@ -138,7 +138,7 @@ function AñadirCancion() {
     }
 
     const archivo = archivo.files[0];
-    if (!validarFormatoArchivo(archivo)) {
+    if (!await validarFormatoArchivo(archivo)) {
       setModalMessage(`Formato de archivo no válido.`);
       setIsModalOpen(true);
       return;
