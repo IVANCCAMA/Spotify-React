@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
 import { Link } from 'react-router-dom';
 import './form.css';
@@ -8,9 +8,12 @@ import Alerta from './alerta';
 
 function CrearLista() {
   const database = 'https://spfisbackend-production.up.railway.app/api';
-  const [file, setFile] = useState([]);
+  const [file, setFile] = useState(null);
+  const [botonHabilitado, setBotonHabilitado] = useState(true);
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+
 
   const esTituloCancionExistente = async (titulo) => {
     try {
@@ -36,13 +39,9 @@ function CrearLista() {
       console.error('Error al obtener la lista de usuarios:', error);
       return false; // Hubo un error
     }
+  }; 
 
-  };
   const validarCampos = async (nuevoAlbum) => {
-
-
-
-    console.log(nuevoAlbum)
 
     const tituloExistente = await esTituloCancionExistente(nuevoAlbum.titulo_lista);
     console.log(nuevoAlbum.titulo_lista);
@@ -109,6 +108,9 @@ function CrearLista() {
   };
 
   const validarForm = async (e) => {
+    // Deshabilitar el botón
+    setBotonHabilitado(false);
+    try {
     e.preventDefault();
 
     const nuevoAlbum = {
@@ -166,6 +168,13 @@ function CrearLista() {
       setModalMessage(`Error al subir o procesar el archivo.`);
       setIsModalOpen(true);
     }
+    } catch (error) {
+      console.error('Error al enviar la solicitud:', error);
+    } finally {
+      // Una vez que se complete, habilitar el botón nuevamente
+      setBotonHabilitado(true);
+    }
+    
   };
 
   const mostrarNombreArchivo = async () => {
@@ -304,7 +313,7 @@ function CrearLista() {
 
           <div className="campo">
             <div className="btn-box">
-              <button type="submit" className="btn-next">
+              <button type="submit" className="btn-next" disabled={!botonHabilitado}>
                 Aceptar
               </button>
               <Link to="/Albumes"  ><button to="/Albumes" className="custom-link">Cancelar</button></Link>
