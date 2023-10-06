@@ -3,28 +3,36 @@ import React, { useState, useEffect, useRef } from 'react';
 import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
 import { Link } from 'react-router-dom';
 import './form.css';
-
+import Alerta from './alerta';
+  
 function CrearLista() {
+  const database = 'https://backreactmusic.onrender.com/api';
   const [file, setFile] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   const esTituloCancionExistente = async (titulo) => {
     try {
-      const response = await axios.get('https://backreactmusic.onrender.com/api/lista_canciones/');
+      const query = `/lista_canciones/`;
+      const response = await axios.get(`${database}${query}`);
       const listaCanciones = response.data;
 
       // importante atributo titulo_lista tiene que ser igual a la BD
       return listaCanciones.some((cancion) => cancion.titulo_lista === titulo);
     } catch (error) {
-      alert('Error al obtener la lista de canciones:', error);
+      setModalMessage('Error al obtener la lista de canciones:', error);
+      setIsModalOpen(true);
+
       return false;
     }
-  };
+};
 
   const ExisteArtista = async (nombreArtista) => {
     try {
-      const response = await axios.get(`https://backreactmusic.onrender.com/api/usuarios/search_nom/ ?searchTerm=${nombreArtista}`);
+      const query = `/usuarios/search_nom/ ?searchTerm=${nombreArtista}`;
+      const response = await axios.get(`${database}${query}`);
       console.log(response.data[0].id_usuario)
-      if(response.status ==200){  return response.data[0].id_usuario;}
+      if(response.status === 200){  return response.data[0].id_usuario;}
     } catch (error) {
       console.error('Error al obtener la lista de usuarios:', error);
       return false; // Hubo un error
@@ -36,7 +44,9 @@ function CrearLista() {
 
     if (tituloExistente) {
       // MODAL
-      alert('El nombre de la carpeta ya está en uso, intente otro');
+      setModalMessage('El nombre de la carpeta ya está en uso, intente otro');
+      setIsModalOpen(true);
+
       return false;
     }
 
@@ -44,15 +54,17 @@ function CrearLista() {
 
     console.log(artistaExistente);
     if (!artistaExistente) {
-      alert('El artista no existe, intente con otro.');
+      setModalMessage('El artista no existe, intente con otro.');
+      setIsModalOpen(true);
+
       return false;
     } 
     if(!/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.titulo_lista) // vericamos que esten con caracteres alfanumericos
       | !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.nombre_usuario)
       | !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.colaborador)
-      | nuevoAlbum.colaborador.length>20| nuevoAlbum.colaborador.length==0
-      | nuevoAlbum.titulo_lista.length>20| nuevoAlbum.titulo_lista.length==0
-      | nuevoAlbum.nombre_usuario.length>20| nuevoAlbum.nombre_usuario.length==0
+      | nuevoAlbum.colaborador.length>20| nuevoAlbum.colaborador.length===0
+      | nuevoAlbum.titulo_lista.length>20| nuevoAlbum.titulo_lista.length===0
+      | nuevoAlbum.nombre_usuario.length>20| nuevoAlbum.nombre_usuario.length===0
     ){
       return false;
     }
@@ -85,7 +97,8 @@ function CrearLista() {
   const subirBD = async (nuevoAlbum) => {
     try {
       console.log(nuevoAlbum);
-      const response = await axios.post('https://backreactmusic.onrender.com/api/lista_canciones/createlist', nuevoAlbum);
+      const query = `/lista_canciones/createlist`;
+      const response = await axios.post(`${database}${query}`, nuevoAlbum);
       console.log('Álbum creado exitosamente:', response.data);
       return true;
     } catch (error) {
@@ -104,29 +117,36 @@ function CrearLista() {
     };
     
     if (!await validarCampos(nuevoAlbum)) {
-      alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
+      setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
+      setIsModalOpen(true);
+
       return;
     }
 
     // validar formato del archivo
     const archivos = document.getElementById('archivo');
     if (archivos.files.length < 1) {
-      alert(`Seleccione un archivo.`);
+      setModalMessage(`Seleccione un archivo.`);
+      setIsModalOpen(true);
+
       return;
     }
     const archivo = archivos.files[0];
     console.log(archivos)
     if (!await validarFormatoArchivo(archivo)) {
-      alert(`Formato de imagen no válido.`);
+      setModalMessage('Formato de imagen no válido.');
+      setIsModalOpen(true);
+
       return;
     }
 
     // validar tamanio
     if (archivo.size > (5 *1024*1024)) { // megas
-      alert(`Tamaño máximo de 5 MB excedido.`);
+      setModalMessage('Tamaño máximo de 5 MB excedido.');
+      setIsModalOpen(true);
+
       return;
     }
-
     try {
       // subir el archivo a Firebase
       const resultado = await subirFirebase(archivo); 
@@ -137,16 +157,22 @@ function CrearLista() {
         // Si ocurre un error al subir en la base de datos
         // eliminar el archivo subido en Firebase
         deleteFile(resultado.filepath);
-        alert(`Error al cargar la canción. Intente más tarde.`);
+        setModalMessage('Error al cargar la canción. Intente más tarde.');
+        setIsModalOpen(true);
+
         return;
       }
       
-      await alert(`Lista creada exitosamente.`);
+      await setModalMessage('Lista creada exitosamente.');
+      setIsModalOpen(true);
+
       window.location.replace("/inicio");
       // window.location.reload();
     } catch (error) {
       console.error('Error:', error);
-      alert(`Error al subir o procesar el archivo.`);
+      setModalMessage('Error al subir o procesar el archivo.');
+      setIsModalOpen(true);
+
     }
   };
   const motrarNombreArchivo = () => {
@@ -171,7 +197,9 @@ function CrearLista() {
     } else if (valor.length > 20) {
       event.target.value = valor.slice(0, 20);
       event.target.classList.add('active');
-      alert(`Nombre debe tener entre 1 a 20 caracteres.`);
+      setModalMessage('Nombre debe tener entre 1 a 20 caracteres.');
+      setIsModalOpen(true);
+
       //event.target.classList.remove('active');
     } else {
       event.target.classList.remove('active');
@@ -195,7 +223,9 @@ function CrearLista() {
     if (valor.length > 20) {
       event.target.value = valor.slice(0, 20);
       event.target.classList.add('active');
-      alert(`Nombre debe tener entre 1 a 20 caracteres.`);
+      setModalMessage('Nombre debe tener entre 1 a 20 caracteres.');
+      setIsModalOpen(true);
+
       //event.target.classList.remove('active');
     }
   }
@@ -279,6 +309,12 @@ function CrearLista() {
           </div>
         </div>
       </form>
+      <Alerta 
+    isOpen={isModalOpen} 
+    mensaje={modalMessage} 
+    onClose={() => setIsModalOpen(false)}
+/>
+
     </div>
   );
 }

@@ -1,12 +1,21 @@
 import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from "react-router-dom";
-import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrl, recuperarUrlCancion } from '../firebase/config';
+import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import './form.css'
 
+import Alerta from './alerta';
+
+
 function AñadirCancion() {
+  const generos = [ 'Pop', 'Rock and Roll', 'Disco', 'Country', 'Techno', 
+                    'Reggae', 'Salsa', 'Flamenco', 'Ranchera', 'Hip hop/Rap', 
+                    'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica' ];
   /* const [file, setFile] = useState(null); */
   const [listas, setListas] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [idAlbum, setidAlbum] = useState(null);
   const [generoSeleccionado, setGeneroSeleccionado] = useState('');
@@ -18,7 +27,8 @@ function AñadirCancion() {
 
     if (tituloExistente) {
       // MODAL
-      alert('El título de la canción ya existe. Por favor, elige otro título.');
+      setModalMessage('El título de la canción ya existe. Por favor, elige otro título.');
+      setIsModalOpen(true);
       return false;
     }
     return true;
@@ -34,7 +44,8 @@ function AñadirCancion() {
 
       return canciones.some((cancion) => cancion.nombre_cancion === titulo);
     } catch (error) {
-      alert('Error al obtener las canciones:', error);
+      setModalMessage('Error al obtener las canciones:', error);
+      setIsModalOpen(true);
       return false;
     }
   };
@@ -76,41 +87,43 @@ function AñadirCancion() {
   }
 
   /* VALIDAR FORM PAR ASUBIR A BD */
-const validarForm = async (e) => {
-  e.preventDefault();
+  const validarForm = async (e) => {
+    e.preventDefault();
 
   // Obtener valores de los campos
 
-  const nuevaCancion = {
-    id_lista: idAlbum,
-    duracion: "",
-    nombre_cancion: document.getElementById("titulo_Cancion").value,
-    nombreArtista: document.getElementById("artista").value,// Puedes obtener la duración del archivo si es posible
-    nombreAlbum: "",
-    genero: generoSeleccionado
-  };
-   
-  //const generoSeleccionado = document.getElementById("generoSeleccionado").value;
-  const archivos = document.getElementById('archivo').files;
-  
-  /* // Validar campos
-  if (!idLista || !tituloCancion || !nombreArtista || archivos.length === 0) {
-    alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
-    return;idLista
-  } */
+    const nuevaCancion = {
+      id_lista: idAlbum,
+      duracion: "",
+      nombre_cancion: document.getElementById("titulo_Cancion").value,
+      nombreArtista: document.getElementById("artista").value,// Puedes obtener la duración del archivo si es posible
+      nombreAlbum: "",
+      genero: generoSeleccionado
+    };
+
+    //const generoSeleccionado = document.getElementById("generoSeleccionado").value;
+    const archivos = document.getElementById('archivo').files;
+
+    /* // Validar campos
+    if (!idLista || !tituloCancion || !nombreArtista || archivos.length === 0) {
+      alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
+      return;idLista
+    } */
 
   // Validar formato del archivo
   if (archivos.length < 1) { return; }
   const archivo = archivos[0];
   if (!validarFormatoArchivo(archivo)) {
-    alert(`Formato de archivo no válido.`);
+    setModalMessage('Formato de archivo no válido.');
+    setIsModalOpen(true);
     return;
   }
 
   // Validar tamaño del archivo (15 MB)
   const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
   if (archivo.size > maxSize) {
-    alert(`Tamaño máximo de 15 MB excedido.`);
+    setModalMessage('Tamaño máximo de 15 MB excedido.');
+    setIsModalOpen(true);
     return;
   }
 
@@ -134,15 +147,18 @@ const validarForm = async (e) => {
       // Si ocurre un error al subir en la base de datos
       // eliminar el archivo subido en Firebase
       deleteFile(resultado.filePath);
-      alert(`Error al cargar la canción. Intente más tarde.`);
+      setModalMessage('Error al cargar la canción. Intente más tarde.');
+      setIsModalOpen(true);
       return;
     }
     
-    alert(`Canción creada exitosamente.`);
+    setModalMessage('Canción creada exitosamente.');
+    setIsModalOpen(true);
     window.location.reload();
   } catch (error) {
     console.error('Error:', error);
-    alert(`Error al subir o procesar el archivo.`);
+    setModalMessage('Error al subir o procesar el archivo.');
+    setIsModalOpen(true);
   }
 };
 
@@ -162,15 +178,25 @@ const validarForm = async (e) => {
     file.click();
   };
 
-  const validar = (event) => {
-    const valor = event.target.value;
-    if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
-      event.target.classList.add('active');
-    } else if (valor.length > 20) {
-      event.target.classList.add('active');
-      alert(`Nombre debe tener entre 1 a 20 caracteres.`);
+  const validar = (e) => {
+    const valor  = e.target.value;
+    if (!/^[a-zA-Z0-9\s,]*$/.test(valor)) {
+      e.target.classList.add('active');
+    }else if (/^[a-zA-Z0-9\s]*$/.test(valor)) {
+      e.target.classList.remove('active');
+    } else if (/,+[\s]*$/.test(valor)) {
+      e.target.classList.add('active');
+    } else if (/[,a-zA-Z0-9\s]*$/.test(valor)) {
+      e.target.classList.remove('active');
     } else {
-      event.target.classList.remove('active');
+      e.target.classList.add('active');
+    }
+    if (valor.length > 20) {
+      e.target.value = valor.slice(0, 20);
+      e.target.classList.add('active');
+      setModalMessage('Nombre debe tener entre 1 a 20 caracteres.');
+      setIsModalOpen(true);
+      //event.target.classList.remove('active');
     }
   };
 
@@ -180,7 +206,7 @@ const validarForm = async (e) => {
     const selectElement = document.getElementById('selectList');
   
     const nombreArtista = artista.value;
-    console.log("nombre recupearadode imput",nombreArtista);
+    console.log("nombre recuperado de imput",nombreArtista);
   
     if (nombreArtista.length > 0) {
       try {
@@ -189,8 +215,9 @@ const validarForm = async (e) => {
         
         console.log("nombre recupearadod>>><",nombreArtista);
         console.log("id de artista encontrado>>:", idArtistaEncontrado);
-        if (idArtistaEncontrado == null) {
-          alert('El artista no existe, intente con otro.');
+        if (idArtistaEncontrado === null) {
+          setModalMessage('El artista no existe, intente con otro.');
+          setIsModalOpen(true);
           return;
         }
 
@@ -253,7 +280,26 @@ const validarForm = async (e) => {
   };
 
   const handleArtistaChange = (e) => {
-    const nombreArtista = e.target.value;
+    const nombreArtista  = e.target.value;
+    if (!/^[a-zA-Z0-9\s,]*$/.test(nombreArtista )) {
+      e.target.classList.add('active');
+    }else if (/^[a-zA-Z0-9\s]*$/.test(nombreArtista )) {
+      e.target.classList.remove('active');
+    } else if (/,+[\s]*$/.test(nombreArtista )) {
+      e.target.classList.add('active');
+    } else if (/[,a-zA-Z0-9\s]*$/.test(nombreArtista )) {
+      e.target.classList.remove('active');
+    } else {
+      e.target.classList.add('active');
+    }
+    if (nombreArtista.length > 20) {
+      e.target.value = nombreArtista.slice(0, 20);
+      e.target.classList.add('active');
+      setModalMessage('Nombre debe tener entre 1 a 20 caracteres.');
+      setIsModalOpen(true);
+
+      //event.target.classList.remove('active');
+    }
 
     // Cancelar el timeout anterior si existe
     if (timeoutRef.current) {
@@ -261,6 +307,8 @@ const validarForm = async (e) => {
     }
 
     // Establecer un nuevo timeout para llamar a cargarListas después de un momento de inactividad
+    
+
     timeoutRef.current = setTimeout(() => {
       cargarListas(nombreArtista);
     }, 2000); // Espera 500 milisegundos (0.5 segundos) antes de llamar a cargarListas
@@ -279,8 +327,9 @@ const validarForm = async (e) => {
       const idAlbumEncontrado = await idArtistaAlbum(selectedId);
       setidAlbum(idAlbumEncontrado);
 
-      if (idAlbumEncontrado == null) {
-        alert('El album no existe, intente con otro.');
+      if (idAlbumEncontrado === null) {
+        setModalMessage('El album no existe, intente con otro.');
+        setIsModalOpen(true);
         return;
       }
     } catch (error) {
@@ -330,7 +379,7 @@ const validarForm = async (e) => {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="artista">Nombre de artista *</label>
-              <input
+              <input required
                 type="text"
                 className="validar"
                 id="artista"
@@ -411,8 +460,12 @@ const validarForm = async (e) => {
           
         </div>
       </form>
+      <Alerta 
+        isOpen={isModalOpen} 
+        mensaje={modalMessage} 
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
-
 export default AñadirCancion;

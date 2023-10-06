@@ -8,6 +8,15 @@ import plus from '../logos/plus.png';
 import './menuLateral.css';
 
 function MenuLateral() {
+  const menuOptions = [
+    { to: '/Inicio', src: home, alt: 'Home', title: 'Inicio' },
+    { separador: true },
+    { to: '/Albumes', src: group, alt: 'Álbumes', title: 'Álbumes' },
+    { to: '/crearAlbum', src: plus, alt: 'Crear álbum', title: 'Crear álbum' },
+    // { to: '/Sencillo', src: disc, alt: 'Sencillo', title: 'Sencillo' },
+    { to: '/añadirCancion', src: plus, alt: 'Cargar canción', title: 'Cargar canción' }
+  ];
+
   return (
     <div className="menu">
       <div className="profile">
@@ -17,54 +26,20 @@ function MenuLateral() {
       </div>
 
       <div className="menu-items">
-        <div className="item">
-          <Link to="/Inicio">
-            <div className="icon">
-              <img src={home} alt="Home"  width="25" />
+        {menuOptions.map((menuOption) => (
+          menuOption.separador ? (
+            <div className="item separador border-b-5 border-black"></div>
+          ) : (
+            <div className="item">
+              <Link to={menuOption.to}>
+                <div className="icon">
+                  <img src={menuOption.src} alt={menuOption.alt} width="30" />
+                </div>
+                <div className="title">{menuOption.title}</div>
+              </Link>
             </div>
-            <div className="title">Inicio</div>
-          </Link>
-        </div>
-
-        <div className="item separador border-b-5 border-black"></div>
-
-        <div className="item">
-          <Link to="/Albumes">
-            <div className="icon">
-              <img src={group} alt="Álbumes" width="30" />
-            </div>
-            <div className="title">Álbumes</div>
-          </Link>
-        </div>
-
-        <div className="item">
-          <Link to="/crearAlbum">
-            <div className="icon">
-              <img src={plus} alt="Crear álbum" width="30" />
-            </div>
-            <div className="title">Crear álbum</div>
-          </Link>
-        </div>
-
-        {/* <div className="item">
-          <Link to="/Sencillo">
-            <div className="icon">
-              <img src={disc} alt="Sencillo" width="30" />
-            </div>
-            <div className="title">Sencillo</div>
-          </Link>
-        </div> */}
-
-        <div className="item">
-          <Link to="/añadirCancion">
-
-            <div className="icon">
-              <img src={plus} alt="Cargar canción" width="30" />
-            </div>
-
-            <div className="title">Cargar canción</div>
-          </Link>
-        </div>
+          )
+        ))}
       </div>
     </div>
   );
