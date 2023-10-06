@@ -13,6 +13,8 @@ function AñadirCancion() {
     'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica'];
   const [listas, setListas] = useState([]);
   useEffect(() => { mostrarNombreArchivo(); }, [listas]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   let idArtistaEncontrado;
 
   const validarCampos = async (campos) => {
