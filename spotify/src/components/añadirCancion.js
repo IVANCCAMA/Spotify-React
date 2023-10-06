@@ -15,7 +15,7 @@ function AñadirCancion() {
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  useEffect(() => { mostrarNombreArchivo(); }, [listas, isModalOpen, modalMessage]);
+  useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, isModalOpen, modalMessage]);
 
   const getlistasbyid_user = async (id_usuario) => {
     try {
@@ -67,7 +67,7 @@ function AñadirCancion() {
       return null;
     }
     if (campos.album.length < 1 || campos.genero.length < 1 || campos.archivo.length < 1) {
-      console.log("todos los campos son requeridos");
+      console.log("No se selecciono album, genero o archivo");
       return null;
     }
 
@@ -110,7 +110,7 @@ function AñadirCancion() {
     return null;
   }
 
-  const validarFormatoArchivo = (archivo) => {
+  const validarFormatoArchivo = async (archivo) => {
     const formatosPermitidos = ["mpeg", "wav"];
     for (const formato of formatosPermitidos) {
       if (archivo.type.includes(formato)) {
@@ -123,8 +123,8 @@ function AñadirCancion() {
   const subirFirebase = async (archivo) => {
     try {
       const cancionInfo = await SubirCancion(archivo);
-      const CancionUrl = await recuperarUrlCancion(cancionInfo);
-      return CancionUrl;
+      const cancionUrl = await recuperarUrlCancion(cancionInfo);
+      return { url: cancionUrl, filePath: cancionInfo };
     } catch (error) {
       console.error('Error:', error);
     }
@@ -149,14 +149,13 @@ function AñadirCancion() {
 
       const campos = {
         titulo: eliminarEspacios(document.getElementById('titulo_Cancion').value).trim(),
-        artista: document.getElementById('artista').value,
-        album: document.getElementById('album').value,
-        genero: document.getElementById('genero').value,
+        artista: eliminarEspacios(document.getElementById('artista').value).trim(),
+        album: eliminarEspacios(document.getElementById('album').value).trim(),
+        genero: eliminarEspacios(document.getElementById('genero').value).trim(),
         archivo: document.getElementById('archivo').files
       };
 
       const nuevaCancion = await validarCampos(campos);
-    
       if (nuevaCancion === null) {
         setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
         setIsModalOpen(true);
@@ -179,7 +178,7 @@ function AñadirCancion() {
 
       try {
         const resultado = await subirFirebase(archivo);
-        nuevaCancion.path_cancion = resultado;
+        nuevaCancion.path_cancion = resultado.url;
 
         const recuperarDuracionAudio = await RecuperarDuracion(archivo);
         nuevaCancion.duracion = recuperarDuracionAudio
@@ -207,7 +206,6 @@ function AñadirCancion() {
       setBotonHabilitado(true);
     }
   };
-
 
   const mostrarNombreArchivo = () => {
     const file = document.getElementById('archivo');
@@ -249,17 +247,17 @@ function AñadirCancion() {
 
   const handle = async (e) => {
     let newValue = eliminarEspacios(e.target.value);
-    if (alfanumerico(newValue)) {
-      e.target.classList.remove('active');
-    } else {
-      e.target.classList.add('active');
-    }
     if (newValue.length > 20) {
       e.target.classList.add('active');
       setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
       setIsModalOpen(true);
       newValue = newValue.slice(0, 20);
       e.target.classList.remove('active');
+    }
+    if (alfanumerico(newValue)) {
+      e.target.classList.remove('active');
+    } else {
+      e.target.classList.add('active');
     }
     e.target.value = newValue;
   };
@@ -325,7 +323,7 @@ function AñadirCancion() {
           {/* SELECCIONAR ARCHIVO */}
           <div className="campo campo-cargar-cancion">
             <div className="input-box">
-              <label htmlFor="archivo">Seleccionar canción *</label>
+              <label>Seleccionar canción *</label>
               <div className="seleccionarArchivo">
                 <span className="nombreArchivo" id="nombreArchivo"></span>
                 <input
