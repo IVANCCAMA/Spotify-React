@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import { alfanumerico } from './form.js';
 import './form.css'
-import { onLog } from 'firebase/app';
+import Alerta from './alerta';
 
 function AñadirCancion() {
   const database = 'https://spfisbackend-production.up.railway.app/api';
@@ -80,7 +80,8 @@ function AñadirCancion() {
       const canciones = response.data;
       return canciones.some((cancion) => cancion.nombre_cancion === titulo);
     } catch (error) {
-      alert('Error al obtener las canciones:', error);
+      setModalMessage('Error al obtener las canciones:', error);
+      setIsModalOpen(true);
       return false;
     }
   };
@@ -129,19 +130,22 @@ function AñadirCancion() {
 
     const nuevaCancion = await validarCampos(campos);
     if (nuevaCancion === null) {
-      alert(`Asegúrese de que todos los campos estén llenados correctamente.`);
+      setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
+      setIsModalOpen(true);
       return;
     }
 
     const archivo = archivo.files[0];
     if (!validarFormatoArchivo(archivo)) {
-      alert(`Formato de archivo no válido.`);
+      setModalMessage(`Formato de archivo no válido.`);
+      setIsModalOpen(true);
       return;
     }
 
     const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
     if (archivo.size > maxSize) {
-      alert(`Tamaño máximo de 15 MB excedido.`);
+      setModalMessage(`Tamaño máximo de 15 MB excedido.`);
+      setIsModalOpen(true);
       return;
     }
 
@@ -155,15 +159,18 @@ function AñadirCancion() {
       const subidaExitosa = await subirBD(nuevaCancion);
       if (!subidaExitosa) {
         deleteFile(resultado.filePath);
-        alert(`Error al cargar la canción. Intente más tarde.`);
+        setModalMessage(`Error al cargar la canción. Intente más tarde.`);
+        setIsModalOpen(true);
         return;
       }
 
-      alert(`Canción creada exitosamente.`);
-      // window.location.reload();
+      setModalMessage(`Canción creada exitosamente.`);
+      setIsModalOpen(true);
+      window.location.replace("/Albumes");
     } catch (error) {
       console.error('Error:', error);
-      alert(`Error al subir o procesar el archivo.`);
+      setModalMessage(`Error al subir o procesar el archivo.`);
+      setIsModalOpen(true);
     }
   };
 
@@ -181,11 +188,9 @@ function AñadirCancion() {
 
   const cargarListas = async () => {
     const nombreArtista = document.getElementById('artista').value;
-
     if (nombreArtista.length > 0) {
       try {
         idArtistaEncontrado = await ExisteArtista(nombreArtista);
-
         if (idArtistaEncontrado == null) {
           setListas([]);
         } else {
@@ -250,9 +255,10 @@ function AñadirCancion() {
     }
     if (newValue.length > 20) {
       e.target.classList.add('active');
-      // llamar y esperar modal
+      setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
+      setIsModalOpen(true);
       newValue = newValue.slice(0, 20);
-      // e.target.classList.remove('active');
+      e.target.classList.remove('active');
     }
     e.target.value = newValue;
   };
@@ -347,6 +353,12 @@ function AñadirCancion() {
           </div>
         </div>
       </form>
+
+      <Alerta
+        isOpen={isModalOpen}
+        mensaje={modalMessage}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
