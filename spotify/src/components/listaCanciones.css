@@ -28,7 +28,11 @@
   grid-auto-flow: column; /* Cambia de "row" a "column" */
 }
 
-
+.album-config{
+  position: relative;
+  display: flex; 
+  left: 120px;
+}
 
 .album-details{
   position: relative;
@@ -47,6 +51,10 @@
   grid-auto-flow: row; 
 } */
 
+.song-list {
+  position: relative;
+  left: 120px;
+}
 
 .album-item {
   display: flex;
@@ -166,8 +174,7 @@
 /*alineamiento del boton de play*/
 .play-logo {
   position: relative;
-  right: 50px;
-
+  right: 0 px;
   width: 40px;
   height: 40px;
   /* Otros estilos según sea necesario */
@@ -176,7 +183,7 @@
 /*alineamiento de tiempo de duracion*/
 .duracion-logo {
   position: relative;
-  right: 70px;
+  right: 20px;
   width: 40px;
   height: 25px;
   /* Otros estilos según sea necesario */
