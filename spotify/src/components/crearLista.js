@@ -323,7 +323,7 @@ function CrearLista() {
           {/* SELECCIONAR ARCHIVO */}
           <div className="campo campo-cargar-cancion">
             <div className="input-box">
-              <label>Portada del álbum</label>
+              <label>Portada del álbum *</label>
               <div className="seleccionarArchivo">
                 <span className="nombreArchivo" id="nombreArchivo"></span> {/* Mostrar nombre del archivo */}
                 <input
@@ -338,7 +338,7 @@ function CrearLista() {
                   type="button"
                   className="btn-subir bg-white"
                   onClick={() => { document.getElementById('archivo').click(); }}
-                  value="Seleccionar archivo"
+                  value="Seleccionar imagen"
                 />
               </div>
             </div>
