@@ -6,7 +6,7 @@ function Alerta({ isOpen, mensaje, onClose }) {
   if (!isOpen) {
     return null;
   }
-
+  
   // Si isOpen es true, entonces vamos mostrando el modal.
   return (
     <div className="modal-alerta" id="alerta">
