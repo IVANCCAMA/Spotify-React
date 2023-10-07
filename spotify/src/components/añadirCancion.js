@@ -261,7 +261,6 @@ function AñadirCancion() {
       e.target.classList.add('active');
     }
     if (newValue.length > 20) {
-      e.target.classList.add('active');
       newValue = newValue.slice(0, 20);
     }
     e.target.value = newValue;
@@ -271,7 +270,6 @@ function AñadirCancion() {
     <div className="modal-form">
       <form className="modal-box" id="form" onSubmit={validarForm}>
         <div className="inter-modal">
-          
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo">Título de la canción *</label>

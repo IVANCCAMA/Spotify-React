@@ -251,7 +251,6 @@ function CrearLista() {
       e.target.classList.add('active');
     }
     if (newValue.length > 20) {
-      e.target.classList.add('active');
       newValue = newValue.slice(0, 20);
     }
     e.target.value = newValue;
@@ -293,10 +292,8 @@ function CrearLista() {
 
           <div className="campo">
             <div className="input-box">
-
-              <label htmlFor="colaborador">Artista colaborador</label>
+              <label htmlFor="colaborador">Artista colaborador *</label>
               <input
-
                 type="text"
                 className="validarNoRequiered"
                 id="colaborador"
@@ -304,9 +301,9 @@ function CrearLista() {
 
                 placeholder="Escriba el nombre del artista colaborador"
                 onChange={(e) => {
-                  if (e.target.value.length > 0 && e.target.value.length < 20) {
+                  if (e.target.value.length > 0 && e.target.value.length < 21) {
                     e.target.classList.remove('active'); e.target.classList.add('valid');
-                  } else { e.target.classList.remove('valid'); }
+                  } 
                   handle(e, alfanumerico);
                 }}
                 onBlur={(e) => {
@@ -315,7 +312,6 @@ function CrearLista() {
                     e.target.classList.remove('active'); e.target.classList.remove('valid');
                   }
                 }}
-
               />
             </div>
           </div>
