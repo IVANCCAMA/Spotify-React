@@ -9,7 +9,7 @@ function ListaAlbumes() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('spf_is_backend.railway.internal/api/lista_canciones/');
+        const response = await axios.get('spfisbackend-production.up.railway.app/api');
         const listaCanciones = response.data;
 
         // Ordenar los álbumes por título alfabéticamente
