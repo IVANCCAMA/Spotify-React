@@ -4,6 +4,7 @@
 }
 
 .album-config{
+  padding-top: 100px;
   position: relative;
   display: flex;
   right: 175px; 

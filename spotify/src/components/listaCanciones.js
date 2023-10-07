@@ -62,7 +62,7 @@ function ListaCanciones() {
           <div className="artist-name">{infoAlbum.nombre_usuario}</div> {/* ARREGLAR */}
           <div className="album-songs">{infoAlbum.cantidad_canciones} canciones</div>
         </div>
-  </div>
+      </div>
 
       {/* Listado de canciones de álbum */}
       <div className="song-config">

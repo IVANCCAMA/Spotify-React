@@ -353,12 +353,11 @@ function AñadirCancion() {
           <div className="campo">
             <div className="btn-box">
               <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
-              <Link to="/Inicio" className="custom-link">Cancelar</Link>
+              <Link to="/" className="custom-link">Cancelar</Link>
             </div>
           </div>
         </div>
       </form>
-
       <Alerta
         isOpen={isModalOpen}
         mensaje={modalMessage}
