@@ -250,7 +250,7 @@ function CrearLista() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo_lista">Título del álbum *</label>
-              <input autoFocus 
+              <input autoFocus required
                 type="text"
                 className="validar"
                 id="titulo_lista"
