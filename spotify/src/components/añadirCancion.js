@@ -15,7 +15,15 @@ function AñadirCancion() {
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, isModalOpen, modalMessage]);
+  const [redirectTo, setRedirectTo] = useState(null);
+  useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, isModalOpen, modalMessage, redirectTo]);
+
+  function handleCloseAndRedirect() {
+    setIsModalOpen(false);
+    if (redirectTo) {
+      window.location.replace(redirectTo);
+    }
+  }
 
   const getlistasbyid_user = async (id_usuario) => {
     try {
@@ -193,7 +201,7 @@ function AñadirCancion() {
 
         setModalMessage(`Canción creada exitosamente.`);
         setIsModalOpen(true);
-        window.location.replace("/Albumes");
+        setRedirectTo("/Albumes");
       } catch (error) {
         console.error('Error:', error);
         setModalMessage(`Error al subir o procesar el archivo.`);
@@ -245,19 +253,16 @@ function AñadirCancion() {
     return value.replace(/\s+/g, ' ');
   };
 
-  const handle = async (e) => {
+  const handle = (e) => {
     let newValue = eliminarEspacios(e.target.value);
-    if (newValue.length > 20) {
-      e.target.classList.add('active');
-      setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
-      setIsModalOpen(true);
-      newValue = newValue.slice(0, 20);
-      if(alfanumerico(newValue)){e.target.classList.remove('active');}
-    }
     if (alfanumerico(newValue)) {
       e.target.classList.remove('active');
     } else {
       e.target.classList.add('active');
+    }
+    if (newValue.length > 20) {
+      e.target.classList.add('active');
+      newValue = newValue.slice(0, 20);
     }
     e.target.value = newValue;
   };
@@ -356,7 +361,7 @@ function AñadirCancion() {
       <Alerta
         isOpen={isModalOpen}
         mensaje={modalMessage}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseAndRedirect}
       />
     </div>
   );
