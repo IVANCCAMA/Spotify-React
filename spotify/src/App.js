@@ -18,7 +18,7 @@ function App() {
         <MenuLateral />
         <div className="container mx-auto py-4 px-20">
           <Routes>
-            <Route path="/Inicio" element={<Inicio />} />
+            <Route path="/" element={<Inicio />} />
             <Route path="/Albumes" element={<ListaAlbumes />} />
             <Route path="/crearAlbum" element={<CrearLista />} />
             {/* <Route path="/Sencillo" element={<Sencillo />} /> */}

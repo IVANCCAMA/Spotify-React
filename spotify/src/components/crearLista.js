@@ -347,7 +347,7 @@ function CrearLista() {
           <div className="campo">
             <div className="btn-box">
               <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
-              <Link to="/Inicio"  ><button to="/Inicio" className="custom-link">Cancelar</button></Link>
+              <Link to="/"><button to="/" className="custom-link">Cancelar</button></Link>
             </div>
           </div>
         </div>
