@@ -43,7 +43,7 @@ function ListaCanciones() {
   
 
   return (
-    <div>
+    <div className='general-config'>
       {/* Info de álbum */}
   <div className='album-config'>
     {/* Columna 1: Imagen del álbum */}
@@ -62,10 +62,13 @@ function ListaCanciones() {
       <div className="artist-name">{infoAlbum.nombre_usuario}</div> {/* ARREGLAR */}
       <div className="album-songs">{infoAlbum.cantidad_canciones} canciones</div>
     </div>
+
+
+    
   </div>
 
       {/* Listado de canciones de álbum */}
-      <div className="song-list">
+      <div className="song-config">
         {Array.isArray(listaCanciones) && listaCanciones.map((canciones, index) => (
           <Link to={`/detalle-cancion/${canciones.id_cancion}`} key={canciones.id_cancion} className="album-item">
 
