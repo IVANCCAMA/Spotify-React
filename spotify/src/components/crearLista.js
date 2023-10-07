@@ -264,7 +264,7 @@ function CrearLista() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo_lista">Título del álbum *</label>
-              <input autoFocus required
+              <input autoFocus 
                 type="text"
                 className="validar"
                 id="titulo_lista"
@@ -293,13 +293,16 @@ function CrearLista() {
 
           <div className="campo">
             <div className="input-box">
+
               <label htmlFor="colaborador">Artista colaborador *</label>
               <input
+
                 type="text"
                 className="validarNoRequiered"
                 id="colaborador"
                 name="colaborador"
-                placeholder="Escriba el nombre de el/los artista/s"
+
+                placeholder="Escriba el nombre del artista colaborador"
                 onChange={(e) => {
                   if (e.target.value.length > 0 && e.target.value.length < 20) {
                     e.target.classList.remove('active'); e.target.classList.add('valid');
@@ -312,6 +315,7 @@ function CrearLista() {
                     e.target.classList.remove('active'); e.target.classList.remove('valid');
                   }
                 }}
+
               />
             </div>
           </div>

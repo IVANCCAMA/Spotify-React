@@ -343,7 +343,7 @@ function AñadirCancion() {
                   type="button"
                   className="btn-subir bg-white"
                   onClick={() => { document.getElementById('archivo').click(); }}
-                  value="Seleccionar archivo"
+                  value="Seleccionar canción"
                 />
               </div>
             </div>

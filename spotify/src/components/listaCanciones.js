@@ -45,26 +45,23 @@ function ListaCanciones() {
   return (
     <div className='general-config'>
       {/* Info de álbum */}
-  <div className='album-config'>
-    {/* Columna 1: Imagen del álbum */}
-    <div key={infoAlbum.id_lista} className="album-portada">
-      <img
-        src={infoAlbum.path_image}
-        /* className='album-image' */
-        alt="Álbum"
-        style={{ width: '111px', height: '111px', objectFit: 'cover' }}  // Ajustamos el estilo de la imagen
-      />
-    </div>
+      <div className='album-config'>
+        {/* Columna 1: Imagen del álbum */}
+        <div key={infoAlbum.id_lista} className="album-portada">
+          <img
+            src={infoAlbum.path_image}
+            /* className='album-image' */
+            alt="Álbum"
+            style={{ width: '111px', height: '111px', objectFit: 'cover' }}  // Ajustamos el estilo de la imagen
+          />
+        </div>
 
-    {/* Columna 2: Datos del álbum */}
-    <div className="album-details">  {/* Añadimos un margen izquierdo */}
-      <div className="album-title2">{infoAlbum.titulo_lista}</div>
-      <div className="artist-name">{infoAlbum.nombre_usuario}</div> {/* ARREGLAR */}
-      <div className="album-songs">{infoAlbum.cantidad_canciones} canciones</div>
-    </div>
-
-
-    
+        {/* Columna 2: Datos del álbum */}
+        <div className="album-details">  {/* Añadimos un margen izquierdo */}
+          <div className="album-title2">{infoAlbum.titulo_lista}</div>
+          <div className="artist-name">{infoAlbum.nombre_usuario}</div> {/* ARREGLAR */}
+          <div className="album-songs">{infoAlbum.cantidad_canciones} canciones</div>
+        </div>
   </div>
 
       {/* Listado de canciones de álbum */}
@@ -79,7 +76,7 @@ function ListaCanciones() {
                   alt="Álbum"
                   className="album-image2"
                 />
-                <div className="titulo-cancion-logo">{canciones.nombre_cancion}</div>
+                <div className="titulo-cancion-logo">{canciones.nombre_usuario + " - " +  canciones.nombre_cancion}</div>
                 <div className="duracion-logo">{canciones.duracion}</div>
               </div>
               <img src={songLogo} alt="Álbum" className="play-logo" />

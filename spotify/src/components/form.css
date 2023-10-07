@@ -33,13 +33,6 @@
     align-items: stretch;
 }
 
-/* Campos de entrada */
-.campo {
-    margin-bottom: 20px;
-   
-    /* padding: 20px; */
-}
-
 .input-box {
     position: relative;
     width: 80%;
@@ -62,6 +55,13 @@
 
 .input-box select {
     font-weight: bold;
+}
+
+/* Campos de entrada */
+.campo {
+    margin-bottom: 20px;
+   
+    /* padding: 20px; */
 }
 
 .campo-cargar-cancion {
