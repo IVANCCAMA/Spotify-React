@@ -76,7 +76,7 @@ function ListaCanciones() {
                   alt="Álbum"
                   className="album-image2"
                 />
-                <div className="titulo-cancion-logo">{canciones.nombre_cancion}</div>
+                <div className="titulo-cancion-logo">{canciones.nombre_usuario + " - " +  canciones.nombre_cancion}</div>
                 <div className="duracion-logo">{canciones.duracion}</div>
               </div>
               <img src={songLogo} alt="Álbum" className="play-logo" />
