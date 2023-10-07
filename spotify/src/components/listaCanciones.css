@@ -185,7 +185,8 @@
   right: 20px;
   width: 40px;
   height: 25px;
-  /* Otros estilos según sea necesario */
+  color: #FFFFFF;
+  font-weight: bold;
 }
 
 /*alineamiento de titulo de cancion*/
