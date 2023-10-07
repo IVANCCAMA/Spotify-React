@@ -1,21 +1,23 @@
+
 .albumes-list {
   padding: 20px;
   border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0px;
+  gap: 1em;
   max-width: 1000px;
-  margin: 50px 0 0 200px;
+  margin: 50px 0 0 300px;
   grid-auto-rows: minmax(150px, 180px); 
-  grid-auto-flow: row; 
 }
 
 .albumes-details {
   position: relative;
-  width: 10em;
-  padding: 2%;
-
+  display: block;
+  overflow: hidden; 
+  white-space: nowrap; 
+  text-overflow: ellipsis; 
 }
+
 
 .albumes-item {
   display: flex;
@@ -24,54 +26,69 @@
 }
 
 .albumes-logo {
-  margin-right: 25px; 
+  display: block;
+  padding: 100px;
 }
 
 .albumes-title {
-  
-  line-height: 1.5em;
-    font-weight: bold;
-    font-size: 25px;
-    color: #FFFFFF;
-    display: flex;
-    align-items: baseline;
-    text-align: left;
-    font-family: var(--fuente-1);
-    
-    height: 3em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    
-    
+  padding: 10px;
+  font-weight: bold;
+  font-size: 25px;
+  color: #FFFFFF;
+  display: block;
+  align-items: center;
+  text-align: justify;
+  font-family: var(--fuente-1);
 }
 
 .artistas-name {
+  padding: 7px;
   position: relative;
   top: 0px;
   font-weight: bold;
   font-size: 16px;
   color: #FFFFFF;
-  display: flex;
+  display: block;
   align-items: center;
   text-align: justify;
   font-family: var(--fuente-1);
 }
+
 .albumes-songs {
-  
-    font-weight: bold;
-    font-size: 16px;
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    text-align: justify;
-    font-family: var(--fuente-1);
+  padding: 7px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #FFFFFF;
+  display: block;
+  align-items: center;
+  text-align: justify;
+  font-family: var(--fuente-1);
 }
 
-/* listaAlbunes.css */
 .albumes-image {
   width: 120px;
   height: 120px;
-  border: 5px solid white; /* Borde blanco de 2px alrededor de la imagen */
-  /* Otros estilos según sea necesario */
+  border: 5px solid white; 
 }
 
+@media screen and (max-width: 1280px) {
+  .albumes-list {
+    grid-template-columns: repeat(2, 1fr); 
+    margin: 50px 0 0 300px;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .albumes-list {
+    grid-template-columns: repeat(1, 1fr);
+    margin: 0 0 0 300px; 
+  }
+
+  
+}
+@media screen and (max-width: 768px) {
+  .albumes-list {
+    grid-template-columns: repeat(1, 1fr);
+    margin: 0 0 0 0; 
+  }
+}
