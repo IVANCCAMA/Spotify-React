@@ -11,7 +11,15 @@ function CrearLista() {
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  useEffect(() => { mostrarNombreArchivo(); }, [botonHabilitado, isModalOpen, modalMessage]);
+  const [redirectTo, setRedirectTo] = useState(null);
+  useEffect(() => { mostrarNombreArchivo(); }, [botonHabilitado, isModalOpen, modalMessage, redirectTo]);
+
+  function handleCloseAndRedirect() {
+    setIsModalOpen(false);
+    if (redirectTo) {
+      window.location.replace(redirectTo);
+    }
+  }
 
   const getlistasbyid_user = async (id_usuario) => {
     try {
@@ -79,7 +87,7 @@ function CrearLista() {
 
     // colaborador
     if (campos.colaborador.length > 0) {
-      const id_colaborador = await ExisteArtista(campos.colaborador.trim());
+      const id_colaborador = await ExisteArtista(campos.colaborador);
       if (id_colaborador == null) {
         setModalMessage('El artista colaborador no existe, intente con otro.');
         setIsModalOpen(true);
@@ -203,7 +211,7 @@ function CrearLista() {
 
         setModalMessage(`Lista creada exitosamente.`);
         setIsModalOpen(true);
-        window.location.replace("/inicio");
+        setRedirectTo("/inicio");
       } catch (error) {
         console.error('Error:', error);
         setModalMessage(`Error al subir o procesar el archivo.`);
@@ -344,7 +352,7 @@ function CrearLista() {
       <Alerta
         isOpen={isModalOpen}
         mensaje={modalMessage}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseAndRedirect}
       />
     </div>
   );

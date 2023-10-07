@@ -15,7 +15,15 @@ function AñadirCancion() {
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, isModalOpen, modalMessage]);
+  const [redirectTo, setRedirectTo] = useState(null);
+  useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, isModalOpen, modalMessage, redirectTo]);
+
+  function handleCloseAndRedirect() {
+    setIsModalOpen(false);
+    if (redirectTo) {
+      window.location.replace(redirectTo);
+    }
+  }
 
   const getlistasbyid_user = async (id_usuario) => {
     try {
@@ -193,7 +201,7 @@ function AñadirCancion() {
 
         setModalMessage(`Canción creada exitosamente.`);
         setIsModalOpen(true);
-        window.location.replace("/Albumes");
+        setRedirectTo("/Albumes");
       } catch (error) {
         console.error('Error:', error);
         setModalMessage(`Error al subir o procesar el archivo.`);
@@ -353,7 +361,7 @@ function AñadirCancion() {
       <Alerta
         isOpen={isModalOpen}
         mensaje={modalMessage}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseAndRedirect}
       />
     </div>
   );
