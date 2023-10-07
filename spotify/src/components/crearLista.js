@@ -44,7 +44,7 @@ function CrearLista() {
 
   const validarCampos = async (campos) => {
     if (campos.titulo.length > 20 || campos.titulo.length < 1 || !alfanumerico(campos.titulo)) {
-      document.getElementById('titulo_Cancion').classList.add('active');
+      document.getElementById('titulo_lista').classList.add('active');
       return null;
     }
     if (campos.artista.length > 20 || campos.artista.length < 1 || !alfanumerico(campos.artista)) {
@@ -250,7 +250,7 @@ function CrearLista() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo_lista">Título del álbum *</label>
-              <input autoFocus required
+              <input autoFocus 
                 type="text"
                 className="validar"
                 id="titulo_lista"
