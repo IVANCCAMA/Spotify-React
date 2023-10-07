@@ -201,7 +201,7 @@ function AñadirCancion() {
 
         setModalMessage(`Canción creada exitosamente.`);
         setIsModalOpen(true);
-        setRedirectTo("/Albumes");
+        setRedirectTo("/Inicio");
       } catch (error) {
         console.error('Error:', error);
         setModalMessage(`Error al subir o procesar el archivo.`);
