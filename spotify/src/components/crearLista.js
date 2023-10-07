@@ -7,7 +7,7 @@ import './form.css';
 import Alerta from './alerta';
 
 function CrearLista() {
-  const database = 'https://spfisbackend-production.up.railway.app/api';
+  const database = 'spf_is_backend.railway.internal/api';
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
