@@ -252,7 +252,7 @@ function AñadirCancion() {
       setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
       setIsModalOpen(true);
       newValue = newValue.slice(0, 20);
-      e.target.classList.remove('active');
+      if(alfanumerico(newValue)){e.target.classList.remove('active');}
     }
     if (alfanumerico(newValue)) {
       e.target.classList.remove('active');

@@ -32,7 +32,7 @@ export async function RecuperarDuracion(file) {
       const duracionSegundos = audio.duration;
 
       // Convierte a minutos con dos decimales
-      const duracionMinutos = (duracionSegundos / 60).toFixed(2);
+      const duracionMinutos = (parseInt(duracionSegundos / 60) + ":" + parseInt(duracionSegundos % 60));
 
       // Libera la URL creada para el archivo
       URL.revokeObjectURL(fileURL);
