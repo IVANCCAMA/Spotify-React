@@ -211,7 +211,7 @@ function CrearLista() {
 
         setModalMessage(`Lista creada exitosamente.`);
         setIsModalOpen(true);
-        setRedirectTo("/inicio");
+        setRedirectTo("/");
       } catch (error) {
         console.error('Error:', error);
         setModalMessage(`Error al subir o procesar el archivo.`);
