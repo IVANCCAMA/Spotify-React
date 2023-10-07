@@ -10,7 +10,16 @@ function CrearLista() {
   const [file, setFile] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  //
+  const [redirectTo, setRedirectTo] = useState(null);
 
+    function handleCloseAndRedirect() {
+        setIsModalOpen(false);
+        if (redirectTo) {
+            window.location.replace(redirectTo);
+        }
+    }
+  //
   const esTituloCancionExistente = async (titulo) => {
     try {
       const query = `/lista_canciones/`;
@@ -169,7 +178,7 @@ function CrearLista() {
       console.log(nuevoAlbum)
       setModalMessage(`Lista creada exitosamente.`);
       setIsModalOpen(true);
-      window.location.replace("/inicio");
+      setRedirectTo("/inicio");
     } catch (error) {
       console.error('Error:', error);
       setModalMessage(`Error al subir o procesar el archivo.`);
@@ -314,12 +323,12 @@ function CrearLista() {
           </div>
         </div>
       </form>
-
       <Alerta
-        isOpen={isModalOpen}
-        mensaje={modalMessage}
-        onClose={() => setIsModalOpen(false)}
-      />
+            isOpen={isModalOpen}
+            mensaje={modalMessage}
+            onClose={handleCloseAndRedirect}
+        />
+    
     </div>
   );
 }
