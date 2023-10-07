@@ -250,7 +250,7 @@ function CrearLista() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo_lista">Título del álbum *</label>
-              <input autoFocus required
+              <input autoFocus 
                 type="text"
                 className="validar"
                 id="titulo_lista"
@@ -277,13 +277,13 @@ function CrearLista() {
 
           <div className="campo">
             <div className="input-box">
-              <label htmlFor="colaborador">Artista colaborador *</label>
+              <label htmlFor="colaborador">Artista colaborador</label>
               <input required
                 type="text"
                 className="validar"
                 id="colaborador"
                 name="colaborador"
-                placeholder="Escriba el nombre de el/los artista/s"
+                placeholder="Escriba el nombre del artista colaborador"
                 onChange={(e) => { handle(e, alfanumericoVarios); }}
               />
             </div>

@@ -31,7 +31,6 @@
 .album-config{
   position: relative;
   display: flex; 
-  left: 120px;
 }
 
 .album-details{
