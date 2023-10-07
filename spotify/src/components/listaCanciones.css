@@ -209,7 +209,7 @@
 .song-container {
   display: flex;
   align-items: center;
-  overflow-x: auto; /* Para habilitar el desplazamiento horizontal si es necesario */
+  overflow-x: hidden; /* Para habilitar el desplazamiento horizontal si es necesario */
   white-space: nowrap; /* Evita que los elementos se envuelvan a la siguiente línea */
   margin-top: 5px;
   margin-bottom: 5px;
