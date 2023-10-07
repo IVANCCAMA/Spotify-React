@@ -7,7 +7,7 @@ import './form.css'
 import Alerta from './alerta';
 
 function AñadirCancion() {
-  const database = 'https://spfisbackend-production.up.railway.app/api/';
+  const database = 'https://spfisbackend-production.up.railway.app/api';
   const generos = ['Pop', 'Rock and Roll', 'Disco', 'Country', 'Techno',
     'Reggae', 'Salsa', 'Flamenco', 'Ranchera', 'Hip hop/Rap',
     'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica'];
