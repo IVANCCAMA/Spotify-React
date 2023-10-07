@@ -190,7 +190,7 @@ function CrearLista() {
 
   const validar = (event) => {
     const valor = event.target.value;
-    if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
+    if (!/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]*$/.test(valor)) {
       event.target.classList.add('active');
     } else if (valor.length > 20) {
       event.target.classList.add('active');
@@ -205,13 +205,13 @@ function CrearLista() {
 
   const validarVarios = (event) => {
     const valor = event.target.value;
-    if (!/^[a-zA-Z0-9\s,]*$/.test(valor)) {
+    if (!/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]*$/.test(valor)) {
       event.target.classList.add('active');
-    } else if (/^[a-zA-Z0-9\s]*$/.test(valor)) {
+    } else if (/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]*$/.test(valor)) {
       event.target.classList.remove('active');
     } else if (/,+[\s]*$/.test(valor)) {
       event.target.classList.add('active');
-    } else if (/[,a-zA-Z0-9\s]*$/.test(valor)) {
+    } else if (/[,a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]*$/.test(valor)) {
       event.target.classList.remove('active');
     } else {
       event.target.classList.add('active');
