@@ -51,6 +51,10 @@
   margin-right: 25px; 
 }
 
+.play-logo {
+  margin-right: 25px; 
+}
+
 .album-title {
   padding: 10px;
     font-weight: bold;
@@ -70,7 +74,7 @@
     display: flex;
     align-items: center;
     text-align: justify;
-    font-family: var(--fuente-1);
+    font-family: var(--fuente-1);  
 }
 
 .artist-name {
@@ -120,6 +124,24 @@
 }
 
 .album-logo {
+  width: 40px;
+  height: 40px;
+  /* Otros estilos según sea necesario */
+}
+
+/*alineamiento del boton de play*/
+.play-logo {
+  position: absolute;
+  right: 230px;
+  width: 40px;
+  height: 40px;
+  /* Otros estilos según sea necesario */
+}
+
+/*alineamiento de tiempo de duracion*/
+.duracion-logo {
+  position: absolute;
+  right: 330px;
   width: 40px;
   height: 40px;
   /* Otros estilos según sea necesario */

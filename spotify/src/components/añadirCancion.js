@@ -2,7 +2,10 @@ import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from "react-router-dom";
 import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
+import { alfanumerico } from './form.js';
+import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import './form.css'
+import Alerta from './alerta';
 
 import Alerta from './alerta';
 
@@ -13,6 +16,7 @@ function AñadirCancion() {
                     'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica' ];
   /* const [file, setFile] = useState(null); */
   const [listas, setListas] = useState([]);
+  useEffect(() => { mostrarNombreArchivo(); }, [listas]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
@@ -22,6 +26,60 @@ function AñadirCancion() {
   const timeoutRef = useRef(null);
   let idArtistaEncontrado;
 
+  const validarCampos = async (campos) => {
+    if (campos.titulo.length > 20 || campos.titulo.length < 1 || !alfanumerico(campos.titulo)) {
+      document.getElementById('titulo_Cancion').classList.add('active');
+      return null;
+    }
+    if (campos.artista.length > 20 || campos.artista.length < 1 || !alfanumerico(campos.artista)) {
+      document.getElementById('artista').classList.add('active');
+      return null;
+    }
+    if (campos.album.length < 1 || campos.genero.length < 1 || campos.archivo.length < 1) {
+      console.log("todos los campos son requeridos");
+      return null;
+    }
+
+    // artista
+    const id_usuario = await ExisteArtista(campos.artista);
+    if (id_usuario == null) {
+      console.log('artista no encontrado');
+      return null;
+    }
+
+    // album
+    const albumesArtista = await listaAlbumesArtista(id_usuario);
+    const albumesUsuario = albumesArtista.find((album) => album.titulo_lista === campos.album);
+    const id_lista = albumesUsuario?.id_lista;
+
+    if (!id_lista) {
+      console.log('Álbum no encontrado');
+      return null;
+    }
+
+    // titulo
+    const query = `/canciones/completo_lista/${id_lista}`;
+    const response = await axios.get(`${database}${query}`);
+    const canciones = response.data;
+    const cancionExistente = canciones.find((cancion) => cancion.nombre_cancion === campos.titulo);
+    if (cancionExistente) {
+      console.log('el album ya tiene una cancion con el mismo nombre');
+      return null;
+    }
+    // verificar que el artista no tenga una cancion con el mismo nombre
+    // back: dado un id_user devolver todas las canciones que tiene ese user
+
+    // genero
+    for (const genero of generos) {
+      if (campos.genero === genero) {
+        return {
+          id_lista: id_lista,
+          nombre_cancion: campos.titulo,
+          path_cancion: "",
+          duracion: "",
+          genero: campos.genero
+        };
+      }
   const validarCampos = async (nuevaCancion) => {
     const tituloExistente = await esTituloCancionExistente(nuevaCancion.titulo_lista);
 
@@ -31,19 +89,18 @@ function AñadirCancion() {
       setIsModalOpen(true);
       return false;
     }
-    return true;
+    return null;
   }
 
   const esTituloCancionExistente = async (titulo) => {
     try {
-      const response = await axios.get('https://backreactmusic.onrender.com/api/canciones/');
+      const query = `/canciones/`;
+      const response = await axios.get(`${database}${query}`);
       const canciones = response.data;
-
-      console.log("objeto canciones>>", canciones);
-      // importante atributo titulo_lista tiene que ser igual a la BD
-
       return canciones.some((cancion) => cancion.nombre_cancion === titulo);
     } catch (error) {
+      setModalMessage('Error al obtener las canciones:', error);
+      setIsModalOpen(true);
       setModalMessage('Error al obtener las canciones:', error);
       setIsModalOpen(true);
       return false;
@@ -51,8 +108,7 @@ function AñadirCancion() {
   };
 
   const validarFormatoArchivo = (archivo) => {
-    const formatosPermitidos = ["mpeg", "wav"]; // mpeg === mp3
-    console.log(archivo);
+    const formatosPermitidos = ["mpeg", "wav"];
     for (const formato of formatosPermitidos) {
       if (archivo.type.includes(formato)) {
         return true;
@@ -65,8 +121,6 @@ function AñadirCancion() {
     try {
       const cancionInfo = await SubirCancion(archivo);
       const CancionUrl = await recuperarUrlCancion(cancionInfo);
-
-      console.log("url cancion >>>>", CancionUrl)
       return CancionUrl;
     } catch (error) {
       console.error('Error:', error);
@@ -75,21 +129,42 @@ function AñadirCancion() {
 
   const subirBD = async (nuevaCancion) => {
     try {
-      console.log("Datos recuperados:>>>>>> ",nuevaCancion);
-
-      const response = await axios.post('https://backreactmusic.onrender.com/api/canciones/', nuevaCancion);
-      console.log('Canción creado exitosamente:', response.data);
+      const query = `/canciones/`;
+      const response = await axios.post(`${database}${query}`, nuevaCancion);
       return true;
     } catch (error) {
       console.error('Error al subir a la base de datos:', error);
-      return false; // Hubo un error
+      return false;
     }
   }
 
+  const validarForm = async (e) => {
+    e.preventDefault();
   /* VALIDAR FORM PAR ASUBIR A BD */
   const validarForm = async (e) => {
     e.preventDefault();
 
+    const campos = {
+      titulo: document.getElementById('titulo_Cancion').value,
+      artista: document.getElementById('artista').value,
+      album: document.getElementById('album').value,
+      genero: document.getElementById('genero').value,
+      archivo: document.getElementById('archivo').files
+    };
+
+    const nuevaCancion = await validarCampos(campos);
+    if (nuevaCancion === null) {
+      setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
+      setIsModalOpen(true);
+      return;
+    }
+
+    const archivo = archivo.files[0];
+    if (!validarFormatoArchivo(archivo)) {
+      setModalMessage(`Formato de archivo no válido.`);
+      setIsModalOpen(true);
+      return;
+    }
   // Obtener valores de los campos
 
     const nuevaCancion = {
@@ -119,6 +194,12 @@ function AñadirCancion() {
     return;
   }
 
+    const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
+    if (archivo.size > maxSize) {
+      setModalMessage(`Tamaño máximo de 15 MB excedido.`);
+      setIsModalOpen(true);
+      return;
+    }
   // Validar tamaño del archivo (15 MB)
   const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
   if (archivo.size > maxSize) {
@@ -127,20 +208,30 @@ function AñadirCancion() {
     return;
   }
 
-  try {
-    // Subir el archivo a Firebase
-    const resultado = await subirFirebase(archivo);
-    nuevaCancion.path_cancion = resultado;
-    
-    // Recupera tiempo de duracion
-    const recuperarDuracionAudio = await RecuperarDuracion(archivo);
-    nuevaCancion.duracion = recuperarDuracionAudio
-    console.log("tiempo duracion:", recuperarDuracionAudio);
-    // Subir en la base de datos
+    try {
+      const resultado = await subirFirebase(archivo);
+      nuevaCancion.path_cancion = resultado;
 
-    /* const recuperarIdAlbum = await RecuperarIdAlbum(); */
-    
+      const recuperarDuracionAudio = await RecuperarDuracion(archivo);
+      nuevaCancion.duracion = recuperarDuracionAudio
 
+      const subidaExitosa = await subirBD(nuevaCancion);
+      if (!subidaExitosa) {
+        deleteFile(resultado.filePath);
+        setModalMessage(`Error al cargar la canción. Intente más tarde.`);
+        setIsModalOpen(true);
+        return;
+      }
+
+      setModalMessage(`Canción creada exitosamente.`);
+      setIsModalOpen(true);
+      window.location.replace("/Albumes");
+    } catch (error) {
+      console.error('Error:', error);
+      setModalMessage(`Error al subir o procesar el archivo.`);
+      setIsModalOpen(true);
+    }
+  };
     const subidaExitosa = await subirBD(nuevaCancion);
     
     if (!subidaExitosa) {
@@ -163,9 +254,14 @@ function AñadirCancion() {
 };
 
 
-  const motrarNombreArchivo = () => {
+  const mostrarNombreArchivo = () => {
     const file = document.getElementById('archivo');
 
+    if (file.files && file.files.length > 0) {
+      file.previousElementSibling.innerText = file.files[0].name;
+      file.previousElementSibling.style.display = 'block';
+      file.nextElementSibling.value = "X";
+      file.nextElementSibling.classList.add('active');
     file.addEventListener('change', () => {
       if (file.files && file.files.length > 0) {
         const nombreArchivo = file.files[0].name;
@@ -200,8 +296,8 @@ function AñadirCancion() {
     }
   };
 
-  /* ------------- CARGAR LISTAS EN COMBOBOX --------------- */
   const cargarListas = async () => {
+    const nombreArtista = document.getElementById('artista').value;
     const artista = document.getElementById('artista');
     const selectElement = document.getElementById('selectList');
   
@@ -210,8 +306,13 @@ function AñadirCancion() {
   
     if (nombreArtista.length > 0) {
       try {
-        // Obtén la lista del artista desde la base de datos
         idArtistaEncontrado = await ExisteArtista(nombreArtista);
+        if (idArtistaEncontrado == null) {
+          setListas([]);
+        } else {
+          const listaAlbumes = await listaAlbumesArtista(idArtistaEncontrado);
+          setListas(listaAlbumes);
+        }
         
         console.log("nombre recupearadod>>><",nombreArtista);
         console.log("id de artista encontrado>>:", idArtistaEncontrado);
@@ -238,47 +339,46 @@ function AñadirCancion() {
       }
     } else {
       setListas([]);
-      selectElement.selectedIndex = 1;
     }
+    document.getElementById('album').selectedIndex = 0;
   };
-  
+
   const listaAlbumesArtista = async (id_usuarioArtistaL) => {
     try {
-      const response = await axios.get('https://backreactmusic.onrender.com/api/lista_canciones/');
+      const query = `/lista_canciones/`;
+      const response = await axios.get(`${database}${query}`);
       const listaCompleta = response.data;
-  
-      // Filtrar álbumes por el id_usuario
+
       const albumesUsuario = listaCompleta.filter((album) => album.id_usuario === id_usuarioArtistaL);
-      
+
       return albumesUsuario;
     } catch (error) {
       console.error('Error al obtener la lista de álbumes:', error);
-      throw error; // Lanza el error para que pueda ser manejado por el código que llama a esta función
+      throw error;
     }
   };
-  
-  
+
   const ExisteArtista = async (nombreArtista) => {
     try {
-      const response = await axios.get(`https://backreactmusic.onrender.com/api/usuarios/search_nom/ ?searchTerm=${nombreArtista}`);
-      
+      const query = `/usuarios/search_nom/ ?searchTerm=${nombreArtista}`;
+      const response = await axios.get(`${database}${query}`);
+
       const artistas = response.data;
-  
       const artistaEncontrado = artistas.find((artista) => artista.nombre_usuario === nombreArtista);
 
-    if (artistaEncontrado && artistaEncontrado.id_usuario) {
-      console.log('Artista encontrado, ID:', artistaEncontrado.id_usuario);
-      return artistaEncontrado.id_usuario; // Devuelve el ID del artista si se encuentra
-    }
-  
-      console.log('Artista no encontrado');
-      return null; // Devuelve null si no se encuentra el artista
+      if (artistaEncontrado && artistaEncontrado.id_usuario) {
+        return artistaEncontrado.id_usuario;
+      }
+      return null;
     } catch (error) {
       console.error('Error al obtener la lista de usuarios:', error);
-      return null; // Maneja los errores devolviendo null
+      return null;
     }
   };
 
+  const eliminarEspacios = (value) => {
+    if (value === " ") {
+      return "";
   const handleArtistaChange = (e) => {
     const nombreArtista  = e.target.value;
     if (!/^[a-zA-Z0-9\s,]*$/.test(nombreArtista )) {
@@ -305,6 +405,7 @@ function AñadirCancion() {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
+    return value.replace(/\s+/g, ' ');
 
     // Establecer un nuevo timeout para llamar a cargarListas después de un momento de inactividad
     
@@ -314,6 +415,21 @@ function AñadirCancion() {
     }, 2000); // Espera 500 milisegundos (0.5 segundos) antes de llamar a cargarListas
   };
 
+  const handle = async (e) => {
+    let newValue = eliminarEspacios(e.target.value);
+    if (alfanumerico(newValue)) {
+      e.target.classList.remove('active');
+    } else {
+      e.target.classList.add('active');
+    }
+    if (newValue.length > 20) {
+      e.target.classList.add('active');
+      setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
+      setIsModalOpen(true);
+      newValue = newValue.slice(0, 20);
+      e.target.classList.remove('active');
+    }
+    e.target.value = newValue;
   const handleGeneroChange = (event) => {
     /* setGeneroSeleccionado(event.target.value);  */
     const selectedGenero = event.target.value;
@@ -365,13 +481,14 @@ function AñadirCancion() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo">Título de la canción *</label>
-              <input autoFocus 
+              <input autoFocus required
                 type="text"
                 className="validar"
                 id="titulo_Cancion"
-                name="titulo"
+                name="titulo_Cancion"
                 placeholder="Escriba el título de la canción"
-                onChange={validar}
+                onChange={handle}
+                onBlur={(e) => { e.target.value = e.target.value.trim(); }}
               />
             </div>
           </div>
@@ -380,50 +497,38 @@ function AñadirCancion() {
             <div className="input-box">
               <label htmlFor="artista">Nombre de artista *</label>
               <input required
+              <input required
                 type="text"
                 className="validar"
                 id="artista"
                 name="artista"
                 placeholder="Escriba el nombre del artista"
-                onChange={handleArtistaChange}
+                onChange={(e) => { handle(e); cargarListas(); }}
+                onBlur={(e) => { e.target.value = e.target.value.trim(); }}
               />
             </div>
           </div>
 
           <div className="campo">
-      <div className="input-box">
-        <label htmlFor="album">Álbum *</label>
-        <select name="album" id='selectList'  onChange={handleAlbumSelectChange}>
-          <option disabled hidden value="null">Seleccionar lista</option>
-          <option disabled selected hidden value="null">Ingrese el nombre del artista</option>
-          {listas.map((lista) => (
-            <option key={lista.id} value={lista.id}>{lista.titulo_lista}</option>
-          ))}
-        </select>
-      </div>
-    </div>
-         
+            <div className="input-box">
+              <label htmlFor="album">Álbum *</label>
+              <select name="album" id='album' required>
+                <option disabled selected hidden value="">Seleccionar lista</option>
+                {listas.map((lista, index) => (
+                  <option key={index} value={lista.id}>{lista.titulo_lista}</option>
+                ))}
+              </select>
+            </div>
+          </div>
 
           <div className="campo">
             <div className="input-box">
               <label htmlFor="genero">Género musical *</label>
-              <select name="genero"  onChange={handleGeneroChange} >
-                <option value="">Seleccionar género</option>
-                <option value="Pop">Pop</option>
-                <option value="id">Rock and Roll</option>
-                <option value="id">Country</option>
-                <option value="id">Disco</option>
-                <option value="id">Techno</option>
-                <option value="id">Reggae</option>
-                <option value="id">Salsa</option>
-                <option value="id">Flamenco</option>
-                <option value="id">Ranchera</option>
-                <option value="id">Hip hop/Rap</option>
-                <option value="id">Reggaetón</option>
-                <option value="id">Metal</option>
-                <option value="id">Funk</option>
-                <option value="id">Bossa Nova</option>
-                <option value="id">Música melódica</option>
+              <select name="genero" id='genero' required>
+                <option disabled selected hidden value="">Seleccionar género</option>
+                {generos.map((genero) => (
+                  <option key={genero} value={genero}>{genero}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -431,24 +536,25 @@ function AñadirCancion() {
           {/* SELECCIONAR ARCHIVO */}
           <div className="campo campo-cargar-cancion">
             <div className="input-box">
-              <label htmlFor="archivo">Canción</label>
+              <label htmlFor="archivo">Seleccionar canción *</label>
               <div className="seleccionarArchivo">
-                <span className="nombreArchivo" id="nombreArchivo"></span> {/* Mostrar nombre del archivo */}
+                <span className="nombreArchivo" id="nombreArchivo"></span>
                 <input
                   type="file"
                   name="archivo"
                   id="archivo"
                   accept=".mp3, audio/wav"
                   style={{ display: 'none' }}
+                  onChange={mostrarNombreArchivo}
                 />
-                <input
+                <input required
                   type="button"
                   className="btn-subir bg-white"
-                  onClick={motrarNombreArchivo}
+                  onClick={() => { document.getElementById('archivo').click(); }}
                   value="Seleccionar archivo"
                 />
-              </div>
-            </div>
+              </div>             
+            </div>         
           </div>
 
           <div className="campo">
@@ -457,9 +563,14 @@ function AñadirCancion() {
               <Link to="/Inicio" className="custom-link">Cancelar</Link>
             </div>
           </div>
-          
         </div>
       </form>
+
+      <Alerta
+        isOpen={isModalOpen}
+        mensaje={modalMessage}
+        onClose={() => setIsModalOpen(false)}
+      />
       <Alerta 
         isOpen={isModalOpen} 
         mensaje={modalMessage} 

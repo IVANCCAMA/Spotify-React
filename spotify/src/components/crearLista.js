@@ -4,10 +4,10 @@ import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/confi
 import { Link } from 'react-router-dom';
 import './form.css';
 import Alerta from './alerta';
-  
+
 function CrearLista() {
-  const database = 'https://backreactmusic.onrender.com/api';
-  const [file, setFile] = useState(null);
+  const database = 'https://spfisbackend-production.up.railway.app/api';
+  const [file, setFile] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
@@ -22,7 +22,6 @@ function CrearLista() {
     } catch (error) {
       setModalMessage('Error al obtener la lista de canciones:', error);
       setIsModalOpen(true);
-
       return false;
     }
 };
@@ -31,22 +30,36 @@ function CrearLista() {
     try {
       const query = `/usuarios/search_nom/ ?searchTerm=${nombreArtista}`;
       const response = await axios.get(`${database}${query}`);
-      console.log(response.data[0].id_usuario)
-      if(response.status === 200){  return response.data[0].id_usuario;}
+      if (response.status === 200) { return response.data[0].id_usuario; }
     } catch (error) {
       console.error('Error al obtener la lista de usuarios:', error);
       return false; // Hubo un error
     }
-  }; 
 
+  };
+
+  const quitarEspacios = async (nuevoAlbum) => {
+
+    var titulo = nuevoAlbum.titulo_listaTem;
+    titulo = titulo.trim();
+    while (titulo.search("  ") != -1) {
+      titulo = titulo.replace("  ", " ");
+    }
+    nuevoAlbum.titulo_lista = titulo;
+  }
   const validarCampos = async (nuevoAlbum) => {
-    const tituloExistente = await esTituloCancionExistente(nuevoAlbum.titulo_lista);
+    quitarEspacios(nuevoAlbum);
 
+
+
+    console.log(nuevoAlbum)
+
+    const tituloExistente = await esTituloCancionExistente(nuevoAlbum.titulo_lista);
+    console.log(nuevoAlbum.titulo_lista);
     if (tituloExistente) {
       // MODAL
-      setModalMessage('El nombre de la carpeta ya está en uso, intente otro');
+      setModalMessage('El nombre de la carpeta ya está en uso, intente otro.');
       setIsModalOpen(true);
-
       return false;
     }
 
@@ -56,22 +69,21 @@ function CrearLista() {
     if (!artistaExistente) {
       setModalMessage('El artista no existe, intente con otro.');
       setIsModalOpen(true);
-
       return false;
-    } 
-    if(!/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.titulo_lista) // vericamos que esten con caracteres alfanumericos
-      | !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.nombre_usuario)
-      | !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.colaborador)
-      | nuevoAlbum.colaborador.length>20| nuevoAlbum.colaborador.length===0
-      | nuevoAlbum.titulo_lista.length>20| nuevoAlbum.titulo_lista.length===0
-      | nuevoAlbum.nombre_usuario.length>20| nuevoAlbum.nombre_usuario.length===0
-    ){
+    }
+    if (!/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.titulo_lista)
+      || !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.nombre_usuario)
+      || !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.colaborador)
+      || nuevoAlbum.colaborador.length > 20 || nuevoAlbum.colaborador.length < 1
+      || nuevoAlbum.titulo_lista.length > 20 || nuevoAlbum.titulo_lista.length < 1
+      || nuevoAlbum.nombre_usuario.length > 20 || nuevoAlbum.nombre_usuario.length < 1
+    ) {
       return false;
     }
 
     nuevoAlbum.id_usuarioArtista = artistaExistente;
     return true;
-  }
+  };
 
   const validarFormatoArchivo = async (archivo) => {
     const formatosPermitidos = ["jpeg", "png"]; // jpeg === jpg
@@ -87,12 +99,11 @@ function CrearLista() {
     try {
       const portadaInfo = await SubirPortada(archivo);
       const imageUrl = await recuperarUrlPortada(portadaInfo);
-      console.log(imageUrl);
       return imageUrl;
     } catch (error) {
       console.error('Error:', error);
     }
-  }
+  };
 
   const subirBD = async (nuevoAlbum) => {
     try {
@@ -105,51 +116,45 @@ function CrearLista() {
       console.error('Error al obtener la lista de usuarios:', error);
       return false; // Hubo un error
     }
-  }
+  };
+
   const validarForm = async (e) => {
     e.preventDefault();
 
-    // validar campos
     const nuevoAlbum = {
-      titulo_lista: document.getElementById("titulo_lista").value,
+      titulo_listaTem: document.getElementById("titulo_lista").value,
       nombre_usuario: document.getElementById("artista").value,
       colaborador: document.getElementById("colaborador").value
     };
-    
+
     if (!await validarCampos(nuevoAlbum)) {
       setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
       setIsModalOpen(true);
-
       return;
     }
 
-    // validar formato del archivo
     const archivos = document.getElementById('archivo');
     if (archivos.files.length < 1) {
       setModalMessage(`Seleccione un archivo.`);
       setIsModalOpen(true);
-
       return;
     }
     const archivo = archivos.files[0];
-    console.log(archivos)
     if (!await validarFormatoArchivo(archivo)) {
       setModalMessage('Formato de imagen no válido.');
       setIsModalOpen(true);
-
       return;
     }
 
     // validar tamanio
-    if (archivo.size > (5 *1024*1024)) { // megas
-      setModalMessage('Tamaño máximo de 5 MB excedido.');
+    if (archivo.size > (5 * 1024 * 1024)) { // megas
+      setModalMessage(`Tamaño máximo de 5 MB excedido.`);
       setIsModalOpen(true);
-
       return;
     }
     try {
       // subir el archivo a Firebase
-      const resultado = await subirFirebase(archivo); 
+      const resultado = await subirFirebase(archivo);
       nuevoAlbum.path_image = resultado;
 
       // subir en la db
@@ -157,60 +162,52 @@ function CrearLista() {
         // Si ocurre un error al subir en la base de datos
         // eliminar el archivo subido en Firebase
         deleteFile(resultado.filepath);
-        setModalMessage('Error al cargar la canción. Intente más tarde.');
+        setModalMessage(`Error al cargar la canción. Intente más tarde.`);
         setIsModalOpen(true);
-
         return;
       }
-      
-      await setModalMessage('Lista creada exitosamente.');
+      console.log(nuevoAlbum)
+      setModalMessage(`Lista creada exitosamente.`);
       setIsModalOpen(true);
-
       window.location.replace("/inicio");
-      // window.location.reload();
     } catch (error) {
       console.error('Error:', error);
-      setModalMessage('Error al subir o procesar el archivo.');
+      setModalMessage(`Error al subir o procesar el archivo.`);
       setIsModalOpen(true);
-
     }
   };
-  const motrarNombreArchivo = () => {
+
+  const mostrarNombreArchivo = async () => {
     const file = document.getElementById('archivo');
 
-    file.addEventListener('change', () => {
-      if (file.files && file.files.length > 0) {
-        const nombreArchivo = file.files[0].name;
-        file.previousElementSibling.innerText = nombreArchivo; // Actualizar el texto mostrado
-        file.previousElementSibling.style.display = 'block';
-        file.nextElementSibling.value = "X";
-        file.nextElementSibling.classList.add('active');
-      }
-    });
-    file.click();
-  }
+    if (file.files && file.files.length > 0) {
+      file.previousElementSibling.innerText = file.files[0].name;
+      file.previousElementSibling.style.display = 'block';
+      file.nextElementSibling.value = "X";
+      file.nextElementSibling.classList.add('active');
+    }
+  };
 
   const validar = (event) => {
     const valor = event.target.value;
     if (!/^[a-zA-Z0-9\s]*$/.test(valor)) {
       event.target.classList.add('active');
     } else if (valor.length > 20) {
-      event.target.value = valor.slice(0, 20);
       event.target.classList.add('active');
-      setModalMessage('Nombre debe tener entre 1 a 20 caracteres.');
+      setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
       setIsModalOpen(true);
-
-      //event.target.classList.remove('active');
+      event.target.value = valor.slice(0, 20);
+      event.target.classList.remove('active');
     } else {
       event.target.classList.remove('active');
     }
-  }
+  };
 
   const validarVarios = (event) => {
     const valor = event.target.value;
     if (!/^[a-zA-Z0-9\s,]*$/.test(valor)) {
       event.target.classList.add('active');
-    }else if (/^[a-zA-Z0-9\s]*$/.test(valor)) {
+    } else if (/^[a-zA-Z0-9\s]*$/.test(valor)) {
       event.target.classList.remove('active');
     } else if (/,+[\s]*$/.test(valor)) {
       event.target.classList.add('active');
@@ -218,17 +215,15 @@ function CrearLista() {
       event.target.classList.remove('active');
     } else {
       event.target.classList.add('active');
-      
     }
     if (valor.length > 20) {
-      event.target.value = valor.slice(0, 20);
       event.target.classList.add('active');
-      setModalMessage('Nombre debe tener entre 1 a 20 caracteres.');
+      setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
       setIsModalOpen(true);
-
-      //event.target.classList.remove('active');
+      event.target.value = valor.slice(0, 20);
+      event.target.classList.remove('active');
     }
-  }
+  };
 
   return (
     <div className="modal-form">
@@ -288,11 +283,21 @@ function CrearLista() {
                   id="archivo"
                   accept=".png, .jpg, .jpeg"
                   style={{ display: 'none' }}
+                  onChange={async (e) => {
+                    const archivos = Array.from(e.target.files);
+                    const archivosFiltrados = archivos.filter(validarFormatoArchivo);
+
+                    if (archivosFiltrados.length > 0) {
+                      await setFile(archivosFiltrados);
+                      mostrarNombreArchivo();
+                    } else { await setFile(); }
+                  }
+                  }
                 />
                 <input
                   type="button"
                   className="btn-subir bg-white"
-                  onClick={motrarNombreArchivo}
+                  onClick={() => { document.getElementById('archivo').click(); }}
                   value="Seleccionar archivo"
                 />
               </div>
@@ -309,12 +314,12 @@ function CrearLista() {
           </div>
         </div>
       </form>
-      <Alerta 
-    isOpen={isModalOpen} 
-    mensaje={modalMessage} 
-    onClose={() => setIsModalOpen(false)}
-/>
 
+      <Alerta
+        isOpen={isModalOpen}
+        mensaje={modalMessage}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

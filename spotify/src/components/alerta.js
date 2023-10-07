@@ -1,8 +1,5 @@
 import React from 'react';
-//import { useState } from 'react';
 import './alerta.css'
-
-
 
 function Alerta({ isOpen, mensaje, onClose }) {
   // Si isOpen es false, entonces no se renderizamos nada.
