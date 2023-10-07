@@ -271,6 +271,7 @@ function AñadirCancion() {
     <div className="modal-form">
       <form className="modal-box" id="form" onSubmit={validarForm}>
         <div className="inter-modal">
+          
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo">Título de la canción *</label>
