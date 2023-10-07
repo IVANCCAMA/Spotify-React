@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, Routes, Route } from "react-router-dom";
+import { Link } from "react-router-dom";
 import './listaAlbunes.css';
 import axios from "axios";
 
@@ -11,8 +11,6 @@ function ListaAlbumes() {
       try {
         const response = await axios.get('https://spfisbackend-production.up.railway.app/api/lista_canciones/');
         const listaCanciones = response.data;
-
-        // Ordenar los álbumes por título alfabéticamente
         listaCanciones.sort((a, b) => {
           return a.titulo_lista.localeCompare(b.titulo_lista);
         });
@@ -33,7 +31,7 @@ function ListaAlbumes() {
           <img
             src={album.path_image}
             alt="Álbum"
-            className="albumes-image" // Clase album-image para la imagen
+            className="albumes-image"
           />
           <div className="albumes-details">
             <div className="albumes-title">{album.titulo_lista}</div>
