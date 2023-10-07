@@ -83,6 +83,7 @@ function AñadirCancion() {
     const id_usuario = await ExisteArtista(campos.artista);
     if (id_usuario == null) {
       console.log('artista no encontrado');
+      document.getElementById('artista').classList.add('active');
       return null;
     }
 
@@ -92,6 +93,7 @@ function AñadirCancion() {
     const id_lista = albumesUsuario?.id_lista;
     if (!id_lista) {
       console.log('Álbum no encontrado');
+      document.getElementById('album').classList.add('active');
       return null;
     }
 
@@ -100,6 +102,7 @@ function AñadirCancion() {
     const cancionExistente = canciones.find((cancion) => cancion.nombre_cancion === campos.titulo);
     if (cancionExistente) {
       console.log('el artista ya tiene una cancion con el mismo nombre');
+      document.getElementById('titulo_Cancion').classList.add('active');
       return null;
     }
 
