@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import { alfanumerico } from './form.js';
@@ -7,219 +7,45 @@ import './form.css'
 import Alerta from './alerta';
 
 function AñadirCancion() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const generos = ['Pop', 'Rock and Roll', 'Disco', 'Country', 'Techno',
     'Reggae', 'Salsa', 'Flamenco', 'Ranchera', 'Hip hop/Rap',
     'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica'];
   const [listas, setListas] = useState([]);
-  useEffect(() => { mostrarNombreArchivo(); }, [listas]);
-  let idArtistaEncontrado;
+  const [botonHabilitado, setBotonHabilitado] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, isModalOpen, modalMessage]);
+ 
+ //
+  const [redirectTo, setRedirectTo] = useState(null);
 
-  const validarCampos = async (campos) => {
-    if (campos.titulo.length > 20 || campos.titulo.length < 1 || !alfanumerico(campos.titulo)) {
-      document.getElementById('titulo_Cancion').classList.add('active');
-      return null;
-    }
-    if (campos.artista.length > 20 || campos.artista.length < 1 || !alfanumerico(campos.artista)) {
-      document.getElementById('artista').classList.add('active');
-      return null;
-    }
-    if (campos.album.length < 1 || campos.genero.length < 1 || campos.archivo.length < 1) {
-      console.log("todos los campos son requeridos");
-      return null;
-    }
-
-    // artista
-    const id_usuario = await ExisteArtista(campos.artista);
-    if (id_usuario == null) {
-      console.log('artista no encontrado');
-      return null;
-    }
-
-    // album
-    const albumesArtista = await listaAlbumesArtista(id_usuario);
-    const albumesUsuario = albumesArtista.find((album) => album.titulo_lista === campos.album);
-    const id_lista = albumesUsuario?.id_lista;
-
-    if (!id_lista) {
-      console.log('Álbum no encontrado');
-      return null;
-    }
-
-    // titulo
-    const query = `/canciones/completo_lista/${id_lista}`;
-    const response = await axios.get(`${database}${query}`);
-    const canciones = response.data;
-    const cancionExistente = canciones.find((cancion) => cancion.nombre_cancion === campos.titulo);
-    if (cancionExistente) {
-      console.log('el album ya tiene una cancion con el mismo nombre');
-      return null;
-    }
-    // verificar que el artista no tenga una cancion con el mismo nombre
-    // back: dado un id_user devolver todas las canciones que tiene ese user
-
-    // genero
-    for (const genero of generos) {
-      if (campos.genero === genero) {
-        return {
-          id_lista: id_lista,
-          nombre_cancion: campos.titulo,
-          path_cancion: "",
-          duracion: "",
-          genero: campos.genero
-        };
-      }
-    }
-    return null;
-  }
-
-  const esTituloCancionExistente = async (titulo) => {
-    try {
-      const query = `/canciones/`;
-      const response = await axios.get(`${database}${query}`);
-      const canciones = response.data;
-      return canciones.some((cancion) => cancion.nombre_cancion === titulo);
-    } catch (error) {
-      setModalMessage('Error al obtener las canciones:', error);
-      setIsModalOpen(true);
-      return false;
-    }
-  };
-
-  const validarFormatoArchivo = (archivo) => {
-    const formatosPermitidos = ["mpeg", "wav"];
-    for (const formato of formatosPermitidos) {
-      if (archivo.type.includes(formato)) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const subirFirebase = async (archivo) => {
-    try {
-      const cancionInfo = await SubirCancion(archivo);
-      const CancionUrl = await recuperarUrlCancion(cancionInfo);
-      return CancionUrl;
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
-
-  const subirBD = async (nuevaCancion) => {
-    try {
-      const query = `/canciones/`;
-      const response = await axios.post(`${database}${query}`, nuevaCancion);
-      return true;
-    } catch (error) {
-      console.error('Error al subir a la base de datos:', error);
-      return false;
-    }
-  }
-
-  const validarForm = async (e) => {
-    e.preventDefault();
-
-    const campos = {
-      titulo: document.getElementById('titulo_Cancion').value,
-      artista: document.getElementById('artista').value,
-      album: document.getElementById('album').value,
-      genero: document.getElementById('genero').value,
-      archivo: document.getElementById('archivo').files
-    };
-
-    const nuevaCancion = await validarCampos(campos);
-    if (nuevaCancion === null) {
-      setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
-      setIsModalOpen(true);
-      return;
-    }
-
-    const archivo = archivo.files[0];
-    if (!validarFormatoArchivo(archivo)) {
-      setModalMessage(`Formato de archivo no válido.`);
-      setIsModalOpen(true);
-      return;
-    }
-
-    const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
-    if (archivo.size > maxSize) {
-      setModalMessage(`Tamaño máximo de 15 MB excedido.`);
-      setIsModalOpen(true);
-      return;
-    }
-
-    try {
-      const resultado = await subirFirebase(archivo);
-      nuevaCancion.path_cancion = resultado;
-
-      const recuperarDuracionAudio = await RecuperarDuracion(archivo);
-      nuevaCancion.duracion = recuperarDuracionAudio
-
-      const subidaExitosa = await subirBD(nuevaCancion);
-      if (!subidaExitosa) {
-        deleteFile(resultado.filePath);
-        setModalMessage(`Error al cargar la canción. Intente más tarde.`);
-        setIsModalOpen(true);
-        return;
-      }
-
-      setModalMessage(`Canción creada exitosamente.`);
-      setIsModalOpen(true);
-      window.location.replace("/Albumes");
-    } catch (error) {
-      console.error('Error:', error);
-      setModalMessage(`Error al subir o procesar el archivo.`);
-      setIsModalOpen(true);
-    }
-  };
-
-
-  const mostrarNombreArchivo = () => {
-    const file = document.getElementById('archivo');
-
-    if (file.files && file.files.length > 0) {
-      file.previousElementSibling.innerText = file.files[0].name;
-      file.previousElementSibling.style.display = 'block';
-      file.nextElementSibling.value = "X";
-      file.nextElementSibling.classList.add('active');
-    }
-  };
-
-  const cargarListas = async () => {
-    const nombreArtista = document.getElementById('artista').value;
-    if (nombreArtista.length > 0) {
-      try {
-        idArtistaEncontrado = await ExisteArtista(nombreArtista);
-        if (idArtistaEncontrado == null) {
-          setListas([]);
-        } else {
-          const listaAlbumes = await listaAlbumesArtista(idArtistaEncontrado);
-          setListas(listaAlbumes);
+    function handleCloseAndRedirect() {
+        setIsModalOpen(false);
+        if (redirectTo) {
+            window.location.replace(redirectTo);
         }
-      } catch (error) {
-        console.error('Error al verificar el artista:', error);
-      }
-    } else {
-      setListas([]);
     }
-    document.getElementById('album').selectedIndex = 0;
+  //
+  const getlistasbyid_user = async (id_usuario) => {
+    try {
+      const query = `/usuarios/getlistasbyid_user/${id_usuario}`;
+      const response = await axios.get(`${database}${query}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error al obtener la lista de canciones del usuario:', error);
+      return null;
+    }
   };
 
-  const listaAlbumesArtista = async (id_usuarioArtistaL) => {
+  const getcancionesbyid_user = async (id_usuario) => {
     try {
-      const query = `/lista_canciones/`;
+      const query = `/usuarios/getcancionesbyid_user/${id_usuario}`;
       const response = await axios.get(`${database}${query}`);
-      const listaCompleta = response.data;
-
-      const albumesUsuario = listaCompleta.filter((album) => album.id_usuario === id_usuarioArtistaL);
-
-      return albumesUsuario;
+      return response.data;
     } catch (error) {
-      console.error('Error al obtener la lista de álbumes:', error);
-      throw error;
+      console.error('Error al obtener las canciones del usuario:', error);
+      return null;
     }
   };
 
@@ -241,6 +67,188 @@ function AñadirCancion() {
     }
   };
 
+  const validarCampos = async (campos) => {
+    if (campos.titulo.length > 20 || campos.titulo.length < 1 || !alfanumerico(campos.titulo)) {
+      document.getElementById('titulo_Cancion').classList.add('active');
+      return null;
+    }
+    if (campos.artista.length > 20 || campos.artista.length < 1 || !alfanumerico(campos.artista)) {
+      document.getElementById('artista').classList.add('active');
+      return null;
+    }
+    if (campos.album.length < 1 || campos.genero.length < 1 || campos.archivo.length < 1) {
+      console.log("No se selecciono album, genero o archivo");
+      return null;
+    }
+
+    // artista
+    const id_usuario = await ExisteArtista(campos.artista);
+    if (id_usuario == null) {
+      console.log('artista no encontrado');
+      return null;
+    }
+
+    // album
+    const albumes = await getlistasbyid_user(id_usuario);
+    const albumesUsuario = albumes.find((album) => album.titulo_lista === campos.album);
+    const id_lista = albumesUsuario?.id_lista;
+    if (!id_lista) {
+      console.log('Álbum no encontrado');
+      return null;
+    }
+
+    // titulo
+    const canciones = await getcancionesbyid_user(id_usuario);
+    const cancionExistente = canciones.find((cancion) => cancion.nombre_cancion === campos.titulo);
+    if (cancionExistente) {
+      console.log('el artista ya tiene una cancion con el mismo nombre');
+      return null;
+    }
+
+    // genero
+    for (const genero of generos) {
+      if (campos.genero === genero) {
+        return {
+          id_lista: id_lista,
+          nombre_cancion: campos.titulo,
+          path_cancion: "",
+          duracion: "",
+          genero: campos.genero
+        };
+      }
+    }
+    return null;
+  }
+
+  const validarFormatoArchivo = async (archivo) => {
+    const formatosPermitidos = ["mpeg", "wav"];
+    for (const formato of formatosPermitidos) {
+      if (archivo.type.includes(formato)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const subirFirebase = async (archivo) => {
+    try {
+      const cancionInfo = await SubirCancion(archivo);
+      const cancionUrl = await recuperarUrlCancion(cancionInfo);
+      return { url: cancionUrl, filePath: cancionInfo };
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  const subirBD = async (nuevaCancion) => {
+    try {
+      const query = `/canciones/`;
+      const response = await axios.post(`${database}${query}`, nuevaCancion);
+      return true;
+    } catch (error) {
+      console.error('Error al subir a la base de datos:', error);
+      return false;
+    }
+  }
+
+  const validarForm = async (e) => {
+    // Deshabilitar el botón
+    setBotonHabilitado(false);
+    try {
+      e.preventDefault();
+
+      const campos = {
+        titulo: eliminarEspacios(document.getElementById('titulo_Cancion').value).trim(),
+        artista: eliminarEspacios(document.getElementById('artista').value).trim(),
+        album: eliminarEspacios(document.getElementById('album').value).trim(),
+        genero: eliminarEspacios(document.getElementById('genero').value).trim(),
+        archivo: document.getElementById('archivo').files
+      };
+
+      const nuevaCancion = await validarCampos(campos);
+      if (nuevaCancion === null) {
+        setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
+        setIsModalOpen(true);
+        return;
+      }
+
+      const archivo = campos.archivo[0];
+      if (!await validarFormatoArchivo(archivo)) {
+        setModalMessage(`Formato de archivo no válido.`);
+        setIsModalOpen(true);
+        return;
+      }
+
+      const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
+      if (archivo.size > maxSize) {
+        setModalMessage(`Tamaño máximo de 15 MB excedido.`);
+        setIsModalOpen(true);
+        return;
+      }
+
+      try {
+        const resultado = await subirFirebase(archivo);
+        nuevaCancion.path_cancion = resultado.url;
+
+        const recuperarDuracionAudio = await RecuperarDuracion(archivo);
+        nuevaCancion.duracion = recuperarDuracionAudio
+
+        const subidaExitosa = await subirBD(nuevaCancion);
+        if (!subidaExitosa) {
+          deleteFile(resultado.filePath);
+          setModalMessage(`Error al cargar la canción. Intente más tarde.`);
+          setIsModalOpen(true);
+          return;
+        }
+
+        setModalMessage(`Canción creada exitosamente.`);
+        setIsModalOpen(true);
+        setRedirectTo("/Albumes");
+
+      } catch (error) {
+        console.error('Error:', error);
+        setModalMessage(`Error al subir o procesar el archivo.`);
+        setIsModalOpen(true);
+      }
+    } catch (error) {
+      console.error('Error al enviar la solicitud:', error);
+    } finally {
+      // Una vez que se complete, habilitar el botón nuevamente
+      setBotonHabilitado(true);
+    }
+  };
+
+  const mostrarNombreArchivo = () => {
+    const file = document.getElementById('archivo');
+
+    if (file.files && file.files.length > 0) {
+      file.previousElementSibling.innerText = file.files[0].name;
+      file.previousElementSibling.style.display = 'block';
+      file.nextElementSibling.value = "X";
+      file.nextElementSibling.classList.add('active');
+    }
+  };
+
+  const cargarListas = async () => {
+    const nombreArtista = document.getElementById('artista').value;
+    if (nombreArtista.length > 0) {
+      try {
+        const idArtistaEncontrado = await ExisteArtista(nombreArtista);
+        if (idArtistaEncontrado === null) {
+          setListas([]);
+        } else {
+          const listaAlbumes = await getlistasbyid_user(idArtistaEncontrado);
+          setListas(listaAlbumes);
+        }
+      } catch (error) {
+        console.error('Error al verificar el artista:', error);
+      }
+    } else {
+      setListas([]);
+    }
+    document.getElementById('album').selectedIndex = 0;
+  };
+
   const eliminarEspacios = (value) => {
     if (value === " ") {
       return "";
@@ -250,17 +258,17 @@ function AñadirCancion() {
 
   const handle = async (e) => {
     let newValue = eliminarEspacios(e.target.value);
-    if (alfanumerico(newValue)) {
-      e.target.classList.remove('active');
-    } else {
-      e.target.classList.add('active');
-    }
     if (newValue.length > 20) {
       e.target.classList.add('active');
       setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
       setIsModalOpen(true);
       newValue = newValue.slice(0, 20);
+      if(alfanumerico(newValue)){e.target.classList.remove('active');}
+    }
+    if (alfanumerico(newValue)) {
       e.target.classList.remove('active');
+    } else {
+      e.target.classList.add('active');
     }
     e.target.value = newValue;
   };
@@ -326,7 +334,7 @@ function AñadirCancion() {
           {/* SELECCIONAR ARCHIVO */}
           <div className="campo campo-cargar-cancion">
             <div className="input-box">
-              <label htmlFor="archivo">Seleccionar canción *</label>
+              <label>Seleccionar canción *</label>
               <div className="seleccionarArchivo">
                 <span className="nombreArchivo" id="nombreArchivo"></span>
                 <input
@@ -343,24 +351,23 @@ function AñadirCancion() {
                   onClick={() => { document.getElementById('archivo').click(); }}
                   value="Seleccionar archivo"
                 />
-              </div>             
-            </div>         
+              </div>
+            </div>
           </div>
 
           <div className="campo">
             <div className="btn-box">
-              <button type="submit" className="btn-next">Aceptar</button>
+              <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
               <Link to="/Inicio" className="custom-link">Cancelar</Link>
             </div>
           </div>
         </div>
       </form>
-
       <Alerta
-        isOpen={isModalOpen}
-        mensaje={modalMessage}
-        onClose={() => setIsModalOpen(false)}
-      />
+            isOpen={isModalOpen}
+            mensaje={modalMessage}
+            onClose={handleCloseAndRedirect}
+        />
     </div>
   );
 };
