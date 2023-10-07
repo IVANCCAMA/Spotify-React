@@ -245,19 +245,16 @@ function AñadirCancion() {
     return value.replace(/\s+/g, ' ');
   };
 
-  const handle = async (e) => {
+  const handle = (e) => {
     let newValue = eliminarEspacios(e.target.value);
-    if (newValue.length > 20) {
-      e.target.classList.add('active');
-      setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
-      setIsModalOpen(true);
-      newValue = newValue.slice(0, 20);
-      if(alfanumerico(newValue)){e.target.classList.remove('active');}
-    }
     if (alfanumerico(newValue)) {
       e.target.classList.remove('active');
     } else {
       e.target.classList.add('active');
+    }
+    if (newValue.length > 20) {
+      e.target.classList.add('active');
+      newValue = newValue.slice(0, 20);
     }
     e.target.value = newValue;
   };
