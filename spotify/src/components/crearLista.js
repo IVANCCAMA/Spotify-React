@@ -71,6 +71,7 @@ function CrearLista() {
     // artista
     const id_usuario = await ExisteArtista(campos.artista);
     if (id_usuario == null) {
+      document.getElementById('artista').classList.add('active');
       setModalMessage('El artista no existe, intente con otro.');
       setIsModalOpen(true);
       return null;
@@ -80,6 +81,7 @@ function CrearLista() {
     const albumes = await getlistasbyid_user(id_usuario);
     const albumExistente = albumes.find((album) => album.titulo_lista === campos.titulo);
     if (albumExistente) {
+      document.getElementById('titulo_lista').classList.add('active');
       setModalMessage('El nombre de la carpeta ya está en uso, intente otro.');
       setIsModalOpen(true);
       return null;
@@ -89,7 +91,13 @@ function CrearLista() {
     if (campos.colaborador.length > 0) {
       const id_colaborador = await ExisteArtista(campos.colaborador);
       if (id_colaborador == null) {
+        document.getElementById('colaborador').classList.add('active');
         setModalMessage('El artista colaborador no existe, intente con otro.');
+        setIsModalOpen(true);
+        return null;
+      } else if (id_colaborador == id_usuario) {
+        document.getElementById('colaborador').classList.add('active');
+        setModalMessage('El artista y el colaborador no pueden ser el mismo.');
         setIsModalOpen(true);
         return null;
       }
@@ -303,7 +311,7 @@ function CrearLista() {
                 onChange={(e) => {
                   if (e.target.value.length > 0 && e.target.value.length < 21) {
                     e.target.classList.remove('active'); e.target.classList.add('valid');
-                  } 
+                  }
                   handle(e, alfanumerico);
                 }}
                 onBlur={(e) => {
