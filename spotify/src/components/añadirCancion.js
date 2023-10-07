@@ -7,7 +7,7 @@ import './form.css'
 import Alerta from './alerta';
 
 function AñadirCancion() {
-  const database = 'https://spfisbackend-production.up.railway.app/api';
+  const database = 'fronted_spotify.railway.internal/api';
   const generos = ['Pop', 'Rock and Roll', 'Disco', 'Country', 'Techno',
     'Reggae', 'Salsa', 'Flamenco', 'Ranchera', 'Hip hop/Rap',
     'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica'];
@@ -204,7 +204,6 @@ function AñadirCancion() {
         setModalMessage(`Canción creada exitosamente.`);
         setIsModalOpen(true);
         setRedirectTo("/Albumes");
-
       } catch (error) {
         console.error('Error:', error);
         setModalMessage(`Error al subir o procesar el archivo.`);
@@ -256,19 +255,16 @@ function AñadirCancion() {
     return value.replace(/\s+/g, ' ');
   };
 
-  const handle = async (e) => {
+  const handle = (e) => {
     let newValue = eliminarEspacios(e.target.value);
-    if (newValue.length > 20) {
-      e.target.classList.add('active');
-      setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
-      setIsModalOpen(true);
-      newValue = newValue.slice(0, 20);
-      if(alfanumerico(newValue)){e.target.classList.remove('active');}
-    }
     if (alfanumerico(newValue)) {
       e.target.classList.remove('active');
     } else {
       e.target.classList.add('active');
+    }
+    if (newValue.length > 20) {
+      e.target.classList.add('active');
+      newValue = newValue.slice(0, 20);
     }
     e.target.value = newValue;
   };
@@ -277,6 +273,7 @@ function AñadirCancion() {
     <div className="modal-form">
       <form className="modal-box" id="form" onSubmit={validarForm}>
         <div className="inter-modal">
+          
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo">Título de la canción *</label>
@@ -349,7 +346,7 @@ function AñadirCancion() {
                   type="button"
                   className="btn-subir bg-white"
                   onClick={() => { document.getElementById('archivo').click(); }}
-                  value="Seleccionar archivo"
+                  value="Seleccionar canción"
                 />
               </div>
             </div>
@@ -364,10 +361,10 @@ function AñadirCancion() {
         </div>
       </form>
       <Alerta
-            isOpen={isModalOpen}
-            mensaje={modalMessage}
-            onClose={handleCloseAndRedirect}
-        />
+        isOpen={isModalOpen}
+        mensaje={modalMessage}
+        onClose={handleCloseAndRedirect}
+      />
     </div>
   );
 };

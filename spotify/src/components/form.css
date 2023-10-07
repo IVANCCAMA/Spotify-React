@@ -33,13 +33,6 @@
     align-items: stretch;
 }
 
-/* Campos de entrada */
-.campo {
-    margin-bottom: 20px;
-   
-    /* padding: 20px; */
-}
-
 .input-box {
     position: relative;
     width: 80%;
@@ -62,6 +55,13 @@
 
 .input-box select {
     font-weight: bold;
+}
+
+/* Campos de entrada */
+.campo {
+    margin-bottom: 20px;
+   
+    /* padding: 20px; */
 }
 
 .campo-cargar-cancion {
@@ -88,10 +88,12 @@
 }
 
 /* Estilo de validación */
+.input-box .validarNoRequiered.valid,
 .input-box .validar:valid {
     border: 5px solid #09AA1A;
 }
 
+.input-box .validarNoRequiered.active,
 .input-box .validar.active {
     border: 5px solid #FF0000;
 }

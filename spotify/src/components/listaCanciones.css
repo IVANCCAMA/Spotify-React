@@ -31,7 +31,6 @@
 .album-config{
   position: relative;
   display: flex; 
-  left: 120px;
 }
 
 .album-details{
@@ -60,6 +59,7 @@
   display: flex;
   flex-direction: row; 
   align-items: center; 
+  padding-top: 5%;
 }
 
 .album-list {
@@ -186,7 +186,8 @@
   right: 20px;
   width: 40px;
   height: 25px;
-  /* Otros estilos según sea necesario */
+  color: #FFFFFF;
+  font-weight: bold;
 }
 
 /*alineamiento de titulo de cancion*/

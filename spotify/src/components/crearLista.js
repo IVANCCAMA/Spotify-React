@@ -7,7 +7,7 @@ import './form.css';
 import Alerta from './alerta';
 
 function CrearLista() {
-  const database = 'https://spfisbackend-production.up.railway.app/api';
+  const database = 'spf_is_backend.railway.internal/api';
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -52,14 +52,14 @@ function CrearLista() {
 
   const validarCampos = async (campos) => {
     if (campos.titulo.length > 20 || campos.titulo.length < 1 || !alfanumerico(campos.titulo)) {
-      document.getElementById('titulo_Cancion').classList.add('active');
+      document.getElementById('titulo_lista').classList.add('active');
       return null;
     }
     if (campos.artista.length > 20 || campos.artista.length < 1 || !alfanumerico(campos.artista)) {
       document.getElementById('artista').classList.add('active');
       return null;
     }
-    if (campos.colaborador.length > 20 || campos.colaborador.length < 1 || !alfanumericoVarios(campos.colaborador)) {
+    if (campos.colaborador.length > 20 || !alfanumerico(campos.colaborador)) {
       document.getElementById('colaborador').classList.add('active');
       return null;
     }
@@ -86,39 +86,48 @@ function CrearLista() {
     }
 
     // colaborador
-    const colaboradores = campos.colaborador.split(',');
-    const mismoArtista = colaboradores.some((parte) => parte.trim() === campos.artista);
-    if (mismoArtista) {
-      console.log("no puede ser el mismo artista que el colaborador");
-      return null;
-    }
-    // verificar que exista el colaborador
-    const id_colaboradores = [];
-    for (const artista of colaboradores) {
-      const id_colaborador = await ExisteArtista(artista.trim());
-      if (id_colaborador === null) {
-        console.log("<" + artista.trim() + "> no esta registrado como artista");
+    if (campos.colaborador.length > 0) {
+      const id_colaborador = await ExisteArtista(campos.colaborador);
+      if (id_colaborador == null) {
+        setModalMessage('El artista colaborador no existe, intente con otro.');
+        setIsModalOpen(true);
         return null;
-      } else {
-        console.log("<" + artista.trim() + "> id: " + id_colaborador);
-        id_colaboradores.push(id_colaborador);
       }
     }
-    // registrat colaboradores 
-    let colaborador = "";
-    for (const artista of colaboradores) {
-      colaborador = colaborador + ", " + artista.trim();
-    }
-    if (colaborador.length > 2) {
-      colaborador = colaborador.slice(2);
-    }
+    // const colaboradores = campos.colaborador.split(',');
+    // const mismoArtista = colaboradores.some((parte) => parte.trim() === campos.artista);
+    // if (mismoArtista) {
+    //   console.log("no puede ser el mismo artista que el colaborador");
+    //   return null;
+    // }
+    // // verificar que exista el colaborador
+    // const id_colaboradores = [];
+    // for (const artista of colaboradores) {
+    //   const id_colaborador = await ExisteArtista(artista.trim());
+    //   if (id_colaborador === null) {
+    //     console.log("<" + artista.trim() + "> no esta registrado como artista");
+    //     return null;
+    //   } else {
+    //     console.log("<" + artista.trim() + "> id: " + id_colaborador);
+    //     id_colaboradores.push(id_colaborador);
+    //   }
+    // }
+    // // registrat colaboradores 
+    // let colaborador = "";
+    // for (const artista of colaboradores) {
+    //   colaborador = colaborador + ", " + artista.trim();
+    // }
+    // if (colaborador.length > 2) {
+    //   colaborador = colaborador.slice(2);
+    // }
 
     return {
       id_usuario: id_usuario,
       nombre_usuario: campos.artista,
       titulo_lista: campos.titulo,
       path_image: "",
-      colaborador: colaborador
+      // colaborador: colaborador
+      colaborador: campos.colaborador
     };
   };
 
@@ -203,6 +212,7 @@ function CrearLista() {
         setModalMessage(`Lista creada exitosamente.`);
         setIsModalOpen(true);
         setRedirectTo("/inicio");
+        setRedirectTo("/inicio");
         
       } catch (error) {
         console.error('Error:', error);
@@ -237,17 +247,14 @@ function CrearLista() {
 
   const handle = (e, alfanumericoFunc) => {
     let newValue = eliminarEspacios(e.target.value);
-    if (newValue.length > 20) {
-      e.target.classList.add('active');
-      setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
-      setIsModalOpen(true);
-      newValue = newValue.slice(0, 20);
-      e.target.classList.remove('active');
-    }
     if (alfanumericoFunc(newValue)) {
       e.target.classList.remove('active');
     } else {
       e.target.classList.add('active');
+    }
+    if (newValue.length > 20) {
+      e.target.classList.add('active');
+      newValue = newValue.slice(0, 20);
     }
     e.target.value = newValue;
   };
@@ -259,13 +266,14 @@ function CrearLista() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo_lista">Título del álbum *</label>
-              <input autoFocus required
+              <input autoFocus 
                 type="text"
                 className="validar"
                 id="titulo_lista"
                 name="titulo_lista"
                 placeholder="Escriba el título del álbum"
                 onChange={(e) => { handle(e, alfanumerico); }}
+                onBlur={(e) => { e.target.value = e.target.value.trim(); }}
               />
             </div>
           </div>
@@ -280,20 +288,36 @@ function CrearLista() {
                 name="artista"
                 placeholder="Escriba el nombre del artista"
                 onChange={(e) => { handle(e, alfanumerico); }}
+                onBlur={(e) => { e.target.value = e.target.value.trim(); }}
               />
             </div>
           </div>
 
           <div className="campo">
             <div className="input-box">
+
               <label htmlFor="colaborador">Artista colaborador *</label>
-              <input required
+              <input
+
                 type="text"
-                className="validar"
+                className="validarNoRequiered"
                 id="colaborador"
                 name="colaborador"
-                placeholder="Escriba el nombre de el/los artista/s"
-                onChange={(e) => { handle(e, alfanumericoVarios); }}
+
+                placeholder="Escriba el nombre del artista colaborador"
+                onChange={(e) => {
+                  if (e.target.value.length > 0 && e.target.value.length < 20) {
+                    e.target.classList.remove('active'); e.target.classList.add('valid');
+                  } else { e.target.classList.remove('valid'); }
+                  handle(e, alfanumerico);
+                }}
+                onBlur={(e) => {
+                  e.target.value = e.target.value.trim();
+                  if (e.target.value.length < 1) {
+                    e.target.classList.remove('active'); e.target.classList.remove('valid');
+                  }
+                }}
+
               />
             </div>
           </div>
@@ -325,16 +349,16 @@ function CrearLista() {
           <div className="campo">
             <div className="btn-box">
               <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
-              <Link to="/Albumes"  ><button to="/Albumes" className="custom-link">Cancelar</button></Link>
+              <Link to="/Inicio"  ><button to="/Inicio" className="custom-link">Cancelar</button></Link>
             </div>
           </div>
         </div>
       </form>
       <Alerta
-            isOpen={isModalOpen}
-            mensaje={modalMessage}
-            onClose={handleCloseAndRedirect}
-        />
+        isOpen={isModalOpen}
+        mensaje={modalMessage}
+        onClose={handleCloseAndRedirect}
+      />   
     </div>
   );
 }
