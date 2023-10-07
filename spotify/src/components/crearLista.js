@@ -300,7 +300,7 @@ function CrearLista() {
 
           <div className="campo">
             <div className="input-box">
-              <label htmlFor="colaborador">Artista colaborador *</label>
+              <label htmlFor="colaborador">Artista colaborador</label>
               <input
                 type="text"
                 className="validarNoRequiered"
