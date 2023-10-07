@@ -6,7 +6,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 1em;
   max-width: 1000px;
-  margin: 50px 0 0 300px;
+  margin: 50px 0 0 200px;
   grid-auto-rows: minmax(150px, 180px); 
 }
 
