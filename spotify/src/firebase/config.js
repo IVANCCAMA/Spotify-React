@@ -32,7 +32,7 @@ export async function RecuperarDuracion(file) {
       const duracionSegundos = audio.duration;
 
       // Convierte a minutos con dos decimales
-      const duracionMinutos = (duracionSegundos / 60).toFixed(2);
+      const duracionMinutos = (parseInt(duracionSegundos / 60) + ":" + parseInt(duracionSegundos % 60));
 
       // Libera la URL creada para el archivo
       URL.revokeObjectURL(fileURL);
@@ -54,7 +54,6 @@ export async function SubirPortada(imageUpload) {
   const imageRef = ref(storage, `Portadas/${imageName}`);
 
   await uploadBytes(imageRef, imageUpload);
-  console.log("imagen subida a firebase exitosamente");
   return imageName;
 }
 
@@ -68,7 +67,6 @@ export async function SubirCancion(cancionUpload) {
   const cancionRef = ref(storage, `Canciones/${cancionName}`);
 
   await uploadBytes(cancionRef, cancionUpload);
-  console.log("cancion subida a firebase exitosamente");
   return cancionName;
 }
 

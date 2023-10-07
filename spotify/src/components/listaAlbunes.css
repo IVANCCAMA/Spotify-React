@@ -12,6 +12,8 @@
 
 .albumes-details {
   position: relative;
+  width: 10em;
+  padding: 2%;
 
 }
 
@@ -26,14 +28,21 @@
 }
 
 .albumes-title {
-  padding: 10px;
+  
+  line-height: 1.5em;
     font-weight: bold;
     font-size: 25px;
     color: #FFFFFF;
     display: flex;
-    align-items: center;
-    text-align: justify;
+    align-items: baseline;
+    text-align: left;
     font-family: var(--fuente-1);
+    
+    height: 3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    
 }
 
 .artistas-name {
@@ -48,7 +57,7 @@
   font-family: var(--fuente-1);
 }
 .albumes-songs {
-  padding: 7px;
+  
     font-weight: bold;
     font-size: 16px;
     color: #FFFFFF;
