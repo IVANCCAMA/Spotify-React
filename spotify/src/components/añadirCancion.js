@@ -83,6 +83,7 @@ function AñadirCancion() {
     const id_usuario = await ExisteArtista(campos.artista);
     if (id_usuario == null) {
       console.log('artista no encontrado');
+      document.getElementById('artista').classList.add('active');
       return null;
     }
 
@@ -92,6 +93,7 @@ function AñadirCancion() {
     const id_lista = albumesUsuario?.id_lista;
     if (!id_lista) {
       console.log('Álbum no encontrado');
+      document.getElementById('album').classList.add('active');
       return null;
     }
 
@@ -100,6 +102,7 @@ function AñadirCancion() {
     const cancionExistente = canciones.find((cancion) => cancion.nombre_cancion === campos.titulo);
     if (cancionExistente) {
       console.log('el artista ya tiene una cancion con el mismo nombre');
+      document.getElementById('titulo_Cancion').classList.add('active');
       return null;
     }
 
@@ -201,7 +204,7 @@ function AñadirCancion() {
 
         setModalMessage(`Canción creada exitosamente.`);
         setIsModalOpen(true);
-        setRedirectTo("/Albumes");
+        setRedirectTo("/");
       } catch (error) {
         console.error('Error:', error);
         setModalMessage(`Error al subir o procesar el archivo.`);
@@ -261,7 +264,6 @@ function AñadirCancion() {
       e.target.classList.add('active');
     }
     if (newValue.length > 20) {
-      e.target.classList.add('active');
       newValue = newValue.slice(0, 20);
     }
     e.target.value = newValue;
@@ -271,7 +273,6 @@ function AñadirCancion() {
     <div className="modal-form">
       <form className="modal-box" id="form" onSubmit={validarForm}>
         <div className="inter-modal">
-          
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo">Título de la canción *</label>
@@ -353,12 +354,11 @@ function AñadirCancion() {
           <div className="campo">
             <div className="btn-box">
               <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
-              <Link to="/Inicio" className="custom-link">Cancelar</Link>
+              <Link to="/" className="custom-link">Cancelar</Link>
             </div>
           </div>
         </div>
       </form>
-
       <Alerta
         isOpen={isModalOpen}
         mensaje={modalMessage}

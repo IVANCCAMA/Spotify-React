@@ -6,18 +6,18 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 1em;
   max-width: 1000px;
-  margin: 50px 0 0 300px;
+  margin: 50px 0 0 200px;
   grid-auto-rows: minmax(150px, 180px); 
 }
+
 
 .albumes-details {
   position: relative;
   display: block;
-  overflow: hidden; 
-  white-space: nowrap; 
-  text-overflow: ellipsis; 
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
-
 
 .albumes-item {
   display: flex;
@@ -74,14 +74,14 @@
 @media screen and (max-width: 1280px) {
   .albumes-list {
     grid-template-columns: repeat(2, 1fr); 
-    margin: 50px 0 0 300px;
+    margin: 50px 0 50px 200px;
   }
 }
 
 @media screen and (max-width: 1000px) {
   .albumes-list {
     grid-template-columns: repeat(1, 1fr);
-    margin: 0 0 0 300px; 
+    margin: 0 0 50px 200px; 
   }
 
   
@@ -89,6 +89,6 @@
 @media screen and (max-width: 768px) {
   .albumes-list {
     grid-template-columns: repeat(1, 1fr);
-    margin: 0 0 0 0; 
+    margin: 0 0 50px 0; 
   }
 }
