@@ -209,7 +209,7 @@ function CrearLista() {
           return;
         }
 
-        setModalMessage(`Lista creada exitosamente.`);
+        setModalMessage(`Lista creada exitosamente`);
         setIsModalOpen(true);
         setRedirectTo("/inicio");
       } catch (error) {
