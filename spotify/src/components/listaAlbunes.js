@@ -36,11 +36,7 @@ function ListaAlbumes() {
           <div className="albumes-details">
             <div className="albumes-title">{album.titulo_lista}</div>
             <div className="artistas-name">{album.nombre_usuario}</div>
-            <div className="albumes-songs">
-              {album.cantidad_canciones !== null && album.cantidad_canciones !== 0
-              ? `${album.cantidad_canciones} canciones`
-              : 'Sin canciones'}
-              </div>
+            <div className="albumes-songs">{album.cantidad_canciones} canciones</div>
           </div>
         </Link>
       ))}
