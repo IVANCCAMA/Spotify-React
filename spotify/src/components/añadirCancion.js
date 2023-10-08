@@ -104,7 +104,7 @@ function AñadirCancion() {
     const cancionExistente = canciones.find((cancion) => cancion.nombre_cancion === campos.titulo);
     if (cancionExistente) {
       //console.log('el artista ya tiene una cancion con el mismo nombre');
-      setModalMessage("La canción existe en el álbum");
+      setModalMessage(`La canción existe en el álbum`);
       //setIsModalOpen(true);
       return null;
     }

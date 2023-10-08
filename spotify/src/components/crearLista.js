@@ -219,13 +219,9 @@ function CrearLista() {
 
         setModalMessage(`Lista creada exitosamente.`);
         setIsModalOpen(true);
-<<<<<<< HEAD
-        setRedirectTo("/inicio");
         setRedirectTo("/inicio");
         
-=======
-        setRedirectTo("/");
->>>>>>> 557b66272ef459a1a7ea7368a7a6eab07de8a7e5
+        
       } catch (error) {
         console.error('Error:', error);
         setModalMessage(`Error al subir o procesar el archivo.`);
