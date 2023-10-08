@@ -207,7 +207,7 @@ function AñadirCancion() {
           return;
         }
 
-        setModalMessage(`Canción creada exitosamente.`);
+        setModalMessage(`Canción añadida exitosamente.`);
         setIsModalOpen(true);
         setRedirectTo("/");
       } catch (error) {
