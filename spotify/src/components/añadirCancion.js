@@ -97,17 +97,19 @@ function AñadirCancion() {
       return null;
     }
 
-    // titulo
+    // titulo   (verificamos si existe)
     const canciones = await getcancionesbyid_user(id_usuario);
     const cancionExistente = canciones.find((cancion) => cancion.nombre_cancion === campos.titulo);
     if (cancionExistente) {
-      console.log('el artista ya tiene una cancion con el mismo nombre');
+      //console.log('el artista ya tiene una cancion con el mismo nombre');
+      setModalMessage("La canción existe en el álbum");
+      //setIsModalOpen(true);
       return null;
     }
 
     // genero
     for (const genero of generos) {
-      if (campos.genero === genero) {
+      if (campos.genero === genero) { 
         return {
           id_lista: id_lista,
           nombre_cancion: campos.titulo,
@@ -167,7 +169,9 @@ function AñadirCancion() {
 
       const nuevaCancion = await validarCampos(campos);
       if (nuevaCancion === null) {
+        if (!modalMessage) {
         setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
+        }
         setIsModalOpen(true);
         return;
       }
