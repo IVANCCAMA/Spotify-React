@@ -67,7 +67,7 @@ function ListaCanciones() {
       {/* Listado de canciones de álbum */}
       <div className="song-config">
         {Array.isArray(listaCanciones) && listaCanciones.map((canciones, index) => (
-          <Link to={`/detalle-cancion/${canciones.id_cancion}`} key={canciones.id_cancion} className="album-item">
+          <div key={canciones.id_cancion} className="album-item">
 
             <div className="song-container">
               <div className="song-details">
@@ -81,8 +81,7 @@ function ListaCanciones() {
               </div>
               <img src={songLogo} alt="Álbum" className="play-logo" />
             </div>
-            
-          </Link> 
+          </div> 
 
         ))}
       </div>
