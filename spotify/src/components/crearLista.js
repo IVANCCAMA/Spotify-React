@@ -11,7 +11,26 @@ function CrearLista() {
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  useEffect(() => { mostrarNombreArchivo(); }, [botonHabilitado, isModalOpen, modalMessage]);
+  const [isOnline, setIsOnline] = useState(window.navigator.onLine); // Verifica si hay conexión inicialmente
+
+
+  const handleOnlineStatusChange = () => {
+    setIsOnline(window.navigator.onLine);
+  };
+
+  useEffect(() => { 
+    mostrarNombreArchivo(); 
+  }, [botonHabilitado, isModalOpen, modalMessage]);
+
+  useEffect(() => {
+    window.addEventListener('online', handleOnlineStatusChange);
+    window.addEventListener('offline', handleOnlineStatusChange);
+
+    return () => {
+      window.removeEventListener('online', handleOnlineStatusChange);
+      window.removeEventListener('offline', handleOnlineStatusChange);
+    };
+  }, []);
   
   const [redirectTo, setRedirectTo] = useState(null);
 
@@ -95,39 +114,13 @@ function CrearLista() {
         setModalMessage('El artista colaborador no existe, intente con otro.');
         setIsModalOpen(true);
         return null;
-      } else if (id_colaborador == id_usuario) {
+      } else if (id_colaborador === id_usuario) {
         document.getElementById('colaborador').classList.add('active');
         setModalMessage('El artista y el colaborador no pueden ser el mismo.');
         setIsModalOpen(true);
         return null;
       }
     }
-    // const colaboradores = campos.colaborador.split(',');
-    // const mismoArtista = colaboradores.some((parte) => parte.trim() === campos.artista);
-    // if (mismoArtista) {
-    //   console.log("no puede ser el mismo artista que el colaborador");
-    //   return null;
-    // }
-    // // verificar que exista el colaborador
-    // const id_colaboradores = [];
-    // for (const artista of colaboradores) {
-    //   const id_colaborador = await ExisteArtista(artista.trim());
-    //   if (id_colaborador === null) {
-    //     console.log("<" + artista.trim() + "> no esta registrado como artista");
-    //     return null;
-    //   } else {
-    //     console.log("<" + artista.trim() + "> id: " + id_colaborador);
-    //     id_colaboradores.push(id_colaborador);
-    //   }
-    // }
-    // // registrat colaboradores 
-    // let colaborador = "";
-    // for (const artista of colaboradores) {
-    //   colaborador = colaborador + ", " + artista.trim();
-    // }
-    // if (colaborador.length > 2) {
-    //   colaborador = colaborador.slice(2);
-    // }
 
     return {
       id_usuario: id_usuario,
@@ -162,7 +155,6 @@ function CrearLista() {
   const subirBD = async (nuevoAlbum) => {
     try {
       const query = `/lista_canciones/`;
-      // const query = `/lista_canciones/createlist`;
       const response = await axios.post(`${database}${query}`, nuevoAlbum);
       return true;
     } catch (error) {
@@ -172,63 +164,70 @@ function CrearLista() {
   };
 
   const validarForm = async (e) => {
-    // Deshabilitar el botón
+    
     setBotonHabilitado(false);
     try {
-      e.preventDefault();
+      if (isOnline) {
+        e.preventDefault();
 
-      const campos = {
-        titulo: eliminarEspacios(document.getElementById('titulo_lista').value).trim(),
-        artista: eliminarEspacios(document.getElementById('artista').value).trim(),
-        colaborador: eliminarEspacios(document.getElementById('colaborador').value).trim(),
-        archivo: document.getElementById('archivo').files
-      };
+        const campos = {
+          titulo: eliminarEspacios(document.getElementById('titulo_lista').value).trim(),
+          artista: eliminarEspacios(document.getElementById('artista').value).trim(),
+          colaborador: eliminarEspacios(document.getElementById('colaborador').value).trim(),
+          archivo: document.getElementById('archivo').files
+        };
 
-      const nuevoAlbum = await validarCampos(campos);
-      if (nuevoAlbum === null) {
-        setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
-        setIsModalOpen(true);
-        return;
-      }
-
-      const archivo = campos.archivo[0];
-      if (!await validarFormatoArchivo(archivo)) {
-        setModalMessage(`Formato de archivo no válido`);
-        setIsModalOpen(true);
-        return;
-      }
-
-      const maxSize = 5 * 1024 * 1024; // 15 MB en bytes
-      if (archivo.size > maxSize) {
-        setModalMessage(`Tamaño máximo de 5 MB excedido`);
-        setIsModalOpen(true);
-        return;
-      }
-
-      try {
-        const resultado = await subirFirebase(archivo);
-        nuevoAlbum.path_image = resultado.url;
-
-        const subidaExitosa = await subirBD(nuevoAlbum);
-        if (!subidaExitosa) {
-          deleteFile(resultado.filePath);
-          setModalMessage(`Error al cargar la canción. Intente más tarde.`);
+        const nuevoAlbum = await validarCampos(campos);
+        if (nuevoAlbum === null) {
+          setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
           setIsModalOpen(true);
           return;
         }
 
-        setModalMessage(`Lista creada exitosamente`);
-        setIsModalOpen(true);
-        setRedirectTo("/inicio");
-        
-        
-      } catch (error) {
-        console.error('Error:', error);
-        setModalMessage(`Error al subir o procesar el archivo.`);
+        const archivo = campos.archivo[0];
+        if (!await validarFormatoArchivo(archivo)) {
+          setModalMessage(`Formato de archivo no válido`);
+          setIsModalOpen(true);
+          return;
+        }
+
+        const maxSize = 5 * 1024 * 1024; // 15 MB en bytes
+        if (archivo.size > maxSize) {
+          setModalMessage(`Tamaño máximo de 5 MB excedido`);
+          setIsModalOpen(true);
+          return;
+        }
+
+        try {
+          const resultado = await subirFirebase(archivo);
+          nuevoAlbum.path_image = resultado.url;
+
+          const subidaExitosa = await subirBD(nuevoAlbum);
+          if (!subidaExitosa) {
+            deleteFile(resultado.filePath);
+            e.preventDefault();
+            setModalMessage(`Error al cargar la canción. Intente más tarde.`);
+            setIsModalOpen(true);
+            return;
+          }
+          setModalMessage(`Lista creada exitosamente`);
+          setIsModalOpen(true);
+          setRedirectTo("/");
+          
+        } catch (error) {
+          console.error('Error:', error);
+          setModalMessage(`Error al subir o procesar el archivo.`);
+          setIsModalOpen(true);
+        }
+      } else {
+        e.preventDefault();
+        setModalMessage('Hubo un error al crear la carpeta, Intenta nuevamente');
         setIsModalOpen(true);
       }
     } catch (error) {
-      console.error('Error al enviar la solicitud:', error);
+      e.preventDefault();
+      setModalMessage('Hubo un error al crear la carpeta, Intenta nuevamente');
+      setIsModalOpen(true);
     } finally {
       // Una vez que se complete, habilitar el botón nuevamente
       setBotonHabilitado(true);
