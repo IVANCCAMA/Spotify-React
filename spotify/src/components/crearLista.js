@@ -186,21 +186,21 @@ function CrearLista() {
 
       const nuevoAlbum = await validarCampos(campos);
       if (nuevoAlbum === null) {
-        setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
+        setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
         setIsModalOpen(true);
         return;
       }
 
       const archivo = campos.archivo[0];
       if (!await validarFormatoArchivo(archivo)) {
-        setModalMessage(`Formato de archivo no válido.`);
+        setModalMessage(`Formato de archivo no válido`);
         setIsModalOpen(true);
         return;
       }
 
       const maxSize = 5 * 1024 * 1024; // 15 MB en bytes
       if (archivo.size > maxSize) {
-        setModalMessage(`Tamaño máximo de 5 MB excedido.`);
+        setModalMessage(`Tamaño máximo de 5 MB excedido`);
         setIsModalOpen(true);
         return;
       }
