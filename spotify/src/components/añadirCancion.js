@@ -147,7 +147,7 @@ function AñadirCancion() {
   const subirBD = async (nuevaCancion) => {
     try {
       const query = `/canciones/`;
-      const response = await axios.post(`${database}${query}`, nuevaCancion);
+      await axios.post(`${database}${query}`, nuevaCancion);
       return true;
     } catch (error) {
       console.error('Error al subir a la base de datos:', error);

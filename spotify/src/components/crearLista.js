@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
-import { alfanumerico, alfanumericoVarios } from './form.js';
+import { alfanumerico } from './form.js';
 import './form.css';
 import Alerta from './alerta';
 
@@ -155,7 +155,7 @@ function CrearLista() {
   const subirBD = async (nuevoAlbum) => {
     try {
       const query = `/lista_canciones/`;
-      const response = await axios.post(`${database}${query}`, nuevoAlbum);
+      await axios.post(`${database}${query}`, nuevoAlbum);
       return true;
     } catch (error) {
       console.error('Error al obtener la lista de usuarios:', error);
