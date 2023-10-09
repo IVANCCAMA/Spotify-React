@@ -11,16 +11,16 @@ function CrearLista() {
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  useEffect(() => { mostrarNombreArchivo(); }, [botonHabilitado, isModalOpen, modalMessage]);
+  
   const [redirectTo, setRedirectTo] = useState(null);
-  useEffect(() => { mostrarNombreArchivo(); }, [botonHabilitado, isModalOpen, modalMessage, redirectTo]);
 
   function handleCloseAndRedirect() {
-    setIsModalOpen(false);
-    if (redirectTo) {
-      window.location.replace(redirectTo);
-    }
+      setIsModalOpen(false);
+      if (redirectTo) {
+          window.location.replace(redirectTo);
+      }
   }
-
   const getlistasbyid_user = async (id_usuario) => {
     try {
       const query = `/usuarios/getlistasbyid_user/${id_usuario}`;
@@ -219,7 +219,9 @@ function CrearLista() {
 
         setModalMessage(`Lista creada exitosamente`);
         setIsModalOpen(true);
-        setRedirectTo("/");
+        setRedirectTo("/inicio");
+        
+        
       } catch (error) {
         console.error('Error:', error);
         setModalMessage(`Error al subir o procesar el archivo.`);
@@ -356,12 +358,11 @@ function CrearLista() {
           </div>
         </div>
       </form>
-
       <Alerta
         isOpen={isModalOpen}
         mensaje={modalMessage}
         onClose={handleCloseAndRedirect}
-      />
+      />   
     </div>
   );
 }

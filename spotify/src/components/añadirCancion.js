@@ -15,16 +15,18 @@ function AñadirCancion() {
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, isModalOpen, modalMessage]);
+ 
+ //
   const [redirectTo, setRedirectTo] = useState(null);
-  useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, isModalOpen, modalMessage, redirectTo]);
 
-  function handleCloseAndRedirect() {
-    setIsModalOpen(false);
-    if (redirectTo) {
-      window.location.replace(redirectTo);
+    function handleCloseAndRedirect() {
+        setIsModalOpen(false);
+        if (redirectTo) {
+            window.location.replace(redirectTo);
+        }
     }
-  }
-
+  //
   const getlistasbyid_user = async (id_usuario) => {
     try {
       const query = `/usuarios/getlistasbyid_user/${id_usuario}`;
@@ -97,18 +99,19 @@ function AñadirCancion() {
       return null;
     }
 
-    // titulo
+    // titulo   (verificamos si existe)
     const canciones = await getcancionesbyid_user(id_usuario);
     const cancionExistente = canciones.find((cancion) => cancion.nombre_cancion === campos.titulo);
     if (cancionExistente) {
-      console.log('el artista ya tiene una cancion con el mismo nombre');
-      document.getElementById('titulo_Cancion').classList.add('active');
+      //console.log('el artista ya tiene una cancion con el mismo nombre');
+      setModalMessage(`La canción existe en el álbum`);
+      //setIsModalOpen(true);
       return null;
     }
 
     // genero
     for (const genero of generos) {
-      if (campos.genero === genero) {
+      if (campos.genero === genero) { 
         return {
           id_lista: id_lista,
           nombre_cancion: campos.titulo,
@@ -168,7 +171,9 @@ function AñadirCancion() {
 
       const nuevaCancion = await validarCampos(campos);
       if (nuevaCancion === null) {
+        if (!modalMessage) {
         setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
+        }
         setIsModalOpen(true);
         return;
       }
