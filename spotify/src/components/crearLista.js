@@ -91,7 +91,7 @@ function CrearLista() {
     const id_usuario = await ExisteArtista(campos.artista);
     if (id_usuario == null) {
       document.getElementById('artista').classList.add('active');
-      setModalMessage('El artista no existe, intente con otro.');
+      setModalMessage('El artista no existe, intente con otro');
       setIsModalOpen(true);
       return null;
     }
@@ -101,7 +101,7 @@ function CrearLista() {
     const albumExistente = albumes.find((album) => album.titulo_lista === campos.titulo);
     if (albumExistente) {
       document.getElementById('titulo_lista').classList.add('active');
-      setModalMessage('El nombre de la carpeta ya está en uso, intente otro.');
+      setModalMessage('El nombre de la carpeta ya está en uso, intente otro');
       setIsModalOpen(true);
       return null;
     }
@@ -111,12 +111,12 @@ function CrearLista() {
       const id_colaborador = await ExisteArtista(campos.colaborador);
       if (id_colaborador == null) {
         document.getElementById('colaborador').classList.add('active');
-        setModalMessage('El artista colaborador no existe, intente con otro.');
+        setModalMessage('El artista colaborador no existe, intente con otro');
         setIsModalOpen(true);
         return null;
       } else if (id_colaborador === id_usuario) {
         document.getElementById('colaborador').classList.add('active');
-        setModalMessage('El artista y el colaborador no pueden ser el mismo.');
+        setModalMessage('El artista y el colaborador no pueden ser el mismo');
         setIsModalOpen(true);
         return null;
       }
@@ -206,7 +206,7 @@ function CrearLista() {
           if (!subidaExitosa) {
             deleteFile(resultado.filePath);
             e.preventDefault();
-            setModalMessage(`Error al cargar la canción. Intente más tarde.`);
+            setModalMessage(`Error al cargar la canción. Intente más tarde`);
             setIsModalOpen(true);
             return;
           }
@@ -216,7 +216,7 @@ function CrearLista() {
           
         } catch (error) {
           console.error('Error:', error);
-          setModalMessage(`Error al subir o procesar el archivo.`);
+          setModalMessage(`Error al subir o procesar el archivo`);
           setIsModalOpen(true);
         }
       } else {

@@ -172,7 +172,7 @@ function AñadirCancion() {
       const nuevaCancion = await validarCampos(campos);
       if (nuevaCancion === null) {
         if (!modalMessage) {
-        setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
+        setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
         }
         setIsModalOpen(true);
         return;
@@ -180,14 +180,14 @@ function AñadirCancion() {
 
       const archivo = campos.archivo[0];
       if (!await validarFormatoArchivo(archivo)) {
-        setModalMessage(`Formato de archivo no válido.`);
+        setModalMessage(`Formato de archivo no válido`);
         setIsModalOpen(true);
         return;
       }
 
       const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
       if (archivo.size > maxSize) {
-        setModalMessage(`Tamaño máximo de 15 MB excedido.`);
+        setModalMessage(`Tamaño máximo de 15 MB excedido`);
         setIsModalOpen(true);
         return;
       }
@@ -202,17 +202,17 @@ function AñadirCancion() {
         const subidaExitosa = await subirBD(nuevaCancion);
         if (!subidaExitosa) {
           deleteFile(resultado.filePath);
-          setModalMessage(`Error al cargar la canción. Intente más tarde.`);
+          setModalMessage(`Error al cargar la canción. Intente más tarde`);
           setIsModalOpen(true);
           return;
         }
 
-        setModalMessage(`Canción añadida exitosamente.`);
+        setModalMessage(`Canción añadida exitosamente`);
         setIsModalOpen(true);
         setRedirectTo("/");
       } catch (error) {
         console.error('Error:', error);
-        setModalMessage(`Error al subir o procesar el archivo.`);
+        setModalMessage(`Error al subir o procesar el archivo`);
         setIsModalOpen(true);
       }
     } catch (error) {
