@@ -3,12 +3,14 @@
   padding: 20px;
   border-radius: 10px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(380px, 1fr)); /* Ancho flexible */
   gap: 1em;
   max-width: 1000px;
-  margin: 50px 0 0 200px;
-  grid-auto-rows: minmax(150px, 180px); 
+  margin: 0px 0px 10px 100px;
+  grid-auto-rows: minmax(150px, 180px);
 }
+
+
 
 
 .albumes-details {
@@ -38,7 +40,11 @@
   display: block;
   align-items: center;
   text-align: justify;
-  font-family: var(--fuente-1);
+  white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+  overflow: hidden; /* Oculta el contenido que desborda el contenedor */
+  text-overflow: ellipsis; /* Muestra puntos suspensivos (...) cuando el texto desborda */
+  word-wrap: break-word; /* Permite dividir palabras largas en varias líneas */
+  max-width: 100%;
 }
 
 .artistas-name {
