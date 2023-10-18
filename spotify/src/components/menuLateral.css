@@ -1,7 +1,7 @@
 /* MENU */
 .menu {
-
-  height: 658px;
+  
+  height: 100%;
   width: 250px;
   position: fixed;
   z-index: 1;
@@ -11,6 +11,11 @@
   border: 5px solid #000000;
   overflow-y: auto;
   
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .menu .profile .logo {

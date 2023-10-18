@@ -35,7 +35,7 @@
     align-items: center;
     flex-wrap: nowrap;
   }
-  .nombre-musica,
+.nombre-musica,
 .nombre-artista {
   margin: 0 10px;   /* Aumenta el espacio antes y después para compensar la eliminación del guion */
     white-space: nowrap;

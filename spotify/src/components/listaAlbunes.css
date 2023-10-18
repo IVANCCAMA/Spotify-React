@@ -8,10 +8,8 @@
   max-width: 1000px;
   margin: 0px 0px 10px 100px;
   grid-auto-rows: minmax(150px, 180px);
+  padding-bottom: 80px; 
 }
-
-
-
 
 .albumes-details {
   position: relative;
