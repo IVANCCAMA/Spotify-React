@@ -5,32 +5,55 @@ import AñadirCancion from './components/añadirCancion';
 import MenuLateral from './components/menuLateral';
 import './App.css';
 import ListaAlbumes from './components/listaAlbunes';
+import ReproducirCancion from './components/reproducirCancion';
 
 /* import Sencillo from './components/sencillo';
  */import Inicio from './components/inicioHome';
  import ListaCanciones from './components/listaCanciones';
 
-
-function App() {
+ function App() {
+  const misCanciones = [
+    {
+      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+      nombre: 'Canción 1',
+      artista: 'Artista 1',
+       
+    },
+    {
+      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+      nombre: 'Canción 2',
+      artista: 'Artista 2',
+       
+    },
+    {
+      url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+      nombre: 'Canción 3',
+      artista: 'Artista 3',
+       
+    }
+  
+  ];
   return (
-    <div className="boby">
-      <div className="flex">
+    <div className="app-container">
+      <div className="sidebar">
         <MenuLateral />
-        <div className="container mx-auto py-4 px-20">
-          <Routes>
-            <Route path="/" element={<Inicio />} />
-            <Route path="/Albumes" element={<ListaAlbumes />} />
-            <Route path="/crearAlbum" element={<CrearLista />} />
-            {/* <Route path="/Sencillo" element={<Sencillo />} /> */}
-            <Route path="/añadirCancion" element={<AñadirCancion />} />
-           {/*  <Route path={`/detalle-album/1`} element={<ListaCanciones />} /> */}
-           <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} /> {/* Esta es la línea que mencionaste */}
+      </div>
+      <div className="content">
+        <Routes>
+          <Route path="/" element={<Inicio />} />
+          <Route path="/Albumes" element={<ListaAlbumes />} />
+          <Route path="/crearAlbum" element={<CrearLista />} />
+          <Route path="/añadirCancion" element={<AñadirCancion />} />
+          <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
+        </Routes>
+      </div>
+      <div className="music-player">
+      <ReproducirCancion canciones={misCanciones} />
 
-          </Routes>
-        </div>
       </div>
     </div>
   );
 }
+
 
 export default App;

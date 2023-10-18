@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import './listaAlbunes.css';
 import axios from "axios";
-
+ 
 function ListaAlbumes() {
   const [albumes, setAlbumes] = useState([]);
 
