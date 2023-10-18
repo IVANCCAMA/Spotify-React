@@ -21,7 +21,7 @@
 
 .menu .menu-items .item a {
   display: flex; /* Mostrar elementos en línea */
-  align-items: center; /* Centrar verticalmente los elementos */
+  align-items: center; /* Centra verticalmente los elementos */
   padding: 16px;
   text-decoration: none;
   font-weight: bold;

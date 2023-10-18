@@ -1,13 +1,18 @@
-.reproductorMusica  {
-    background-color: #006666;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    height: 110px;
-    width: 1349px;
-  }
+.reproductorMusica {
+  background-color: #006666;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  height: 110px;
+  width: 100%;  /* Ajustado al 100% para cubrir todo el ancho de la pantalla */
+  position: fixed;  /* Hace que el reproductor se fije en la posición */
+  bottom: 0;  /* Alinea el reproductor al fondo de la página */
+  left: 0;  /* Alinea el reproductor a la izquierda de la página */
+  z-index: 1000;  /* Asegura que el reproductor esté encima de otros elementos */
+}
+
 
   .info-cancion, .detalles-musica{
     display: flex;
