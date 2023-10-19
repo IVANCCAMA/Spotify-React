@@ -1,9 +1,9 @@
 
 .albumes-list {
-  padding: 20px;
+  padding: 40px;
   border-radius: 10px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(380px, 1fr)); /* Ancho flexible */
+  grid-template-columns: repeat(3, minmax(320px, 1fr)); /* Ancho flexible */
   gap: 1em;
   max-width: 1000px;
   margin: 0px 0px 10px 100px;
