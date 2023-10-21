@@ -1,40 +1,33 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { FaPlay, FaPause, FaForward, FaBackward } from 'react-icons/fa';
 import './estilosReproductor.css';  
+import { ListContext } from "./ListContext";
 
-const ReproducirCancion = ({ canciones  }) => {
-  const [indiceCancionActual, setIndiceCancionActual] = useState(0);//Índice de la canción actual en reproducción
-  const audioRef = useRef();
-  const [nombreMusica, setNombreMusica] = useState(canciones[0].nombre);// Nombre de la canción actual
-  const [nombreArtista, setNombreArtista] = useState(canciones[0].artista);// Nombre del artista
+function ReproducirCancion () {
+
+  const { listaCancionesReproduccion } = useContext(ListContext);
+  const [indiceCancionActual, setIndiceCancionActual] = useState(null);//Índice de la canción actual en reproducción
+  const [audioRef, setAudioRef]= useState('');
+  const [nombreMusica, setNombreMusica] = useState('Nombre musica');// Nombre de la canción actual
+  const [nombreArtista, setNombreArtista] = useState('Nombre artista');// Nombre del artista
   const [volumen, setVolumen] = useState(50);
   const [estaReproduciendo, setEstaReproduciendo] = useState(false); // Definir inicialmente como false
-   
+  const [listaCanciones, setListaCanciones] = useState([]);
   /** 
    * Para Reproducción y pausar la canción
    * */ 
   const clicReproducirPause = () => {
-    if (audioRef.current) {
-      const audio = audioRef.current;
-      if (audio.paused) {
-        audio.play();
-        setEstaReproduciendo(true);
-      } else {
-        audio.pause();
-        setEstaReproduciendo(false);
-      }
-    } else {
-      console.error('audioRef.current no está definido');
-    }
+    console.log('canciones recibidas>>>', listaCancionesReproduccion);
+    setListaCanciones(listaCancionesReproduccion)
   };
   /**
    * Cambia a la siguiente canción.
    */
   const sigCancion = () => {
-      const newIndex = (indiceCancionActual + 1) % canciones.length;
+      const newIndex = (indiceCancionActual + 1) % listaCanciones.length;
       setIndiceCancionActual(newIndex); 
-      setNombreMusica(canciones[newIndex].nombre); 
-      setNombreArtista(canciones[newIndex].artista); 
+      setNombreMusica(listaCanciones[newIndex].nombre); 
+      setNombreArtista(listaCanciones[newIndex].artista); 
       //setPortadaAlbum(canciones[newIndex].portada); 
       if (estaReproduciendo && audioRef.current) {
           audioRef.current.currentTime = 0;
@@ -42,10 +35,10 @@ const ReproducirCancion = ({ canciones  }) => {
       }
   };
   const cancionAnterior = () => {
-    const newIndex = ((indiceCancionActual - 1) + canciones.length) % canciones.length;
+    const newIndex = ((indiceCancionActual - 1) + listaCanciones.length) % listaCanciones.length;
     setIndiceCancionActual(newIndex);
-    setNombreMusica(canciones[newIndex].nombre); 
-    setNombreArtista(canciones[newIndex].artista); 
+    setNombreMusica(listaCanciones[newIndex].nombre); 
+    setNombreArtista(listaCanciones[newIndex].artista); 
     if(estaReproduciendo && audioRef.current) { 
       audioRef.current.currentTime = 0;
        audioRef.current.play();
@@ -72,7 +65,7 @@ const ReproducirCancion = ({ canciones  }) => {
         </div>
       </div>
     <div className="controls">
-    <audio ref={audioRef} src={canciones[indiceCancionActual].url} />
+    {/* <audio ref={audioRef} src={canciones[indiceCancionActual].url} /> */}
 
       {/* Reemplazamos el texto de los botones con los iconos */}
       <button onClick={cancionAnterior} className="boton-control">

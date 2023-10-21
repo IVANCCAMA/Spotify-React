@@ -4,15 +4,17 @@ import './listaCanciones.css';
 import songLogo from '../logos/play-logo.png';
 import axios from "axios";
 import ReproducirCancion from './reproducirCancion';
+import { ListProvider, useListContext } from './ListContext';
 
 
 function ListaCanciones() {
   const { id_lista } = useParams();
+  const { listaCancionesReproduccion, actualizarListaCanciones } = useListContext();
+
   const [listaCanciones, setListaCanciones] = useState([]);
   const [infoAlbum, setinfoAlbum] = useState([]); // Nuevo estado para lista de álbumes
   const [cancionesCargadas, setCancionesCargadas] = useState(false); 
   const [cancionSeleccionada, setCancionSeleccionada] = useState(null); // Nuevo estado para el índice de la canción seleccionada
-
   
   // Lista de canciones de un Álbum
   useEffect(() => {
@@ -22,12 +24,16 @@ function ListaCanciones() {
         const listaCanciones = responseCanciones.data;
         setListaCanciones(listaCanciones);
         setCancionesCargadas(true);
+        actualizarListaCanciones(listaCanciones);
+        console.log(listaCanciones);
       } catch (error) {
         console.error('Error al obtener la lista de canciones:', error);
       }
     };
     fetchData();
-  }, [id_lista]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Arreglo de dependencias vacío
+  
 
   useEffect(() => {
     const fetchAlbum = async () => {
@@ -52,6 +58,8 @@ function ListaCanciones() {
   };
 
   return (
+    
+  <ListProvider>
     <div className='general-config'>
       {/* Info de álbum */}
       <div className='album-config'>
@@ -98,10 +106,10 @@ function ListaCanciones() {
         ) : (
           <p>Cargando canciones...</p>
         )}
-
       </div>
-        <ReproducirCancion canciones={listaCanciones} /* indiceCancion= {cancionSeleccionada} */ />
   </div>
+  <ReproducirCancion />
+  </ListProvider>
   );
   
 }
