@@ -9,12 +9,12 @@ import { ListProvider, useListContext } from './ListContext';
 
 function ListaCanciones() {
   const { id_lista } = useParams();
-  const { listaCancionesReproduccion, actualizarListaCanciones } = useListContext();
+  const { listaCancionesReproduccion, actualizarListaCanciones, cancionSeleccionada, actualizarCancionSelecionada } = useListContext();
 
   const [listaCanciones, setListaCanciones] = useState([]);
   const [infoAlbum, setinfoAlbum] = useState([]); // Nuevo estado para lista de álbumes
   const [cancionesCargadas, setCancionesCargadas] = useState(false); 
-  const [cancionSeleccionada, setCancionSeleccionada] = useState(null); // Nuevo estado para el índice de la canción seleccionada
+  const [cancionSelect, setCancionSeleccionada] = useState(null); // Nuevo estado para el índice de la canción seleccionada
   
   // Lista de canciones de un Álbum
   useEffect(() => {
@@ -25,7 +25,6 @@ function ListaCanciones() {
         setListaCanciones(listaCanciones);
         setCancionesCargadas(true);
         actualizarListaCanciones(listaCanciones);
-        console.log(listaCanciones);
       } catch (error) {
         console.error('Error al obtener la lista de canciones:', error);
       }
@@ -34,7 +33,7 @@ function ListaCanciones() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Arreglo de dependencias vacío
   
-
+  // Infor de album
   useEffect(() => {
     const fetchAlbum = async () => {
       try {
@@ -47,15 +46,6 @@ function ListaCanciones() {
     };
     fetchAlbum();
   }, [id_lista]);
-
-  const reproducirCancion = (indice) => {
-    // Envía la lista de canciones al componente ReproducirCancion
-    // Asegúrate de que ReproducirCancion maneje el cambio en la lista de canciones.
-    setListaCanciones(listaCanciones)
-    setCancionSeleccionada(indice);
-    console.log('Cancion selecionada: >>>>>', cancionSeleccionada);
-    console.log('Lista enviada: >>>>>', listaCanciones);
-  };
 
   return (
     
@@ -99,7 +89,7 @@ function ListaCanciones() {
                   <div className="duracion-logo">{cancion.duracion}</div>
                 </div>
                 <img src={songLogo} alt="Álbum" className="play-logo" />
-                <button onClick={() => reproducirCancion(index)}> Play </button> {/* Boton play para enviar lista de canciones y el índice */}
+                <button onClick={() => actualizarCancionSelecionada(cancion.id_cancion)}> Play </button> {/* Boton play para enviar lista de canciones y el índice */}
               </div>
             </div>
           ))
@@ -107,7 +97,7 @@ function ListaCanciones() {
           <p>Cargando canciones...</p>
         )}
       </div>
-  </div>
+    </div>
   <ReproducirCancion />
   </ListProvider>
   );

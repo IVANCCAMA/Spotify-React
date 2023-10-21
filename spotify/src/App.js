@@ -16,23 +16,23 @@ import { ListProvider, MusicProvider } from './components/ListContext';
   return (
     <ListProvider>
       <div className="app-container">
-      <div className="sidebar">
-        <MenuLateral />
-      </div>
-      <div className="content">
-        <Routes>
-          <Route path="/" element={<Inicio />} />
-          <Route path="/Albumes" element={<ListaAlbumes />} />
-          <Route path="/crearAlbum" element={<CrearLista />} />
-          <Route path="/añadirCancion" element={<AñadirCancion />} />
-          <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
-        </Routes>
-      </div>
-      <div className="music-player">
-      <ReproducirCancion/>
+        <div className="sidebar">
+          <MenuLateral />
+        </div>
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<Inicio />} />
+            <Route path="/Albumes" element={<ListaAlbumes />} />
+            <Route path="/crearAlbum" element={<CrearLista />} />
+            <Route path="/añadirCancion" element={<AñadirCancion />} />
+            <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
+          </Routes>
+        </div>
+        <div className="music-player">
+        <ReproducirCancion/>
 
+        </div>
       </div>
-    </div>
     </ListProvider>
   );
 }
