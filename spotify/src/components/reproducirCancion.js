@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 //useState(estado de mi componente) y useRef(elemen DOM) Hooks 
 import React, { useState, useRef } from "react";
 //React Icons incluir iconos de la biblioteca, visualizacion de los iconos
-import { FaPlay, FaPause, FaForward, FaBackward } from 'react-icons/fa';
+import { FaPlay, FaPause, FaForward, FaBackward, FaVolumeOff, FaVolumeUp } from 'react-icons/fa';
 // Importando estilos
 import './estilosReproductor.css';  
 /**
@@ -19,7 +19,7 @@ const ReproducirCancion = ({ canciones  }) => {
   //const [portadaAlbum, setPortadaAlbum] = useState(canciones[0].portada);//Imagen de la protada de cancion
   const [volumen, setVolumen] = useState(50);
   const [estaReproduciendo, setEstaReproduciendo] = useState(false); // Definir inicialmente como false
-   
+  const [muted, setMuted] = useState(false);  // Mute - Unmuted
   /** 
    * Para Reproducción y pausar la canción
    * */ 
@@ -75,6 +75,15 @@ const ReproducirCancion = ({ canciones  }) => {
     const audio = audioRef.current;
     audio.volume = nuevoVolumen / 100; // Actualiza el volumen del elemento de audio
   };
+
+  const mutearDesmutear = () => {
+    setMuted(!muted);  // Actualiza el estado de mute                    
+  const estaEnSilencio = audioRef.current.muted;
+    audioRef.current.muted = !estaEnSilencio; //cambio de mute a unmuted
+  };
+
+
+   
    // <img src={portadaAlbum} alt="portada album" className="portada-album" /> */
   return (
     <div className="reproductorMusica">
@@ -101,11 +110,24 @@ const ReproducirCancion = ({ canciones  }) => {
       <button onClick={sigCancion} className="boton-control">
         <FaForward/> 
       </button>
-    </div>
-    <div className="volumen" >
+    </div> 
+    <div>
+
+      
+    {/* Cambia de icono a Mute y Unmuted */}
+    <div className = "contenedor">
+    <button onClick={mutearDesmutear} className="boton-mute">
+      {muted ? <FaVolumeOff /> : <FaVolumeUp />}
+    </button>
+
+
+    <div className="volumen" >      
       <input type="range" min="0" max="100" value={volumen} className="volumen-slider" onChange={cambiarVolumen} />
     </div>
+    </div>
+  </div>
   </div>
   );
+  
 };
 export default ReproducirCancion;

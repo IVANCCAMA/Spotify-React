@@ -56,17 +56,31 @@
     color: #fff;
     margin:  10px;
     cursor: pointer;
+     }
+  
+  .contenedor {
+    display: flex;
+    align-items: center; 
+    padding-right: 100px;
+  }
+
+  .boton-mute   {
+    background: none;
+    border: none;
+    color: #fff;
+    margin:  -45px;
+    cursor: pointer;
     
   }
-  
+
   .volumen {
-    width: 132px;
-    height: 25px;
-    margin-right: 123px;
+    flex: -1; /* Expande el espacio restante disponible para el input */
+    text-align: right; 
   }
   
   .volumen-slider {
     width: 100%;
+    margin-left: 20px;
   }
   .control-button:hover {
     color: black; 
