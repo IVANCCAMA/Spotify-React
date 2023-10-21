@@ -17,30 +17,46 @@ function ReproducirCancion () {
   // Recupera cancion selecionada de ListaCanciones.js
   useEffect(() => {
     setCancionSelect(cancionSeleccionada);
+    
   }, [cancionSeleccionada]);
   /** 
    * Para Reproducción y pausar la canción
    * */ 
   const clicReproducirPause = () => {
-    //setIndiceCancionActual(cancionSeleccionada);
-    console.log('lista recuperada',listaCancionesReproduccion);
-    console.log('cancion selecionada', cancionSelect);
-    setNombreArtista(cancionSelect.nombre_usuario);
-    setNombreMusica(cancionSelect.nombre_cancion);
 
-    if (audioRef.current) {
+    if(audioRef.current && cancionSeleccionada){
+      setNombreArtista(cancionSelect.nombre_usuario);
+      setNombreMusica(cancionSelect.nombre_cancion);
+
       const audio = audioRef.current;
       audio.src = cancionSelect.path_cancion;
-      if (audio.paused) {
-        audio.play();
-        setEstaReproduciendo(true);
+      audio.currentTime = 0;
+
+      if (!estaReproduciendo) {
+        if (audio.currentTime > 0) {
+          // Si el audio se ha pausado previamente y hay un tiempo de reproducción actual, reanuda desde ese punto
+          audio.play().then(() => {
+            audio.currentTime = audio.currentTime; // Establecer el tiempo de reproducción al valor actual
+            setEstaReproduciendo(true);
+            console.log('time reproduction',audio.currentTime);
+          });
+          console.log('time reproduction',audio.currentTime);
+        } else {
+          // Si es la primera vez que se reproduce la canción o si se reprodujo desde el principio, inicia la reproducción desde el principio
+          audio.play();
+          console.log('time reproduction',audio.currentTime);
+          setEstaReproduciendo(true);
+        }
       } else {
+        // Pausa la canción y registra el tiempo de reproducción actual
         audio.pause();
+        audio.currentTime = audio.currentTime + 100;
+        console.log('time reproduction pausado', audio.currentTime);
         setEstaReproduciendo(false);
       }
-    } else {
-      console.error('audioRef.current no está definido');
-    }
+  } else {
+    console.error('audioRef.current no está definido o no hay una canción seleccionada');
+  }
   };
   /**
    * Cambia a la siguiente canción.
