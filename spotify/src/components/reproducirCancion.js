@@ -1,22 +1,12 @@
-import { Link } from "react-router-dom";
-// Importando módulos necesarios de React y Hooks(PERMITE UTILIZAR ESTADOS)
-//useState(estado de mi componente) y useRef(elemen DOM) Hooks 
 import React, { useState, useRef } from "react";
-//React Icons incluir iconos de la biblioteca, visualizacion de los iconos
 import { FaPlay, FaPause, FaForward, FaBackward } from 'react-icons/fa';
-// Importando estilos
 import './estilosReproductor.css';  
-/**
- *Componente para reproducir canciones, permitiendo controlar la reproducción, pausa, y volumen.
- * -Lista de canciones con su información correspondiente. 
- */
+
 const ReproducirCancion = ({ canciones  }) => {
-  // Estados para gestionar la información y comportamiento del reproductor
   const [indiceCancionActual, setIndiceCancionActual] = useState(0);//Índice de la canción actual en reproducción
   const audioRef = useRef();
   const [nombreMusica, setNombreMusica] = useState(canciones[0].nombre);// Nombre de la canción actual
   const [nombreArtista, setNombreArtista] = useState(canciones[0].artista);// Nombre del artista
-  //const [portadaAlbum, setPortadaAlbum] = useState(canciones[0].portada);//Imagen de la protada de cancion
   const [volumen, setVolumen] = useState(50);
   const [estaReproduciendo, setEstaReproduciendo] = useState(false); // Definir inicialmente como false
    
@@ -28,10 +18,10 @@ const ReproducirCancion = ({ canciones  }) => {
       const audio = audioRef.current;
       if (audio.paused) {
         audio.play();
-        setEstaReproduciendo(true); // Actualiza a true cuando la música se está reproduciendo
+        setEstaReproduciendo(true);
       } else {
         audio.pause();
-        setEstaReproduciendo(false); // Actualiza a false cuando la música está pausada
+        setEstaReproduciendo(false);
       }
     } else {
       console.error('audioRef.current no está definido');
@@ -51,16 +41,11 @@ const ReproducirCancion = ({ canciones  }) => {
           audioRef.current.play();    
       }
   };
-  /**
-   * Cambia a la canción anterior.
-   */
   const cancionAnterior = () => {
     const newIndex = ((indiceCancionActual - 1) + canciones.length) % canciones.length;
-    setIndiceCancionActual(newIndex); // Retrocede a la canción anterior
+    setIndiceCancionActual(newIndex);
     setNombreMusica(canciones[newIndex].nombre); 
     setNombreArtista(canciones[newIndex].artista); 
-    //setPortadaAlbum(canciones[newIndex].portada); 
-    // Si la música está reproduciéndose, inicia la reproducción de la nueva canción
     if(estaReproduciendo && audioRef.current) { 
       audioRef.current.currentTime = 0;
        audioRef.current.play();
@@ -70,10 +55,10 @@ const ReproducirCancion = ({ canciones  }) => {
    * Cambia el volumen de la reproducción.
    */
   const cambiarVolumen = (e) => {
-    const nuevoVolumen = e.target.value; // Obtén el nuevo volumen del evento
-    setVolumen(nuevoVolumen); // Actualiza el estado de volumen
+    const nuevoVolumen = e.target.value;
+    setVolumen(nuevoVolumen); 
     const audio = audioRef.current;
-    audio.volume = nuevoVolumen / 100; // Actualiza el volumen del elemento de audio
+    audio.volume = nuevoVolumen / 100; 
   };
    // <img src={portadaAlbum} alt="portada album" className="portada-album" /> */
   return (

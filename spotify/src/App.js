@@ -12,7 +12,7 @@ import ReproducirCancion from './components/reproducirCancion';
  import ListaCanciones from './components/listaCanciones';
 
  function App() {
-  const misCanciones = [
+ /*  const misCanciones = [
     {
       url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
       nombre: 'Canción 1',
@@ -32,7 +32,7 @@ import ReproducirCancion from './components/reproducirCancion';
        
     }
   
-  ];
+  ]; */
   return (
     <div className="app-container">
       <div className="sidebar">
@@ -48,7 +48,7 @@ import ReproducirCancion from './components/reproducirCancion';
         </Routes>
       </div>
       <div className="music-player">
-      <ReproducirCancion canciones={misCanciones} />
+      <ReproducirCancion/>
 
       </div>
     </div>
