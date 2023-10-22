@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import React, { useState, useRef, useEffect } from "react";
-import { FaPlay, FaPause, FaForward, FaBackward } from 'react-icons/fa';
+import { FaPlay, FaPause, FaForward, FaBackward, FaVolumeOff, FaVolumeUp } from 'react-icons/fa';
 import './estilosReproductor.css';
 
 const ReproducirCancion = ({ canciones }) => {
   const [indiceCancionActual, setIndiceCancionActual] = useState(0);
+
   const audioRef = useRef();
   const progressIndicatorRef = useRef();
   const [nombreMusica, setNombreMusica] = useState(canciones[0].nombre);
@@ -12,6 +13,7 @@ const ReproducirCancion = ({ canciones }) => {
   const [volumen, setVolumen] = useState(50);
   const [estaReproduciendo, setEstaReproduciendo] = useState(false);
   const [progreso, setProgreso] = useState(0);
+  const [muted, setMuted] = useState(false);  // Mute - Unmuted
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -20,6 +22,7 @@ const ReproducirCancion = ({ canciones }) => {
       setProgreso(porcentaje);
     });
   }, []);
+
 
   const clicReproducirPause = () => {
     if (audioRef.current) {
@@ -74,6 +77,12 @@ const ReproducirCancion = ({ canciones }) => {
     const nuevaPosicion = (porcentaje / 100) * audio.duration;
     audio.currentTime = nuevaPosicion;
   };
+  
+  const mutearDesmutear = () => {
+    setMuted(!muted);  // Actualiza el estado de mute                    
+  const estaEnSilencio = audioRef.current.muted;
+    audioRef.current.muted = !estaEnSilencio; //cambio de mute a unmuted
+  };
 
   return (
     <div className="reproductorMusica">
@@ -109,18 +118,20 @@ const ReproducirCancion = ({ canciones }) => {
           <div className="progress-circle"></div>
         </div>
       </div>
-      <div className="volumen">
-        <input
-          type="range"
-          min="0"
-          max="100"
-          value={volumen}
-          className="volumen-slider"
-          onChange={cambiarVolumen}
-        />
+      
+      <div className = "contenedor">
+        <button onClick={mutearDesmutear} className="boton-mute">
+          {muted ? <FaVolumeOff /> : <FaVolumeUp />}
+        </button>
+
+        <div className="volumen" >      
+          <input type="range" min="0" max="100" value={volumen} className="volumen-slider" onChange={cambiarVolumen} />
+        </div>
       </div>
-    </div>
+      
+      </div>
   );
+  
 };
 
 export default ReproducirCancion;
