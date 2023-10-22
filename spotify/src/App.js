@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import CrearLista from './components/crearLista';
 import AñadirCancion from './components/añadirCancion';
 import MenuLateral from './components/menuLateral';
+import Registro from './components/registro';
 import './App.css';
 import ListaAlbumes from './components/listaAlbunes';
 import ReproducirCancion from './components/reproducirCancion';
@@ -44,6 +45,7 @@ import ReproducirCancion from './components/reproducirCancion';
           <Route path="/Albumes" element={<ListaAlbumes />} />
           <Route path="/crearAlbum" element={<CrearLista />} />
           <Route path="/añadirCancion" element={<AñadirCancion />} />
+          <Route path="/registro" element={<Registro />} />
           <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
         </Routes>
       </div>
