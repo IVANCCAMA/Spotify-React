@@ -20,54 +20,48 @@ function ReproducirCancion () {
   
   // Recupera cancion selecionada de ListaCanciones.js
   useEffect(() => {
-    setCancionSelect(cancionSeleccionada);
-    const audio = audioRef.current;
-    audio.addEventListener('timeupdate', () => {
-      const porcentaje = (audio.currentTime / audio.duration) * 100;
-      setProgreso(porcentaje);
-    });
+    if (cancionSeleccionada) {
+        setCancionSelect(cancionSeleccionada);
+
+        // Actualización de los nombres
+        setNombreArtista(cancionSeleccionada.nombre_usuario);
+        setNombreMusica(cancionSeleccionada.nombre_cancion);
+
+        const audio = audioRef.current;
+        audio.src = cancionSeleccionada.path_cancion; // Establece la fuente de la canción
+        audio.play().then(() => {  // Inicia la reproducción de la canción automáticamente
+            setEstaReproduciendo(true);
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            const porcentaje = (audio.currentTime / audio.duration) * 100;
+            setProgreso(porcentaje);
+        });
+    }
   }, [cancionSeleccionada]);
+
+
 
   /** 
    * Para Reproducción y pausar la canción
    * */ 
+ 
   const clicReproducirPause = () => {
-    if(audioRef.current && cancionSeleccionada){
-      setNombreArtista(cancionSelect.nombre_usuario);
-      setNombreMusica(cancionSelect.nombre_cancion);
+    if(audioRef.current && cancionSeleccionada) {
+        const audio = audioRef.current;
 
-      const audio = audioRef.current;
-      audio.src = cancionSelect.path_cancion;
-      audio.currentTime = 0;
-
-      if (!estaReproduciendo) {
-        if (audio.currentTime > 0) {
-          // Si el audio se ha pausado previamente y hay un tiempo de reproducción actual, reanuda desde ese punto
-          audio.play().then(() => {
-            audio.currentTime = audio.currentTime; // Establecer el tiempo de reproducción al valor actual
-            setEstaReproduciendo(true);
-            console.log('time reproduction',audio.currentTime);
-          });
-          console.log('time reproduction',audio.currentTime);
+        if (!estaReproduciendo) {
+            audio.play().then(() => {
+                setEstaReproduciendo(true);
+            });
         } else {
-          // Si es la primera vez que se reproduce la canción o si se reprodujo desde el principio, inicia la reproducción desde el principio
-          audio.play();
-          console.log('time reproduction',audio.currentTime);
-          setEstaReproduciendo(true);
+            audio.pause();
+            setEstaReproduciendo(false);
         }
-      } else {
-        // Pausa la canción y registra el tiempo de reproducción actual
-        audio.pause();
-        audio.currentTime = audio.currentTime + 100;
-        console.log('time reproduction pausado', audio.currentTime);
-
-        setEstaReproduciendo(false);
-      }
     } else {
-      console.error('audioRef.current no está definido o no hay una canción seleccionada');
+        console.error('audioRef.current no está definido o no hay una canción seleccionada');
     }
   };
-
   const sigCancion = () => {
     if (indiceCancionActual !== null) {
       const newIndex = (indiceCancionActual + 1) % listaCancionesReproduccion.length;
