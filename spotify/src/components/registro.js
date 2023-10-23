@@ -5,7 +5,7 @@ import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from
 import { alfanumerico } from './form.js';
 import './form.css'
 import Alerta from './alerta';
-import bcrypt from 'bcryptjs';
+//import bcrypt from 'bcryptjs';
 
 function Registro() {
   const database = 'https://spfisbackend-production.up.railway.app/api';
@@ -80,7 +80,7 @@ function Registro() {
       if (campos.userType === userType) {
         try {
           const saltRounds = 10;
-          const hash = await bcrypt.hash(campos.password, saltRounds);
+          //const hash = await bcrypt.hash(campos.password, saltRounds);
           return {
             nombre_usuario: campos.username,
             correo_usuario: `${campos.username.replace(/ /g, '_')}@localhost`,
