@@ -4,8 +4,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
-  height: 110px;
+  padding: 5px;
+  height: 89px;
   width: 100%;  /* Ajustado al 100% para cubrir todo el ancho de la pantalla */
   position: fixed;  /* Hace que el reproductor se fije en la posición */
   bottom: 0;  /* Alinea el reproductor al fondo de la página */
@@ -45,9 +45,10 @@
 
   .controls {
     display: flex;
-    height: 80px;
-    width: 169px;
-    margin-right: 321px;
+    align-items: center; /* Asegúrate de que los controles estén alineados verticalmente */
+    justify-content: center; /* Centra los controles horizontalmente */
+    margin-top: -35px; /* Ajusta este valor según cuánto quieras mover los controles hacia arriba */
+    padding-right: 43.9px;
   }
   
   .boton-control {
@@ -56,17 +57,30 @@
     color: #fff;
     margin:  10px;
     cursor: pointer;
-    
-  }
+     }
   
+  .contenedor {
+    display: flex;
+    align-items: center; 
+    padding-right: 100px;
+  }
+
+  .boton-mute   {
+    background: none;
+    border: none;
+    color: #fff;
+    margin:  -45px;
+    cursor: pointer;
+  }
+
   .volumen {
-    width: 132px;
-    height: 25px;
-    margin-right: 123px;
+    flex: -1; 
+    text-align: right; 
   }
   
   .volumen-slider {
     width: 100%;
+    margin-left: 20px;
   }
   .control-button:hover {
     color: black; 
@@ -78,10 +92,8 @@
     cursor: pointer;
     font-size: 1.5rem; /* Tamaño de los iconos */
     transition: color 0.3s ease; /* Transición suave del color */
+    
   }
-  
-  .control-button:hover {
-    color: #1DB954; /* Color al pasar el cursor */
-  }
+   
   
 
