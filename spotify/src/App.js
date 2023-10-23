@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import CrearLista from './components/crearLista';
 import AñadirCancion from './components/añadirCancion';
 import MenuLateral from './components/menuLateral';
+import Registro from './components/registro';
 import './App.css';
 import ListaAlbumes from './components/listaAlbunes';
 import ReproducirCancion from './components/reproducirCancion';
@@ -10,7 +10,7 @@ import ReproducirCancion from './components/reproducirCancion';
 /* import Sencillo from './components/sencillo';
  */import Inicio from './components/inicioHome';
  import ListaCanciones from './components/listaCanciones';
-import { ListProvider, MusicProvider } from './components/ListContext';
+import { ListProvider } from './components/ListContext';
 
  function App() {
   return (
@@ -25,12 +25,12 @@ import { ListProvider, MusicProvider } from './components/ListContext';
             <Route path="/Albumes" element={<ListaAlbumes />} />
             <Route path="/crearAlbum" element={<CrearLista />} />
             <Route path="/añadirCancion" element={<AñadirCancion />} />
+            <Route path="/registro" element={<Registro />} />
             <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
           </Routes>
         </div>
         <div className="music-player">
         <ReproducirCancion/>
-
         </div>
       </div>
     </ListProvider>
