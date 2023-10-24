@@ -28,7 +28,7 @@ function ReproducirCancion () {
         setNombreMusica(cancionSeleccionada.nombre_cancion);
 
         const audio = audioRef.current;
-        audio.src = cancionSeleccionada.path_cancion; // Establece la fuente de la canción
+        audio.src = cancionSeleccionada.path_cancion; // Establecemos la fuente de la canción
         audio.play().then(() => {  // Inicia la reproducción de la canción automáticamente
             setEstaReproduciendo(true);
         });
@@ -37,6 +37,16 @@ function ReproducirCancion () {
             const porcentaje = (audio.currentTime / audio.duration) * 100;
             setProgreso(porcentaje);
         });
+        const handleTimeUpdate = () => {
+          const porcentaje = (audio.currentTime / audio.duration) * 100;
+          setProgreso(porcentaje);
+      };
+      
+      audio.addEventListener('timeupdate', handleTimeUpdate);
+      
+      return () => {
+          audio.removeEventListener('timeupdate', handleTimeUpdate);
+      };
     }
   }, [cancionSeleccionada]);
 
@@ -63,23 +73,33 @@ function ReproducirCancion () {
     }
   };
   const sigCancion = () => {
-    if (indiceCancionActual !== null) {
-      const newIndex = (indiceCancionActual + 1) % listaCancionesReproduccion.length;
-      setIndiceCancionActual(newIndex);
-      cargarCancion(newIndex);
-    } else {
-      console.log('no hay indice seleccionado');
+    let newIndex = indiceCancionActual + 1;
+    if (newIndex >= listaCancionesReproduccion.length) {
+        newIndex = 0;  // Si es la última canción, vuelve a la primera.
     }
-  };
+    if (!listaCancionesReproduccion[newIndex]) {
+        console.error(`No se encontró una canción en el índice ${newIndex}`);
+        return;
+    }
+    
+    setIndiceCancionActual(newIndex);
+    cargarCancion(newIndex);
+};
+
 
   const cargarCancion = (indice) => {
     const cancion = listaCancionesReproduccion[indice];
-    setNombreMusica(cancion.nombre);
-    setNombreArtista(cancion.artista);
+    if (!cancion) {
+        console.error(`No se encontró una canción en el índice ${indice}`);
+        return;
+    }
+    
+    setNombreMusica(cancion.nombre_cancion || "Nombre desconocido");
+    setNombreArtista(cancion.nombre_usuario || "Artista desconocido");
 
     if (audioRef.current) {
       const audio = audioRef.current;
-      audio.src = cancion.url;
+      audio.src = cancion.path_cancion;
       audio.load(); // Carga la nueva canción
       if (estaReproduciendo) {
         audio.play();
