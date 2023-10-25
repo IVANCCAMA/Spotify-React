@@ -117,9 +117,16 @@ function ReproducirCancion () {
 
   const cambiarVolumen = (e) => {
     const nuevoVolumen = e.target.value;
-    setVolumen(nuevoVolumen);
     if (audioRef.current) {
-      audioRef.current.volume = nuevoVolumen / 100;
+      const audio = audioRef.current;
+      audio.volume = nuevoVolumen / 100;
+      const estaEnSilencio = nuevoVolumen == 0;
+  
+      if (estaEnSilencio !== muted) {
+        setMuted(estaEnSilencio); // Actualiza el estado de mute
+        audio.muted = estaEnSilencio; // Cambia el estado de mute en el audio
+      }
+      setVolumen(nuevoVolumen);
     }
   };
 
@@ -178,7 +185,8 @@ function ReproducirCancion () {
       
       <div className = "contenedor">
         <button onClick={mutearDesmutear} className="boton-mute">
-          {muted ? <FaVolumeOff /> : <FaVolumeUp />}
+        { muted ? <FaVolumeOff /> : <FaVolumeUp />}
+        
         </button>
 
         <div className="volumen" >      
