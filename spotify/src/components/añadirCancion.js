@@ -16,16 +16,16 @@ function AñadirCancion() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, isModalOpen, modalMessage]);
- 
- //
+
+  //
   const [redirectTo, setRedirectTo] = useState(null);
 
-    function handleCloseAndRedirect() {
-        setIsModalOpen(false);
-        if (redirectTo) {
-            window.location.replace(redirectTo);
-        }
+  function handleCloseAndRedirect() {
+    setIsModalOpen(false);
+    if (redirectTo) {
+      window.location.replace(redirectTo);
     }
+  }
   //
   const getlistasbyid_user = async (id_usuario) => {
     try {
@@ -76,8 +76,16 @@ function AñadirCancion() {
       document.getElementById('artista').classList.add('active');
       return null;
     }
-    if (campos.album.length < 1 || campos.genero.length < 1 || campos.archivo.length < 1) {
-      console.log("No se selecciono album, genero o archivo");
+    if (campos.album === 'default' || campos.album.length < 1) {
+      console.log("No se selecciono album");
+      return null;
+    }
+    if (campos.genero === 'default' || campos.genero.length < 1) {
+      console.log("No se selecciono genero");
+      return null;
+    }
+    if (campos.archivo.length < 1) {
+      console.log("No se selecciono archivo");
       return null;
     }
 
@@ -111,7 +119,7 @@ function AñadirCancion() {
 
     // genero
     for (const genero of generos) {
-      if (campos.genero === genero) { 
+      if (campos.genero === genero) {
         return {
           id_lista: id_lista,
           nombre_cancion: campos.titulo,
@@ -172,7 +180,7 @@ function AñadirCancion() {
       const nuevaCancion = await validarCampos(campos);
       if (nuevaCancion === null) {
         if (!modalMessage) {
-        setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
+          setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
         }
         setIsModalOpen(true);
         return;
@@ -311,8 +319,8 @@ function AñadirCancion() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="album">Álbum *</label>
-              <select name="album" id='album' required>
-                <option disabled selected hidden value="">Seleccionar lista</option>
+              <select name="album" id='album' defaultValue={'default'} required>
+                <option disabled hidden value='default'>Seleccionar lista</option>
                 {listas.map((lista, index) => (
                   <option key={index} value={lista.id}>{lista.titulo_lista}</option>
                 ))}
@@ -323,8 +331,8 @@ function AñadirCancion() {
           <div className="campo">
             <div className="input-boxx">
               <label className="elemento" htmlFor="genero">Género musical *</label>
-              <select name="genero" id='genero' required>
-                <option disabled selected hidden value="">Seleccionar género</option>
+              <select name="genero" id='genero' defaultValue={'default'} required>
+                <option disabled hidden value='default'>Seleccionar género</option>
                 {generos.map((genero) => (
                   <option key={genero} value={genero}>{genero}</option>
                 ))}

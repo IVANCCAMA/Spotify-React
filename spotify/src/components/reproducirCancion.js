@@ -1,111 +1,220 @@
-import { Link } from "react-router-dom";
-// Importando módulos necesarios de React y Hooks(PERMITE UTILIZAR ESTADOS)
-//useState(estado de mi componente) y useRef(elemen DOM) Hooks 
-import React, { useState, useRef } from "react";
-//React Icons incluir iconos de la biblioteca, visualizacion de los iconos
-import { FaPlay, FaPause, FaForward, FaBackward } from 'react-icons/fa';
-// Importando estilos
+
+import React, { useState, useRef, useContext, useEffect, useCallback} from "react";
+import { FaPlay, FaPause, FaForward, FaBackward, FaVolumeOff, FaVolumeUp } from 'react-icons/fa';
 import './estilosReproductor.css';  
-/**
- *Componente para reproducir canciones, permitiendo controlar la reproducción, pausa, y volumen.
- * -Lista de canciones con su información correspondiente. 
- */
-const ReproducirCancion = ({ canciones  }) => {
-  // Estados para gestionar la información y comportamiento del reproductor
-  const [indiceCancionActual, setIndiceCancionActual] = useState(0);//Índice de la canción actual en reproducción
+import { ListContext } from "./ListContext";
+
+function ReproducirCancion () {
+
+  const { listaCancionesReproduccion, cancionSeleccionada } = useContext(ListContext);
+  const [indiceCancionActual, setIndiceCancionActual] = useState(0);
   const audioRef = useRef();
-  const [nombreMusica, setNombreMusica] = useState(canciones[0].nombre);// Nombre de la canción actual
-  const [nombreArtista, setNombreArtista] = useState(canciones[0].artista);// Nombre del artista
-  //const [portadaAlbum, setPortadaAlbum] = useState(canciones[0].portada);//Imagen de la protada de cancion
+  const progressIndicatorRef = useRef();
+  const [nombreMusica, setNombreMusica] = useState('Nombre musica');
+  const [nombreArtista, setNombreArtista] = useState('Nombre artista');
   const [volumen, setVolumen] = useState(50);
-  const [estaReproduciendo, setEstaReproduciendo] = useState(false); // Definir inicialmente como false
-   
+  const [estaReproduciendo, setEstaReproduciendo] = useState(false); 
+  const [cancionSelect, setCancionSelect] = useState(null);
+  const [progreso, setProgreso] = useState(0);
+  const [muted, setMuted] = useState(false);  // Mute - Unmuted
+  
+ 
+  
+
+  // Recupera cancion selecionada de ListaCanciones.js
+  useEffect(() => {
+    if (cancionSeleccionada) {
+      setCancionSelect(cancionSeleccionada);
+  
+      // Actualización de los nombres
+      setNombreArtista(cancionSeleccionada.nombre_usuario);
+      setNombreMusica(cancionSeleccionada.nombre_cancion);
+  
+      const audio = audioRef.current;
+      audio.src = cancionSeleccionada.path_cancion; // Establecemos la fuente de la canción
+      audio.play().then(() => {  // Inicia la reproducción de la canción automáticamente
+        setEstaReproduciendo(true);
+      });
+  
+      const handleTimeUpdate = () => {
+        const porcentaje = (audio.currentTime / audio.duration) * 100;
+        setProgreso(porcentaje);
+      };
+  
+      audio.addEventListener('timeupdate', handleTimeUpdate);
+      
+      return () => {
+        audio.removeEventListener('timeupdate', handleTimeUpdate);
+      };
+    }
+  }, [cancionSeleccionada]);
+  
+
+
+
   /** 
    * Para Reproducción y pausar la canción
    * */ 
+ 
   const clicReproducirPause = () => {
-    if (audioRef.current) {
-      const audio = audioRef.current;
-      if (audio.paused) {
-        audio.play();
-        setEstaReproduciendo(true); // Actualiza a true cuando la música se está reproduciendo
-      } else {
-        audio.pause();
-        setEstaReproduciendo(false); // Actualiza a false cuando la música está pausada
-      }
+    if(audioRef.current && cancionSeleccionada) {
+        const audio = audioRef.current;
+
+        if (!estaReproduciendo) {
+            audio.play().then(() => {
+                setEstaReproduciendo(true);
+            });
+        } else {
+            audio.pause();
+            setEstaReproduciendo(false);
+        }
     } else {
-      console.error('audioRef.current no está definido');
+        console.error('audioRef.current no está definido o no hay una canción seleccionada');
     }
   };
-  /**
-   * Cambia a la siguiente canción.
-   */
-  const sigCancion = () => {
-      const newIndex = (indiceCancionActual + 1) % canciones.length;
-      setIndiceCancionActual(newIndex); 
-      setNombreMusica(canciones[newIndex].nombre); 
-      setNombreArtista(canciones[newIndex].artista); 
-      //setPortadaAlbum(canciones[newIndex].portada); 
-      if (estaReproduciendo && audioRef.current) {
-          audioRef.current.currentTime = 0;
-          audioRef.current.play();    
-      }
-  };
-  /**
-   * Cambia a la canción anterior.
-   */
-  const cancionAnterior = () => {
-    const newIndex = ((indiceCancionActual - 1) + canciones.length) % canciones.length;
-    setIndiceCancionActual(newIndex); // Retrocede a la canción anterior
-    setNombreMusica(canciones[newIndex].nombre); 
-    setNombreArtista(canciones[newIndex].artista); 
-    //setPortadaAlbum(canciones[newIndex].portada); 
-    // Si la música está reproduciéndose, inicia la reproducción de la nueva canción
-    if(estaReproduciendo && audioRef.current) { 
-      audioRef.current.currentTime = 0;
-       audioRef.current.play();
-   }
-  };
-  /**
-   * Cambia el volumen de la reproducción.
-   */
-  const cambiarVolumen = (e) => {
-    const nuevoVolumen = e.target.value; // Obtén el nuevo volumen del evento
-    setVolumen(nuevoVolumen); // Actualiza el estado de volumen
+  const sigCancion = useCallback(() => {
+    let newIndex = indiceCancionActual + 1;
+    if (newIndex >= listaCancionesReproduccion.length) {
+        newIndex = 0;  // Si es la última canción, vuelve a la primera.
+    }
+    if (!listaCancionesReproduccion[newIndex]) {
+        console.error(`No se encontró una canción en el índice ${newIndex}`);
+        return;
+    }
+    
+    setIndiceCancionActual(newIndex);
+    cargarCancion(newIndex);
+  }, [indiceCancionActual, listaCancionesReproduccion]);
+  
+  useEffect(() => {
     const audio = audioRef.current;
-    audio.volume = nuevoVolumen / 100; // Actualiza el volumen del elemento de audio
+
+    const handleTimeUpdate = () => {
+      const porcentaje = (audio.currentTime / audio.duration) * 100;
+      setProgreso(porcentaje);
+    };
+
+    const handleEnded = () => {
+      sigCancion();
+    };
+
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, [sigCancion]);
+
+  const cargarCancion = (indice) => {
+    const cancion = listaCancionesReproduccion[indice];
+    if (!cancion) {
+        console.error(`No se encontró una canción en el índice ${indice}`);
+        return;
+    }
+    
+    setNombreMusica(cancion.nombre_cancion || "Nombre desconocido");
+    setNombreArtista(cancion.nombre_usuario || "Artista desconocido");
+
+    if (audioRef.current) {
+      const audio = audioRef.current;
+      audio.src = cancion.path_cancion;
+      audio.load(); // Carga la nueva canción
+      if (estaReproduciendo) {
+        audio.play();
+      }
+    }
   };
+
+  const cancionAnterior = () => {
+    if (indiceCancionActual !== null) {
+      const newIndex = (indiceCancionActual - 1 + listaCancionesReproduccion.length) % listaCancionesReproduccion.length;
+      setIndiceCancionActual(newIndex);
+      cargarCancion(newIndex);
+    }
+  };
+
+  const cambiarVolumen = (e) => {
+    const nuevoVolumen = e.target.value;
+    setVolumen(nuevoVolumen);
+    if (audioRef.current) {
+      audioRef.current.volume = nuevoVolumen / 100;
+    }
+  };
+
+  const actualizarProgreso = (e) => {
+    const barraProgreso = progressIndicatorRef.current;
+    const audio = audioRef.current;
+    const barraRect = barraProgreso.getBoundingClientRect();
+    const porcentaje = ((e.clientX - barraRect.left) / barraRect.width) * 100;
+    setProgreso(porcentaje);
+    const nuevaPosicion = (porcentaje / 100) * audio.duration;
+    audio.currentTime = nuevaPosicion;
+  };
+
+  const mutearDesmutear = () => {
+    setMuted(!muted);  // Actualiza el estado de mute                    
+  const estaEnSilencio = audioRef.current.muted;
+    audioRef.current.muted = !estaEnSilencio; //cambio de mute a unmuted
+  };
+
    // <img src={portadaAlbum} alt="portada album" className="portada-album" /> */
-  return (
+   return (
     <div className="reproductorMusica">
       <div className="info-cancion">
-       
         <div className="detalles-musica">
-          <span className=".nombre-musica">{nombreMusica}</span>
-          <span className=".separador"> - </span>
-          <span className=".nombre-artista">{nombreArtista}</span>
+          <span className="nombre-artista">{nombreArtista}</span>
+          - 
+          <span className="nombre-musica">{nombreMusica}</span>
         </div>
       </div>
-    <div className="controls">
-    <audio ref={audioRef} src={canciones[indiceCancionActual].url} />
 
-      {/* Reemplazamos el texto de los botones con los iconos */}
-      <button onClick={cancionAnterior} className="boton-control">
-        <FaBackward/>
-      </button>
-      <button onClick={clicReproducirPause} className="boton-control">
+      <div className="controls">
+        <audio ref={audioRef} />
+        <button onClick={cancionAnterior} className="boton-control">
+          <FaBackward />
+            </button>
+              <button onClick={clicReproducirPause} className="boton-control">
+                {estaReproduciendo ? <FaPause /> : <FaPlay />}
+            </button>
+            <button onClick={sigCancion} className="boton-control">
+          <FaForward />
+        </button>
+      </div>
 
-        {/* Se puede alternar entre los iconos de repro y pausar dependiendo del estado de reproducción */}
-        { estaReproduciendo ? <FaPause/> : <FaPlay/> }
-      </button>
-      <button onClick={sigCancion} className="boton-control">
-        <FaForward/> 
-      </button>
+      <div
+        className="progress-bar"
+        onClick={actualizarProgreso}
+        ref={progressIndicatorRef}>
+        <div className="progress-line" style={{ width: `${progreso}%` }}></div>
+        <div
+          className="progress-indicator"
+          style={{ left: `${progreso}%` }}
+        >
+          <div className="progress-circle"></div>
+        </div>
+      </div>
+      
+      <div className = "contenedor">
+        <button onClick={mutearDesmutear} className="boton-mute">
+          {muted ? <FaVolumeOff /> : <FaVolumeUp />}
+        </button>
+
+        <div className="volumen" >      
+          <input type="range" 
+            min="0" 
+            max="100" 
+            value={volumen} 
+            className="volumen-slider" 
+            onChange={cambiarVolumen}
+          />
+        </div>
+      </div>
+
     </div>
-    <div className="volumen" >
-      <input type="range" min="0" max="100" value={volumen} className="volumen-slider" onChange={cambiarVolumen} />
-    </div>
-  </div>
   );
+  
 };
+
 export default ReproducirCancion;

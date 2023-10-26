@@ -9,6 +9,8 @@
     "@testing-library/user-event": "^13.5.0",
     "autoprefixer": "^10.4.16",
     "axios": "^1.5.1",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "debug": "^4.3.4",
     "firebase": "^10.4.0",
     "icons": "^1.0.0",

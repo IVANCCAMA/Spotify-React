@@ -48,7 +48,7 @@
     align-items: center; /* Asegúrate de que los controles estén alineados verticalmente */
     justify-content: center; /* Centra los controles horizontalmente */
     margin-top: -35px; /* Ajusta este valor según cuánto quieras mover los controles hacia arriba */
-    padding-right: 43.9px;
+    padding-right: 0;
   }
   
   .boton-control {
@@ -57,17 +57,30 @@
     color: #fff;
     margin:  10px;
     cursor: pointer;
-    padding: 5px;
-  }
+     }
   
+  .contenedor {
+    display: flex;
+    align-items: center; 
+    padding-right: 100px;
+  }
+
+  .boton-mute   {
+    background: none;
+    border: none;
+    color: #fff;
+    margin:  -45px;
+    cursor: pointer;
+  }
+
   .volumen {
-    width: 132px;
-    height: 25px;
-    margin-right: 123px;
+    flex: -1; 
+    text-align: right; 
   }
   
   .volumen-slider {
     width: 100%;
+    margin-left: 20px;
   }
   .control-button:hover {
     color: black; 
@@ -81,6 +94,45 @@
     transition: color 0.3s ease; /* Transición suave del color */
     
   }
-   
   
-
+  .progress-bar {
+    width: 30%;
+    background-color: #333;
+    height: 5px;
+    position: relative;
+    margin: auto;
+    margin-top: 50px;
+    /* z-index: -1; */
+  }
+  
+  .progress-line {
+    background-color: #fff;
+    height: 7px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+  
+  .progress-indicator {
+    position: absolute;
+    top: -5px; 
+    transform: translateX(-50%);
+  }
+  
+  .progress-circle {
+    background-color: #fff;
+    height: 15px; 
+    width: 15px; 
+    border-radius: 50%; 
+  }
+  .contenedor-controles {
+    display: flex;
+    justify-content: center;
+    /* Estilos específicos para centrar horizontalmente los controles */
+  }
+  
+  .contenedor-progreso {
+    display: flex;
+    justify-content: center;
+    /* Estilos específicos para centrar horizontalmente la barra de progreso */
+  }
