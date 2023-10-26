@@ -85,12 +85,12 @@ function ListaCanciones() {
                   />
                   <div className="titulo-cancion-logo">
                     {cancion.nombre_usuario + " - " + cancion.nombre_cancion}
+                    <div className="duracion-logo">{cancion.duracion}</div>
+                    </div>
+                    <img src={songLogo} onClick={() => actualizarCancionSelecionada(cancion.id_cancion)} alt="Álbum" className="play-logo" />          
+                    </div>
                   </div>
-                  <div className="duracion-logo">{cancion.duracion}</div>
-                </div>
-                <img src={songLogo} alt="Álbum" className="play-logo" />
-                <button onClick={() => actualizarCancionSelecionada(cancion.id_cancion)}> Play </button> {/* Boton play para enviar lista de canciones y el índice */}
-              </div>
+
             </div>
           ))
         ) : (

@@ -183,10 +183,11 @@
 
 /*alineamiento de tiempo de duracion*/
 .duracion-logo {
-  position: relative;
-  right: 20px;
+  position: absolute;
+  left: 480px;
   width: 40px;
   height: 25px;
+  bottom: 15px;
   color: #FFFFFF;
   font-weight: bold;
 }
