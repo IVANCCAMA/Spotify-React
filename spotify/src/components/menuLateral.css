@@ -1,7 +1,7 @@
 /* MENU */
 .menu {
-
-  height: 100vh;
+  
+  height: 86.2%;
   width: 250px;
   position: fixed;
   z-index: 1;
@@ -10,7 +10,12 @@
   background-color: #006666;
   border: 5px solid #000000;
   overflow-y: auto;
-  
+  margin: flex;
+}
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .menu .profile .logo {
@@ -21,7 +26,7 @@
 
 .menu .menu-items .item a {
   display: flex; /* Mostrar elementos en línea */
-  align-items: center; /* Centrar verticalmente los elementos */
+  align-items: center; /* Centra verticalmente los elementos */
   padding: 16px;
   text-decoration: none;
   font-weight: bold;

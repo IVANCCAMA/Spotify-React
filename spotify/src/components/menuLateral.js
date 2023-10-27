@@ -2,18 +2,18 @@ import React from "react";
 import { Link } from "react-router-dom";
 import logo from '../logos/logo.png';
 import home from '../logos/home.png';
-import disc from '../logos/disc.png';
 import group from '../logos/group.png';
 import plus from '../logos/plus.png';
 import './menuLateral.css';
 
 function MenuLateral() {
   const menuOptions = [
-    { to: '/Inicio', src: home, alt: 'Home', title: 'Inicio' },
+    { to: '/', src: home, alt: 'Home', title: 'Inicio' },,
+    { separador: true },
+    { to: '/Registro', src: plus, alt: 'Registro', title: 'Registrarse' },
     { separador: true },
     { to: '/Albumes', src: group, alt: 'Álbumes', title: 'Álbumes' },
     { to: '/crearAlbum', src: plus, alt: 'Crear álbum', title: 'Crear álbum' },
-    // { to: '/Sencillo', src: disc, alt: 'Sencillo', title: 'Sencillo' },
     { to: '/añadirCancion', src: plus, alt: 'Cargar canción', title: 'Cargar canción' }
   ];
 

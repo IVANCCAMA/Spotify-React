@@ -15,7 +15,7 @@
 
 .modal-alert-content {
     background-color: white;
-    width: 514px;
+    width: 600px;
     height: 200px;
     text-align: center;
     box-sizing: border-box; 
@@ -30,7 +30,7 @@
     align-items: center; /* Centra verticalmente el contenido */
     justify-content: center; /* Centra horizontalmente el contenido */
     font-family: 'roboto', sans-serif;
-    font-size: x-large;
+    font-size: 16px;
     font-weight: bold;
 }
 
@@ -40,7 +40,7 @@
     width: 100%; 
 }
 
-button {
+.boton-modal {
     cursor: pointer;
     font-weight: bold;
     color: red;

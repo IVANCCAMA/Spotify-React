@@ -16,16 +16,16 @@ function AñadirCancion() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, isModalOpen, modalMessage]);
- 
- //
+
+  //
   const [redirectTo, setRedirectTo] = useState(null);
 
-    function handleCloseAndRedirect() {
-        setIsModalOpen(false);
-        if (redirectTo) {
-            window.location.replace(redirectTo);
-        }
+  function handleCloseAndRedirect() {
+    setIsModalOpen(false);
+    if (redirectTo) {
+      window.location.replace(redirectTo);
     }
+  }
   //
   const getlistasbyid_user = async (id_usuario) => {
     try {
@@ -76,8 +76,16 @@ function AñadirCancion() {
       document.getElementById('artista').classList.add('active');
       return null;
     }
-    if (campos.album.length < 1 || campos.genero.length < 1 || campos.archivo.length < 1) {
-      console.log("No se selecciono album, genero o archivo");
+    if (campos.album === 'default' || campos.album.length < 1) {
+      console.log("No se selecciono album");
+      return null;
+    }
+    if (campos.genero === 'default' || campos.genero.length < 1) {
+      console.log("No se selecciono genero");
+      return null;
+    }
+    if (campos.archivo.length < 1) {
+      console.log("No se selecciono archivo");
       return null;
     }
 
@@ -85,6 +93,7 @@ function AñadirCancion() {
     const id_usuario = await ExisteArtista(campos.artista);
     if (id_usuario == null) {
       console.log('artista no encontrado');
+      document.getElementById('artista').classList.add('active');
       return null;
     }
 
@@ -94,14 +103,17 @@ function AñadirCancion() {
     const id_lista = albumesUsuario?.id_lista;
     if (!id_lista) {
       console.log('Álbum no encontrado');
+      document.getElementById('album').classList.add('active');
       return null;
     }
 
-    // titulo
+    // titulo   (verificamos si existe)
     const canciones = await getcancionesbyid_user(id_usuario);
     const cancionExistente = canciones.find((cancion) => cancion.nombre_cancion === campos.titulo);
     if (cancionExistente) {
-      console.log('el artista ya tiene una cancion con el mismo nombre');
+      //console.log('el artista ya tiene una cancion con el mismo nombre');
+      setModalMessage(`La canción existe en el álbum`);
+      //setIsModalOpen(true);
       return null;
     }
 
@@ -143,7 +155,7 @@ function AñadirCancion() {
   const subirBD = async (nuevaCancion) => {
     try {
       const query = `/canciones/`;
-      const response = await axios.post(`${database}${query}`, nuevaCancion);
+      await axios.post(`${database}${query}`, nuevaCancion);
       return true;
     } catch (error) {
       console.error('Error al subir a la base de datos:', error);
@@ -167,21 +179,23 @@ function AñadirCancion() {
 
       const nuevaCancion = await validarCampos(campos);
       if (nuevaCancion === null) {
-        setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
+        if (!modalMessage) {
+          setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
+        }
         setIsModalOpen(true);
         return;
       }
 
       const archivo = campos.archivo[0];
       if (!await validarFormatoArchivo(archivo)) {
-        setModalMessage(`Formato de archivo no válido.`);
+        setModalMessage(`Formato de archivo no válido`);
         setIsModalOpen(true);
         return;
       }
 
       const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
       if (archivo.size > maxSize) {
-        setModalMessage(`Tamaño máximo de 15 MB excedido.`);
+        setModalMessage(`Tamaño máximo de 15 MB excedido`);
         setIsModalOpen(true);
         return;
       }
@@ -196,18 +210,17 @@ function AñadirCancion() {
         const subidaExitosa = await subirBD(nuevaCancion);
         if (!subidaExitosa) {
           deleteFile(resultado.filePath);
-          setModalMessage(`Error al cargar la canción. Intente más tarde.`);
+          setModalMessage(`Error al cargar la canción. Intente más tarde`);
           setIsModalOpen(true);
           return;
         }
 
         setModalMessage(`Canción añadida exitosamente`);
         setIsModalOpen(true);
-        setRedirectTo("/Albumes");
-
+        setRedirectTo("/");
       } catch (error) {
         console.error('Error:', error);
-        setModalMessage(`Error al subir o procesar el archivo.`);
+        setModalMessage(`Error al subir o procesar el archivo`);
         setIsModalOpen(true);
       }
     } catch (error) {
@@ -256,19 +269,10 @@ function AñadirCancion() {
     return value.replace(/\s+/g, ' ');
   };
 
-  const handle = async (e) => {
+  const handle = (e) => {
     let newValue = eliminarEspacios(e.target.value);
     if (newValue.length > 20) {
-      e.target.classList.add('active');
-      setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
-      setIsModalOpen(true);
       newValue = newValue.slice(0, 20);
-      if(alfanumerico(newValue)){e.target.classList.remove('active');}
-    }
-    if (alfanumerico(newValue)) {
-      e.target.classList.remove('active');
-    } else {
-      e.target.classList.add('active');
     }
     e.target.value = newValue;
   };
@@ -310,8 +314,8 @@ function AñadirCancion() {
           <div className="campo">
             <div className="input-box">
               <label htmlFor="album">Álbum *</label>
-              <select name="album" id='album' required>
-                <option disabled selected hidden value="">Seleccionar lista</option>
+              <select name="album" id='album' defaultValue={'default'} required>
+                <option disabled hidden value='default'>Seleccionar lista</option>
                 {listas.map((lista, index) => (
                   <option key={index} value={lista.id}>{lista.titulo_lista}</option>
                 ))}
@@ -320,10 +324,10 @@ function AñadirCancion() {
           </div>
 
           <div className="campo">
-            <div className="input-box">
-              <label htmlFor="genero">Género musical *</label>
-              <select name="genero" id='genero' required>
-                <option disabled selected hidden value="">Seleccionar género</option>
+            <div className="input-boxx">
+              <label className="elemento" htmlFor="genero">Género musical *</label>
+              <select name="genero" id='genero' defaultValue={'default'} required>
+                <option disabled hidden value='default'>Seleccionar género</option>
                 {generos.map((genero) => (
                   <option key={genero} value={genero}>{genero}</option>
                 ))}
@@ -349,7 +353,7 @@ function AñadirCancion() {
                   type="button"
                   className="btn-subir bg-white"
                   onClick={() => { document.getElementById('archivo').click(); }}
-                  value="Seleccionar archivo"
+                  value="Seleccionar canción"
                 />
               </div>
             </div>
@@ -358,16 +362,16 @@ function AñadirCancion() {
           <div className="campo">
             <div className="btn-box">
               <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
-              <Link to="/Inicio" className="custom-link">Cancelar</Link>
+              <Link to="/" className="custom-link">Cancelar</Link>
             </div>
           </div>
         </div>
       </form>
       <Alerta
-            isOpen={isModalOpen}
-            mensaje={modalMessage}
-            onClose={handleCloseAndRedirect}
-        />
+        isOpen={isModalOpen}
+        mensaje={modalMessage}
+        onClose={handleCloseAndRedirect}
+      />
     </div>
   );
 };

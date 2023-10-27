@@ -1,36 +1,41 @@
-import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import CrearLista from './components/crearLista';
 import AñadirCancion from './components/añadirCancion';
 import MenuLateral from './components/menuLateral';
+import Registro from './components/registro';
 import './App.css';
 import ListaAlbumes from './components/listaAlbunes';
+import ReproducirCancion from './components/reproducirCancion';
 
 /* import Sencillo from './components/sencillo';
  */import Inicio from './components/inicioHome';
  import ListaCanciones from './components/listaCanciones';
+import { ListProvider } from './components/ListContext';
 
-
-function App() {
+ function App() {
   return (
-    <div className="boby">
-      <div className="flex">
-        <MenuLateral />
-        <div className="container mx-auto py-4 px-20">
+    <ListProvider>
+      <div className="app-container">
+        <div className="sidebar">
+          <MenuLateral />
+        </div>
+        <div className="content">
           <Routes>
-            <Route path="/Inicio" element={<Inicio />} />
+            <Route path="/" element={<Inicio />} />
             <Route path="/Albumes" element={<ListaAlbumes />} />
             <Route path="/crearAlbum" element={<CrearLista />} />
-            {/* <Route path="/Sencillo" element={<Sencillo />} /> */}
             <Route path="/añadirCancion" element={<AñadirCancion />} />
-           {/*  <Route path={`/detalle-album/1`} element={<ListaCanciones />} /> */}
-           <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} /> {/* Esta es la línea que mencionaste */}
-
+            <Route path="/registro" element={<Registro />} />
+            <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
           </Routes>
         </div>
+        <div className="music-player">
+        <ReproducirCancion/>
+        </div>
       </div>
-    </div>
+    </ListProvider>
   );
 }
+
 
 export default App;

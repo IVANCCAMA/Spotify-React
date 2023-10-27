@@ -6,7 +6,7 @@ function Alerta({ isOpen, mensaje, onClose }) {
   if (!isOpen) {
     return null;
   }
-
+  
   // Si isOpen es true, entonces vamos mostrando el modal.
   return (
     <div className="modal-alerta" id="alerta">
@@ -15,7 +15,7 @@ function Alerta({ isOpen, mensaje, onClose }) {
                 <span id="modal-mensaje">{mensaje}</span>
             </div>
             <div className="separador"></div>
-            <button onClick={onClose}>OK</button>
+            <button className='boton-modal' autoFocus onClick={onClose}>OK</button>
         </div>
     </div>
   );

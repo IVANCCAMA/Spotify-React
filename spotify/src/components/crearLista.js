@@ -1,37 +1,53 @@
 import axios from 'axios';
-import React, { useState, useEffect, useRef } from 'react';
-import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
+import { alfanumerico } from './form.js';
 import './form.css';
 import Alerta from './alerta';
 
 function CrearLista() {
   const database = 'https://spfisbackend-production.up.railway.app/api';
-  const [file, setFile] = useState([]);
+  const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  //
+  const [isOnline, setIsOnline] = useState(window.navigator.onLine); // Verifica si hay conexión inicialmente
+
+
+  const handleOnlineStatusChange = () => {
+    setIsOnline(window.navigator.onLine);
+  };
+
+  useEffect(() => { 
+    mostrarNombreArchivo(); 
+  }, [botonHabilitado, isModalOpen, modalMessage]);
+
+  useEffect(() => {
+    window.addEventListener('online', handleOnlineStatusChange);
+    window.addEventListener('offline', handleOnlineStatusChange);
+
+    return () => {
+      window.removeEventListener('online', handleOnlineStatusChange);
+      window.removeEventListener('offline', handleOnlineStatusChange);
+    };
+  }, []);
+  
   const [redirectTo, setRedirectTo] = useState(null);
 
-    function handleCloseAndRedirect() {
-        setIsModalOpen(false);
-        if (redirectTo) {
-            window.location.replace(redirectTo);
-        }
-    }
-  //
-  const esTituloCancionExistente = async (titulo) => {
+  function handleCloseAndRedirect() {
+      setIsModalOpen(false);
+      if (redirectTo) {
+          window.location.replace(redirectTo);
+      }
+  }
+  const getlistasbyid_user = async (id_usuario) => {
     try {
-      const query = `/lista_canciones/`;
+      const query = `/usuarios/getlistasbyid_user/${id_usuario}`;
       const response = await axios.get(`${database}${query}`);
-      const listaCanciones = response.data;
-
-      // importante atributo titulo_lista tiene que ser igual a la BD
-      return listaCanciones.some((cancion) => cancion.titulo_lista === titulo);
+      return response.data;
     } catch (error) {
-      setModalMessage('Error al obtener la lista de canciones:', error);
-      setIsModalOpen(true);
-      return false;
+      console.error('Error al obtener la lista de canciones del usuario:', error);
+      return null;
     }
 };
 
@@ -39,63 +55,85 @@ function CrearLista() {
     try {
       const query = `/usuarios/search_nom/ ?searchTerm=${nombreArtista}`;
       const response = await axios.get(`${database}${query}`);
-      if (response.status === 200) { return response.data[0].id_usuario; }
+
+      const artistas = response.data;
+      const artistaEncontrado = artistas.find((artista) => artista.nombre_usuario === nombreArtista);
+
+      if (artistaEncontrado && artistaEncontrado.id_usuario) {
+        return artistaEncontrado.id_usuario;
+      }
+      return null;
     } catch (error) {
       console.error('Error al obtener la lista de usuarios:', error);
-      return false; // Hubo un error
+      return null;
     }
-
   };
 
-  const quitarEspacios = async (nuevoAlbum) => {
-
-    var titulo = nuevoAlbum.titulo_listaTem;
-    titulo = titulo.trim();
-    while (titulo.search("  ") != -1) {
-      titulo = titulo.replace("  ", " ");
+  const validarCampos = async (campos) => {
+    if (campos.titulo.length > 20 || campos.titulo.length < 1 || !alfanumerico(campos.titulo)) {
+      document.getElementById('titulo_lista').classList.add('active');
+      return null;
     }
-    nuevoAlbum.titulo_lista = titulo;
-  }
-  const validarCampos = async (nuevoAlbum) => {
-    quitarEspacios(nuevoAlbum);
+    if (campos.artista.length > 20 || campos.artista.length < 1 || !alfanumerico(campos.artista)) {
+      document.getElementById('artista').classList.add('active');
+      return null;
+    }
+    if (campos.colaborador.length > 20 || !alfanumerico(campos.colaborador)) {
+      document.getElementById('colaborador').classList.add('active');
+      return null;
+    }
+    if (campos.archivo.length < 1) {
+      console.log("No se selecciono archivo");
+      return null;
+    }
 
-
-
-    console.log(nuevoAlbum)
-
-    const tituloExistente = await esTituloCancionExistente(nuevoAlbum.titulo_lista);
-    console.log(nuevoAlbum.titulo_lista);
-    if (tituloExistente) {
-      // MODAL
-      setModalMessage('El nombre de la carpeta ya está en uso, intente otro.');
+    // artista
+    const id_usuario = await ExisteArtista(campos.artista);
+    if (id_usuario == null) {
+      document.getElementById('artista').classList.add('active');
+      setModalMessage('El artista no existe, intente con otro');
       setIsModalOpen(true);
-      return false;
+      return null;
     }
 
-    const artistaExistente = await ExisteArtista(nuevoAlbum.nombre_usuario);
-
-    console.log(artistaExistente);
-    if (!artistaExistente) {
-      setModalMessage('El artista no existe, intente con otro.');
+    // titulo
+    const albumes = await getlistasbyid_user(id_usuario);
+    const albumExistente = albumes.find((album) => album.titulo_lista === campos.titulo);
+    if (albumExistente) {
+      document.getElementById('titulo_lista').classList.add('active');
+      setModalMessage('El nombre de la carpeta ya está en uso, intente otro');
       setIsModalOpen(true);
-      return false;
-    }
-    if (!/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.titulo_lista)
-      || !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.nombre_usuario)
-      || !/^[a-zA-Z0-9\s]*$/.test(nuevoAlbum.colaborador)
-      || nuevoAlbum.colaborador.length > 20 || nuevoAlbum.colaborador.length < 1
-      || nuevoAlbum.titulo_lista.length > 20 || nuevoAlbum.titulo_lista.length < 1
-      || nuevoAlbum.nombre_usuario.length > 20 || nuevoAlbum.nombre_usuario.length < 1
-    ) {
-      return false;
+      return null;
     }
 
-    nuevoAlbum.id_usuarioArtista = artistaExistente;
-    return true;
+    // colaborador
+    if (campos.colaborador.length > 0) {
+      const id_colaborador = await ExisteArtista(campos.colaborador);
+      if (id_colaborador == null) {
+        document.getElementById('colaborador').classList.add('active');
+        setModalMessage('El artista colaborador no existe, intente con otro');
+        setIsModalOpen(true);
+        return null;
+      } else if (id_colaborador === id_usuario) {
+        document.getElementById('colaborador').classList.add('active');
+        setModalMessage('El artista y el colaborador no pueden ser el mismo');
+        setIsModalOpen(true);
+        return null;
+      }
+    }
+
+    return {
+      id_usuario: id_usuario,
+      nombre_usuario: campos.artista,
+      titulo_lista: campos.titulo,
+      path_image: "",
+      // colaborador: colaborador
+      colaborador: campos.colaborador
+    };
   };
 
   const validarFormatoArchivo = async (archivo) => {
-    const formatosPermitidos = ["jpeg", "png"]; // jpeg === jpg
+    const formatosPermitidos = ["jpeg", "png"];
     for (const formato of formatosPermitidos) {
       if (archivo.type.includes(formato)) {
         return true;
@@ -108,7 +146,7 @@ function CrearLista() {
     try {
       const portadaInfo = await SubirPortada(archivo);
       const imageUrl = await recuperarUrlPortada(portadaInfo);
-      return imageUrl;
+      return { url: imageUrl, filePath: portadaInfo };
     } catch (error) {
       console.error('Error:', error);
     }
@@ -116,73 +154,83 @@ function CrearLista() {
 
   const subirBD = async (nuevoAlbum) => {
     try {
-      console.log(nuevoAlbum);
-      const query = `/lista_canciones/createlist`;
-      const response = await axios.post(`${database}${query}`, nuevoAlbum);
-      console.log('Álbum creado exitosamente:', response.data);
+      const query = `/lista_canciones/`;
+      await axios.post(`${database}${query}`, nuevoAlbum);
       return true;
     } catch (error) {
       console.error('Error al obtener la lista de usuarios:', error);
-      return false; // Hubo un error
+      return false;
     }
   };
 
   const validarForm = async (e) => {
-    e.preventDefault();
-
-    const nuevoAlbum = {
-      titulo_listaTem: document.getElementById("titulo_lista").value,
-      nombre_usuario: document.getElementById("artista").value,
-      colaborador: document.getElementById("colaborador").value
-    };
-
-    if (!await validarCampos(nuevoAlbum)) {
-      setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente.`);
-      setIsModalOpen(true);
-      return;
-    }
-
-    const archivos = document.getElementById('archivo');
-    if (archivos.files.length < 1) {
-      setModalMessage(`Seleccione un archivo.`);
-      setIsModalOpen(true);
-      return;
-    }
-    const archivo = archivos.files[0];
-    if (!await validarFormatoArchivo(archivo)) {
-      setModalMessage('Formato de imagen no válido.');
-      setIsModalOpen(true);
-      return;
-    }
-
-    // validar tamanio
-    if (archivo.size > (5 * 1024 * 1024)) { // megas
-      setModalMessage(`Tamaño máximo de 5 MB excedido.`);
-      setIsModalOpen(true);
-      return;
-    }
+    
+    setBotonHabilitado(false);
     try {
-      // subir el archivo a Firebase
-      const resultado = await subirFirebase(archivo);
-      nuevoAlbum.path_image = resultado;
+      if (isOnline) {
+        e.preventDefault();
 
-      // subir en la db
-      if (!await subirBD(nuevoAlbum)) {
-        // Si ocurre un error al subir en la base de datos
-        // eliminar el archivo subido en Firebase
-        deleteFile(resultado.filepath);
-        setModalMessage(`Error al cargar la canción. Intente más tarde.`);
+        const campos = {
+          titulo: eliminarEspacios(document.getElementById('titulo_lista').value).trim(),
+          artista: eliminarEspacios(document.getElementById('artista').value).trim(),
+          colaborador: eliminarEspacios(document.getElementById('colaborador').value).trim(),
+          archivo: document.getElementById('archivo').files
+        };
+
+        const nuevoAlbum = await validarCampos(campos);
+        if (nuevoAlbum === null) {
+          setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
+          setIsModalOpen(true);
+          return;
+        }
+
+        const archivo = campos.archivo[0];
+        if (!await validarFormatoArchivo(archivo)) {
+          setModalMessage(`Formato de archivo no válido`);
+          setIsModalOpen(true);
+          return;
+        }
+
+        const maxSize = 5 * 1024 * 1024; // 15 MB en bytes
+        if (archivo.size > maxSize) {
+          setModalMessage(`Tamaño máximo de 5 MB excedido`);
+          setIsModalOpen(true);
+          return;
+        }
+
+        try {
+          const resultado = await subirFirebase(archivo);
+          nuevoAlbum.path_image = resultado.url;
+
+          const subidaExitosa = await subirBD(nuevoAlbum);
+          if (!subidaExitosa) {
+            deleteFile(resultado.filePath);
+            e.preventDefault();
+            setModalMessage(`Error al cargar la canción. Intente más tarde`);
+            setIsModalOpen(true);
+            return;
+          }
+          setModalMessage(`Lista creada exitosamente`);
+          setIsModalOpen(true);
+          setRedirectTo("/");
+          
+        } catch (error) {
+          console.error('Error:', error);
+          setModalMessage(`Error al subir o procesar el archivo`);
+          setIsModalOpen(true);
+        }
+      } else {
+        e.preventDefault();
+        setModalMessage('Hubo un error al crear la carpeta, Intenta nuevamente');
         setIsModalOpen(true);
-        return;
       }
-      console.log(nuevoAlbum)
-      setModalMessage(`Lista creada exitosamente`);
-      setIsModalOpen(true);
-      setRedirectTo("/inicio");
     } catch (error) {
-      console.error('Error:', error);
-      setModalMessage(`Error al subir o procesar el archivo.`);
+      e.preventDefault();
+      setModalMessage('Hubo un error al crear la carpeta, Intenta nuevamente');
       setIsModalOpen(true);
+    } finally {
+      // Una vez que se complete, habilitar el botón nuevamente
+      setBotonHabilitado(true);
     }
   };
 
@@ -197,41 +245,24 @@ function CrearLista() {
     }
   };
 
-  const validar = (event) => {
-    const valor = event.target.value;
-    if (!/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]*$/.test(valor)) {
-      event.target.classList.add('active');
-    } else if (valor.length > 20) {
-      event.target.classList.add('active');
-      setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
-      setIsModalOpen(true);
-      event.target.value = valor.slice(0, 20);
-      event.target.classList.remove('active');
-    } else {
-      event.target.classList.remove('active');
+  const eliminarEspacios = (value) => {
+    if (value === " ") {
+      return "";
     }
+    return value.replace(/\s+/g, ' ');
   };
 
-  const validarVarios = (event) => {
-    const valor = event.target.value;
-    if (!/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]*$/.test(valor)) {
-      event.target.classList.add('active');
-    } else if (/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]*$/.test(valor)) {
-      event.target.classList.remove('active');
-    } else if (/,+[\s]*$/.test(valor)) {
-      event.target.classList.add('active');
-    } else if (/[,a-zA-Z0-9\sáéíóúÁÉÍÓÚñÑ]*$/.test(valor)) {
-      event.target.classList.remove('active');
+  const handle = (e, alfanumericoFunc) => {
+    let newValue = eliminarEspacios(e.target.value);
+    if (alfanumericoFunc(newValue)) {
+      e.target.classList.remove('active');
     } else {
-      event.target.classList.add('active');
+      e.target.classList.add('active');
     }
-    if (valor.length > 20) {
-      event.target.classList.add('active');
-      setModalMessage(`Nombre debe tener entre 1 a 20 caracteres.`);
-      setIsModalOpen(true);
-      event.target.value = valor.slice(0, 20);
-      event.target.classList.remove('active');
+    if (newValue.length > 20) {
+      newValue = newValue.slice(0, 20);
     }
+    e.target.value = newValue;
   };
 
   return (
@@ -247,7 +278,8 @@ function CrearLista() {
                 id="titulo_lista"
                 name="titulo_lista"
                 placeholder="Escriba el título del álbum"
-                onChange={validar}
+                onChange={(e) => { handle(e, alfanumerico); }}
+                onBlur={(e) => { e.target.value = e.target.value.trim(); }}
               />
             </div>
           </div>
@@ -261,21 +293,34 @@ function CrearLista() {
                 id="artista"
                 name="artista"
                 placeholder="Escriba el nombre del artista"
-                onChange={validar}
+                onChange={(e) => { handle(e, alfanumerico); }}
+                onBlur={(e) => { e.target.value = e.target.value.trim(); }}
               />
             </div>
           </div>
 
           <div className="campo">
             <div className="input-box">
-              <label htmlFor="colaborador">Artista colaborador *</label>
-              <input required
+              <label htmlFor="colaborador">Artista colaborador</label>
+              <input
                 type="text"
-                className="validar"
+                className="validarNoRequiered"
                 id="colaborador"
                 name="colaborador"
-                placeholder="Escriba el nombre de el/los artista/s"
-                onChange={validarVarios}
+
+                placeholder="Escriba el nombre del artista colaborador"
+                onChange={(e) => {
+                  if (e.target.value.length > 0 && e.target.value.length < 21) {
+                    e.target.classList.remove('active'); e.target.classList.add('valid');
+                  }
+                  handle(e, alfanumerico);
+                }}
+                onBlur={(e) => {
+                  e.target.value = e.target.value.trim();
+                  if (e.target.value.length < 1) {
+                    e.target.classList.remove('active'); e.target.classList.remove('valid');
+                  }
+                }}
               />
             </div>
           </div>
@@ -283,7 +328,7 @@ function CrearLista() {
           {/* SELECCIONAR ARCHIVO */}
           <div className="campo campo-cargar-cancion">
             <div className="input-box">
-              <label htmlFor="archivo">Portada del álbum</label>
+              <label>Portada del álbum *</label>
               <div className="seleccionarArchivo">
                 <span className="nombreArchivo" id="nombreArchivo"></span> {/* Mostrar nombre del archivo */}
                 <input
@@ -292,22 +337,13 @@ function CrearLista() {
                   id="archivo"
                   accept=".png, .jpg, .jpeg"
                   style={{ display: 'none' }}
-                  onChange={async (e) => {
-                    const archivos = Array.from(e.target.files);
-                    const archivosFiltrados = archivos.filter(validarFormatoArchivo);
-
-                    if (archivosFiltrados.length > 0) {
-                      await setFile(archivosFiltrados);
-                      mostrarNombreArchivo();
-                    } else { await setFile(); }
-                  }
-                  }
+                  onChange={mostrarNombreArchivo}
                 />
                 <input
                   type="button"
                   className="btn-subir bg-white"
                   onClick={() => { document.getElementById('archivo').click(); }}
-                  value="Seleccionar archivo"
+                  value="Seleccionar imagen"
                 />
               </div>
             </div>
@@ -315,20 +351,17 @@ function CrearLista() {
 
           <div className="campo">
             <div className="btn-box">
-              <button type="submit" className="btn-next">
-                Aceptar
-              </button>
-              <Link to="/Albumes"  ><button to="/Albumes" className="custom-link">Cancelar</button></Link>
+              <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
+              <Link to="/"><button to="/" className="custom-link">Cancelar</button></Link>
             </div>
           </div>
         </div>
       </form>
       <Alerta
-            isOpen={isModalOpen}
-            mensaje={modalMessage}
-            onClose={handleCloseAndRedirect}
-        />
-    
+        isOpen={isModalOpen}
+        mensaje={modalMessage}
+        onClose={handleCloseAndRedirect}
+      />   
     </div>
   );
 }

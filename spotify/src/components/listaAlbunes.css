@@ -1,62 +1,103 @@
-.album-list {
-  padding: 20px;
+
+.albumes-list {
+  padding: 40px;
   border-radius: 10px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(3, minmax(320px, 1fr)); /* Ancho flexible */
+  gap: 1em;
   max-width: 1000px;
-  margin: 50px 0 0 200px;
-  grid-auto-rows: minmax(100px, auto); 
-  grid-auto-flow: row; 
+  margin: 0 0px 10px 100px;
+  margin-top: 100%;
+  grid-auto-rows: minmax(150px, 180px);
+  padding-bottom: 80px; 
 }
 
-.album-item {
+.albumes-details {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.albumes-item {
   display: flex;
   flex-direction: row; 
   align-items: center; 
 }
 
-.album-logo {
-  margin-right: 25px; 
+.albumes-logo {
+  display: block;
+  padding: 100px;
 }
 
-.album-title {
+.albumes-title {
   padding: 10px;
-    font-weight: bold;
-    font-size: 25px;
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    text-align: justify;
-    font-family: var(--fuente-1);
+  font-weight: bold;
+  font-size: 25px;
+  color: #FFFFFF;
+  display: block;
+  align-items: center;
+  text-align: justify;
+  white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+  overflow: hidden; /* Oculta el contenido que desborda el contenedor */
+  text-overflow: ellipsis; /* Muestra puntos suspensivos (...) cuando el texto desborda */
+  word-wrap: break-word; /* Permite dividir palabras largas en varias líneas */
+  max-width: 100%;
 }
 
-.artist-name {
+.artistas-name {
   padding: 7px;
-    font-weight: bold;
-    font-size: 16px;
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    text-align: justify;
-    font-family: var(--fuente-1);
-}
-.album-songs {
-  padding: 7px;
-    font-weight: bold;
-    font-size: 16px;
-    color: #FFFFFF;
-    display: flex;
-    align-items: center;
-    text-align: justify;
-    font-family: var(--fuente-1);
+  position: relative;
+  top: 0px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #FFFFFF;
+  display: block;
+  align-items: center;
+  text-align: justify;
+  font-family: var(--fuente-1);
 }
 
-/* listaAlbunes.css */
-.album-image {
+.albumes-songs {
+  padding: 7px;
+  font-weight: bold;
+  font-size: 16px;
+  color: #FFFFFF;
+  display: block;
+  align-items: center;
+  text-align: justify;
+  font-family: var(--fuente-1);
+}
+
+.albumes-image {
   width: 120px;
   height: 120px;
-  border: 5px solid white; /* Borde blanco de 2px alrededor de la imagen */
-  /* Otros estilos según sea necesario */
+  border: 5px solid white; 
 }
 
+@media screen and (max-width: 1280px) {
+  .albumes-list {
+    grid-template-columns: repeat(2, 1fr); 
+    margin: 0 0 50px 200px;
+    margin-top: 170%;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .albumes-list {
+    grid-template-columns: repeat(1, 1fr);
+    margin: 0 0 50px 200px;
+    margin-top: 670%; 
+  }
+
+  
+}
+@media screen and (max-width: 768px) {
+  .albumes-list {
+    grid-template-columns: repeat(1, 1fr);
+    margin: 4800px 0 50px 0; 
+    margin-top: 930%; 
+
+  }
+}
