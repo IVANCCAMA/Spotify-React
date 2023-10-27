@@ -1,3 +1,15 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  justify-content: flex-end; /* Alinea el botón a la derecha */
+}
+
 /* Estilos para el contenedor de la imagen */
 .contenedor-imagen {
     width: 100%; /* Asegúrate de que el contenedor ocupe todo el ancho disponible */
@@ -7,13 +19,27 @@
     align-items: center; /* Centra verticalmente */
   }
   
-  .contenedor-imagen {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .logoInicio img {
-    margin: 0 auto;
-    margin-left: 250px;
-    margin-bottom: 100px;
-  }
+.contenedor-imagen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logoInicio img {
+  margin: 0 auto;
+  margin-left: 250px;
+  margin-bottom: 100px;
+}
+
+.boton-registro {
+  background-color: #006666;
+  color: #fff; /* Cambia el color del texto del botón según tus preferencias */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.boton-registro:hover {
+  background-color: #0056b3; /* Cambia el color de fondo al pasar el cursor sobre el botón */
+}
