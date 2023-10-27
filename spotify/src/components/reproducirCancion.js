@@ -34,9 +34,11 @@ function ReproducirCancion () {
 
       const audio = audioRef.current;
       audio.src = cancionSeleccionada.path_cancion; // Establecemos la fuente de la canción
+
       audio.play().then(() => {  // Inicia la reproducción de la canción automáticamente
         setEstaReproduciendo(true);
       });
+
 
       const handleTimeUpdate = () => {
         const porcentaje = (audio.currentTime / audio.duration) * 100;
@@ -68,18 +70,18 @@ function ReproducirCancion () {
  
   const clicReproducirPause = () => {
     if(audioRef.current && cancionSeleccionada) {
-        const audio = audioRef.current;
-        if (!estaReproduciendo) {
-            audio.play().then(() => {
-                setEstaReproduciendo(true);
-            });
-        } else {
-            audio.pause();
-            setEstaReproduciendo(false);
-        }
-    } else {
-        console.error('audioRef.current no está definido o no hay una canción seleccionada');
-    }
+      const audio = audioRef.current;
+      if (!estaReproduciendo) {
+          audio.play().then(() => {
+              setEstaReproduciendo(true);
+          });
+      } else {
+          audio.pause();
+          setEstaReproduciendo(false);
+      }
+   } else {
+      console.error('audioRef.current no está definido o no hay una canción seleccionada');
+   }
   };
   const sigCancion = useCallback(() => {
     let newIndex = indiceCancionActual + 1;
@@ -125,33 +127,43 @@ function ReproducirCancion () {
     
     setNombreMusica(cancion.nombre_cancion || "Nombre desconocido");
     setNombreArtista(cancion.nombre_usuario || "Artista desconocido");
-
+  
     if (audioRef.current) {
       const audio = audioRef.current;
       audio.src = cancion.path_cancion;
       audio.load(); // Carga la nueva canción
-      if (estaReproduciendo) {
-        audio.play();
-      }
+      audio.play().then(() => { // Aquí garantizamos que siempre se reproducirá automáticamente
+        setEstaReproduciendo(true); 
+      }).catch(err => {
+        // manejamos el error solo si es necesario
+        console.error("Error al intentar reproducir la canción:", err);
+      });
     }
   };
+  
 
   const cancionAnterior = () => {
     if (indiceCancionActual !== null) {
       const newIndex = (indiceCancionActual - 1 + listaCancionesReproduccion.length) % listaCancionesReproduccion.length;
       setIndiceCancionActual(newIndex);
       cargarCancion(newIndex);
+      setEstaReproduciendo(true);
+
     }
   };
 
   const cambiarVolumen = (e) => {
     const nuevoVolumen = e.target.value;
-    setVolumen(nuevoVolumen);
-    const estaEnSilencio = audioRef.current.muted;
-    if (estaEnSilencio){mutearDesmutear()}
-    if(nuevoVolumen===0){mutearDesmutear()}
-    if (audioRef.current) {
-      audioRef.current.volume = nuevoVolumen / 100;
+     if (audioRef.current) {
+      const audio = audioRef.current;
+      audio.volume = nuevoVolumen / 100;
+      const estaEnSilencio = nuevoVolumen == 0;
+  
+      if (estaEnSilencio !== muted) {
+        setMuted(estaEnSilencio); // Actualiza el estado de mute
+        audio.muted = estaEnSilencio; // Cambia el estado de mute en el audio
+      }
+      setVolumen(nuevoVolumen);
     }
   };
 
@@ -266,7 +278,8 @@ function ReproducirCancion () {
       
       <div className = "contenedor">
         <button onClick={mutearDesmutear} className="boton-mute">
-          {muted ? <FaVolumeOff /> : <FaVolumeUp />}
+        { muted ? <FaVolumeOff /> : <FaVolumeUp />}
+        
         </button>
 
         <div className="volumen" >      
