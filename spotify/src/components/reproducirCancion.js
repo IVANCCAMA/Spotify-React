@@ -230,7 +230,10 @@ function ReproducirCancion () {
     const nuevaPosicion = (porcentajeValido / 100) * audioRef.current.duration;
     audioRef.current.currentTime = nuevaPosicion;
   };
-
+  const handleClickOnProgressBar = (e) => {
+    reproducirDesdePosicion(e);
+    actualizarProgreso(e);
+  };
    // <img src={portadaAlbum} alt="portada album" className="portada-album" /> */
    return (
     <div className="reproductorMusica">
@@ -260,8 +263,7 @@ function ReproducirCancion () {
         onMouseDown={iniciarArrastre}
         onMouseMove={moverCirculo}
         onMouseUp={finalizarArrastre}
-        onClick={actualizarProgreso}
-        onClick={reproducirDesdePosicion}
+        onClick={handleClickOnProgressBar}
         ref={progressIndicatorRef}
       >
         <div className="progress-line" style={{ width: `${progreso}%` }}></div>
