@@ -7,10 +7,9 @@ import plus from '../logos/plus.png';
 import './menuLateral.css';
 
 function MenuLateral() {
+  // eslint-disable-next-line no-sparse-arrays
   const menuOptions = [
     { to: '/', src: home, alt: 'Home', title: 'Inicio' },,
-    { separador: true },
-    { to: '/Registro', src: plus, alt: 'Registro', title: 'Registrarse' },
     { separador: true },
     { to: '/Albumes', src: group, alt: 'Álbumes', title: 'Álbumes' },
     { to: '/crearAlbum', src: plus, alt: 'Crear álbum', title: 'Crear álbum' },
