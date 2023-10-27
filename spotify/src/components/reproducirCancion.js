@@ -139,7 +139,7 @@ function ReproducirCancion () {
     setVolumen(nuevoVolumen);
     const estaEnSilencio = audioRef.current.muted;
     if (estaEnSilencio){mutearDesmutear()}
-    if(nuevoVolumen==0){mutearDesmutear()}
+    if(nuevoVolumen===0){mutearDesmutear()}
     if (audioRef.current) {
       audioRef.current.volume = nuevoVolumen / 100;
     }
@@ -156,7 +156,7 @@ function ReproducirCancion () {
   };
 
   const mutearDesmutear = () => {
-    if(audioRef.current.volume==0.0){audioRef.current.volume=0.5; setVolumen(50)}
+    if(audioRef.current.volume===0.0){audioRef.current.volume=0.5; setVolumen(50)}
     setMuted(!muted);  // Actualiza el estado de mute                    
     const estaEnSilencio = audioRef.current.muted;
     audioRef.current.muted = !estaEnSilencio; //cambio de mute a unmuted
