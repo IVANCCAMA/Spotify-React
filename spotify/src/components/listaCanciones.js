@@ -90,11 +90,11 @@ function ListaCanciones() {
                     <img src={songLogo} onClick={() => actualizarCancionSelecionada(cancion.id_cancion)} alt="Álbum" className="play-logo" />          
                     </div>
                   </div>
-
+                  
             </div>
           ))
         ) : (
-          <p>Cargando canciones...</p>
+          <p></p>
         )}
       </div>
     </div>
