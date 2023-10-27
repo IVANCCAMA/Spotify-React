@@ -1,37 +1,44 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import './listaCanciones.css';
-import groupLogo from '../logos/group.png';
 import songLogo from '../logos/play-logo.png';
 import axios from "axios";
+import ReproducirCancion from './reproducirCancion';
+import { ListProvider, useListContext } from './ListContext';
 
 
 function ListaCanciones() {
   const { id_lista } = useParams();
+  const { listaCancionesReproduccion, actualizarListaCanciones, cancionSeleccionada, actualizarCancionSelecionada } = useListContext();
+
   const [listaCanciones, setListaCanciones] = useState([]);
   const [infoAlbum, setinfoAlbum] = useState([]); // Nuevo estado para lista de álbumes
+  const [cancionesCargadas, setCancionesCargadas] = useState(false); 
+  const [cancionSelect, setCancionSeleccionada] = useState(null); // Nuevo estado para el índice de la canción seleccionada
   
   // Lista de canciones de un Álbum
   useEffect(() => {
     const fetchData = async () => {
       try {
         const responseCanciones = await axios.get(`https://spfisbackend-production.up.railway.app/api/canciones/completo_lista/${id_lista}`);
-        const listaCancionesAlbum = responseCanciones.data;
-        console.log("Listas de canciones recuperadas:", listaCancionesAlbum);
-        setListaCanciones(listaCancionesAlbum);
+        const listaCanciones = responseCanciones.data;
+        setListaCanciones(listaCanciones);
+        setCancionesCargadas(true);
+        actualizarListaCanciones(listaCanciones);
       } catch (error) {
         console.error('Error al obtener la lista de canciones:', error);
       }
     };
     fetchData();
-  }, [id_lista]);
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Arreglo de dependencias vacío
+  
+  // Infor de album
   useEffect(() => {
     const fetchAlbum = async () => {
       try {
         const responseAlbum = await axios.get(`https://spfisbackend-production.up.railway.app/api/lista_canciones/${id_lista}`);
         const infoAlbum = responseAlbum.data;
-        console.log("INFORMACION ALBUM RECUPERADA:", infoAlbum);
         setinfoAlbum(infoAlbum);
       } catch (error) {
         console.error('Error al obtener la lista de álbum:', error);
@@ -40,9 +47,9 @@ function ListaCanciones() {
     fetchAlbum();
   }, [id_lista]);
 
-  
-
   return (
+    
+  <ListProvider>
     <div className='general-config'>
       {/* Info de álbum */}
       <div className='album-config'>
@@ -64,32 +71,40 @@ function ListaCanciones() {
         </div>
       </div>
 
-      {/* Listado de canciones de álbum */}
+      {/* Listado de canciones */}
       <div className="song-config">
-        {Array.isArray(listaCanciones) && listaCanciones.map((canciones, index) => (
-          <div key={canciones.id_cancion} className="album-item">
+        {cancionesCargadas && listaCanciones.length > 0 ? (
+          listaCanciones.map((cancion, index) => (
+            <div key={cancion.id_cancion} className="album-item">
+              <div className="song-container">
+                <div className="song-details">
+                  <img
+                    src={cancion.path_image}
+                    alt="Álbum"
+                    className="album-image2"
+                  />
+                  <div className="titulo-cancion-logo">
+                    {cancion.nombre_usuario + " - " + cancion.nombre_cancion}
+                    <div className="duracion-logo">{cancion.duracion}</div>
+                    </div>
+                    <img src={songLogo} onClick={() => actualizarCancionSelecionada(cancion.id_cancion)} alt="Álbum" className="play-logo" />          
+                    </div>
+                  </div>
+                {/* Aquiii ojito*/}
+                <div className="duracion-logo">{cancion.duracion}</div>
+                <div> 
+                  <img src={songLogo} alt="Álbum" className="play-logo" onClick={() => actualizarCancionSelecionada(cancion.id_cancion)}/> 
+                </div>
 
-            <div className="song-container">
-              <div className="song-details">
-              <img
-                  src={canciones.path_image}
-                  alt="Álbum"
-                  className="album-image2"
-                />
-                <div className="titulo-cancion-logo">{canciones.nombre_usuario + " - " +  canciones.nombre_cancion}</div>
-                <div className="duracion-logo">{canciones.duracion}</div>
-              </div>
-              <img src={songLogo} alt="Álbum" className="play-logo" />
             </div>
-          </div> 
-
-        ))}
+          ))
+        ) : (
+          <p>Cargando canciones...</p>
+        )}
       </div>
-
-      
-      
-      
     </div>
+  <ReproducirCancion />
+  </ListProvider>
   );
   
 }
