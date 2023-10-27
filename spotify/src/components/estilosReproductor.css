@@ -16,12 +16,25 @@
 
   .info-cancion, .detalles-musica{
     position: absolute;
-    right: 70%;
+    right: 66%;
     display: flex;
     align-items: center;
     margin: 0;
     border: none;
     padding: 0;
+    font-size: 12px;
+  }
+
+  .menu .menu-items .item a {
+    display: flex; /* Mostrar elementos en línea */
+    align-items: center; /* Centra verticalmente los elementos */
+    padding: 16px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    color: #FFFFFF;
+    text-align: left; /* Alineación de texto a la izquierda */
+    font-family: var(--fuente-1);
   }
   /*
   .portada-album {
@@ -35,13 +48,22 @@
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
+    font-weight: bold;
   }
-.nombre-musica,
-.nombre-artista {
-  margin: 0 10px;   /* Aumenta el espacio antes y después para compensar la eliminación del guion */
+.nombre-musica,.nombre-artista {
+  margin: 0 10px;   
     white-space: nowrap;
     line-height: 1.2;
-    font-size: 20px;
+    font-size: 14px;
+}
+
+
+.timer {
+  margin: 10px 10px;   /* Aumenta el espacio antes y después para compensar la eliminación del guion */
+    white-space: nowrap;
+    line-height: 1.2;
+    font-size: 14px;
+    font-weight: none;
 }
 
   .controls {

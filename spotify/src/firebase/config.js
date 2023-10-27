@@ -43,11 +43,49 @@ export async function RecuperarDuracion(file) {
 
     // Escucha el evento 'error' para manejar errores
     audio.addEventListener('error', (error) => {
+      console.error('Error al cargar el archivo de audio:', error); 
+      reject(error);
+    });
+  });
+}
+
+export async function RecuperarDuracionCorregido(file) {
+  return new Promise((resolve, reject) => {
+    const audio = document.createElement('audio');
+
+    // Obtén la URL del archivo
+    const fileURL = URL.createObjectURL(file);
+
+    // Establece la fuente del elemento de audio con la URL del archivo
+    audio.src = fileURL;
+
+    // Escucha el evento 'loadedmetadata' para obtener la duración una vez que se haya cargado la metadata del audio
+    audio.addEventListener('loadedmetadata', () => {
+      // Obtén la duración en segundos
+      const duracionSegundos = audio.duration;
+
+      // Convierte a minutos y segundos con dos decimales
+      const minutos = Math.floor(duracionSegundos / 60);
+      const segundos = Math.floor(duracionSegundos % 60);
+
+      // Formatea los minutos y segundos con dos dígitos
+      const duracionMinutos = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+
+      // Libera la URL creada para el archivo
+      URL.revokeObjectURL(fileURL);
+
+      // Resuelve la duración en minutos y segundos con el formato deseado
+      resolve(duracionMinutos);
+    });
+
+    // Escucha el evento 'error' para manejar errores
+    audio.addEventListener('error', (error) => {
       console.error('Error al cargar el archivo de audio:', error);
       reject(error);
     });
   });
 }
+
 
 export async function SubirPortada(imageUpload) {
   const imageName = `${imageUpload.name}-${v4()}`;

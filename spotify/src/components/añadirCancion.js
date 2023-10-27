@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
-import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
+import { RecuperarDuracion, RecuperarDuracionCorregido, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import { alfanumerico } from './form.js';
 import './form.css'
 import Alerta from './alerta';
@@ -204,9 +204,9 @@ function AñadirCancion() {
         const resultado = await subirFirebase(archivo);
         nuevaCancion.path_cancion = resultado.url;
 
-        const recuperarDuracionAudio = await RecuperarDuracion(archivo);
+        const recuperarDuracionAudio = await RecuperarDuracionCorregido(archivo);
         nuevaCancion.duracion = recuperarDuracionAudio
-
+        
         const subidaExitosa = await subirBD(nuevaCancion);
         if (!subidaExitosa) {
           deleteFile(resultado.filePath);
@@ -214,6 +214,7 @@ function AñadirCancion() {
           setIsModalOpen(true);
           return;
         }
+
 
         setModalMessage(`Canción añadida exitosamente`);
         setIsModalOpen(true);
