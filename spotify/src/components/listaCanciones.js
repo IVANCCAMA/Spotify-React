@@ -85,11 +85,17 @@ function ListaCanciones() {
                   />
                   <div className="titulo-cancion-logo">
                     {cancion.nombre_usuario + " - " + cancion.nombre_cancion}
+                    <div className="duracion-logo">{cancion.duracion}</div>
+                    </div>
+                    <img src={songLogo} onClick={() => actualizarCancionSelecionada(cancion.id_cancion)} alt="Álbum" className="play-logo" />          
+                    </div>
                   </div>
-                  <div className="duracion-logo">{cancion.duracion}</div>
+                {/* Aquiii ojito*/}
+                <div className="duracion-logo">{cancion.duracion}</div>
+                <div> 
+                  <img src={songLogo} alt="Álbum" className="play-logo" onClick={() => actualizarCancionSelecionada(cancion.id_cancion)}/> 
                 </div>
-                
-                <img src={songLogo} alt="Álbum" className="play-logo" onClick={() => actualizarCancionSelecionada(cancion.id_cancion)}/> </div>
+
             </div>
           ))
         ) : (
