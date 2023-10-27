@@ -1,12 +1,12 @@
 import React from "react";
 import logo from '../logos/logo.png';
-import './inicioHome.css'
-
+import './inicioHome.css';
+import { Link } from "react-router-dom";
 function Inicio() {
   return (
     <div>
       <header className="header">
-        <button className='boton-registro'>Regístrate</button>  
+        <Link  to="/registro" className='boton-registro'>Regístrate</Link>  
       </header>
       <div className="contenedor-imagen">
         <div className="logoInicio">
