@@ -96,7 +96,7 @@
 @media screen and (max-width: 768px) {
   .albumes-list {
     grid-template-columns: repeat(1, 1fr);
-    margin: 4800px 0 50px 0; 
+    margin: 0 0 50px 0; 
     margin-top: 930%; 
 
   }
