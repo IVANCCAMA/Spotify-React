@@ -15,6 +15,8 @@
 
 
   .info-cancion, .detalles-musica{
+    position: absolute;
+    right: 70%;
     display: flex;
     align-items: center;
     margin: 0;
@@ -29,7 +31,6 @@
   }*/
  
   .detalles-musica {
-    margin-left: 131px;
     padding: 15px;
     display: flex;
     align-items: center;
@@ -40,10 +41,12 @@
   margin: 0 10px;   /* Aumenta el espacio antes y después para compensar la eliminación del guion */
     white-space: nowrap;
     line-height: 1.2;
-    font-size: 33px;
+    font-size: 20px;
 }
 
   .controls {
+    position: absolute;
+    left: 45%;
     display: flex;
     align-items: center; /* Asegúrate de que los controles estén alineados verticalmente */
     justify-content: center; /* Centra los controles horizontalmente */
@@ -57,29 +60,31 @@
     color: #fff;
     margin:  10px;
     cursor: pointer;
-     }
+  }
   
   .contenedor {
     display: flex;
-    align-items: center; 
-    padding-right: 100px;
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding-bottom: 45px;
+    padding-right: 50px;
+    
   }
 
   .boton-mute   {
     background: none;
     border: none;
-    color: #fff;
-    margin:  -45px;
+    margin-left: 20px;
     cursor: pointer;
   }
 
   .volumen {
-    flex: -1; 
-    text-align: right; 
+    margin-right: 20px;    
   }
   
   .volumen-slider {
-    width: 100%;
     margin-left: 20px;
   }
   .control-button:hover {
@@ -96,10 +101,12 @@
   }
   
   .progress-bar {
+    
     width: 30%;
-    background-color: #333;
+    background-color: #ffffff;
     height: 5px;
-    position: relative;
+    position: absolute;
+    left: 35%;
     margin: auto;
     margin-top: 50px;
     /* z-index: -1; */
@@ -107,7 +114,7 @@
   
   .progress-line {
     background-color: #fff;
-    height: 7px;
+    height: 5px;
     position: absolute;
     top: 0;
     width: 100%;

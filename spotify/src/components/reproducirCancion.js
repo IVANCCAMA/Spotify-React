@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, useContext, useEffect } from "react";
+import React, { useState, useRef, useContext, useEffect, useCallback} from "react";
 import { FaPlay, FaPause, FaForward, FaBackward, FaVolumeOff, FaVolumeUp } from 'react-icons/fa';
 import './estilosReproductor.css';  
 import { ListContext } from "./ListContext";
@@ -18,37 +18,38 @@ function ReproducirCancion () {
   const [progreso, setProgreso] = useState(0);
   const [muted, setMuted] = useState(false);  // Mute - Unmuted
   
+ 
+  
+
   // Recupera cancion selecionada de ListaCanciones.js
   useEffect(() => {
     if (cancionSeleccionada) {
-        setCancionSelect(cancionSeleccionada);
-
-        // Actualización de los nombres
-        setNombreArtista(cancionSeleccionada.nombre_usuario);
-        setNombreMusica(cancionSeleccionada.nombre_cancion);
-
-        const audio = audioRef.current;
-        audio.src = cancionSeleccionada.path_cancion; // Establecemos la fuente de la canción
-        audio.play().then(() => {  // Inicia la reproducción de la canción automáticamente
-            setEstaReproduciendo(true);
-        });
-
-        audio.addEventListener('timeupdate', () => {
-            const porcentaje = (audio.currentTime / audio.duration) * 100;
-            setProgreso(porcentaje);
-        });
-        const handleTimeUpdate = () => {
-          const porcentaje = (audio.currentTime / audio.duration) * 100;
-          setProgreso(porcentaje);
-      };
+      setCancionSelect(cancionSeleccionada);
+  
+      // Actualización de los nombres
+      setNombreArtista(cancionSeleccionada.nombre_usuario);
+      setNombreMusica(cancionSeleccionada.nombre_cancion);
+  
+      const audio = audioRef.current;
+      audio.src = cancionSeleccionada.path_cancion; // Establecemos la fuente de la canción
       
+       audio.play().then(() => {  // Inicia la reproducción de la canción automáticamente
+         setEstaReproduciendo(true);
+       });
+      
+      const handleTimeUpdate = () => {
+        const porcentaje = (audio.currentTime / audio.duration) * 100;
+        setProgreso(porcentaje);
+      };
+  
       audio.addEventListener('timeupdate', handleTimeUpdate);
       
       return () => {
-          audio.removeEventListener('timeupdate', handleTimeUpdate);
+        audio.removeEventListener('timeupdate', handleTimeUpdate);
       };
     }
   }, [cancionSeleccionada]);
+  
 
 
 
@@ -58,21 +59,20 @@ function ReproducirCancion () {
  
   const clicReproducirPause = () => {
     if(audioRef.current && cancionSeleccionada) {
-        const audio = audioRef.current;
-
-        if (!estaReproduciendo) {
-            audio.play().then(() => {
-                setEstaReproduciendo(true);
-            });
-        } else {
-            audio.pause();
-            setEstaReproduciendo(false);
-        }
-    } else {
-        console.error('audioRef.current no está definido o no hay una canción seleccionada');
-    }
+      const audio = audioRef.current;
+      if (!estaReproduciendo) {
+          audio.play().then(() => {
+              setEstaReproduciendo(true);
+          });
+      } else {
+          audio.pause();
+          setEstaReproduciendo(false);
+      }
+   } else {
+      console.error('audioRef.current no está definido o no hay una canción seleccionada');
+   }
   };
-  const sigCancion = () => {
+  const sigCancion = useCallback(() => {
     let newIndex = indiceCancionActual + 1;
     if (newIndex >= listaCancionesReproduccion.length) {
         newIndex = 0;  // Si es la última canción, vuelve a la primera.
@@ -84,8 +84,28 @@ function ReproducirCancion () {
     
     setIndiceCancionActual(newIndex);
     cargarCancion(newIndex);
-};
+  }, [indiceCancionActual, listaCancionesReproduccion]);
+  
+  useEffect(() => {
+    const audio = audioRef.current;
 
+    const handleTimeUpdate = () => {
+      const porcentaje = (audio.currentTime / audio.duration) * 100;
+      setProgreso(porcentaje);
+    };
+
+    const handleEnded = () => {
+      sigCancion();
+    };
+
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, [sigCancion]);
 
   const cargarCancion = (indice) => {
     const cancion = listaCancionesReproduccion[indice];
@@ -96,28 +116,34 @@ function ReproducirCancion () {
     
     setNombreMusica(cancion.nombre_cancion || "Nombre desconocido");
     setNombreArtista(cancion.nombre_usuario || "Artista desconocido");
-
+  
     if (audioRef.current) {
       const audio = audioRef.current;
       audio.src = cancion.path_cancion;
       audio.load(); // Carga la nueva canción
-      if (estaReproduciendo) {
-        audio.play();
-      }
+      audio.play().then(() => { // Aquí garantizamos que siempre se reproducirá automáticamente
+        setEstaReproduciendo(true); 
+      }).catch(err => {
+        // manejamos el error solo si es necesario
+        console.error("Error al intentar reproducir la canción:", err);
+      });
     }
   };
+  
 
   const cancionAnterior = () => {
     if (indiceCancionActual !== null) {
       const newIndex = (indiceCancionActual - 1 + listaCancionesReproduccion.length) % listaCancionesReproduccion.length;
       setIndiceCancionActual(newIndex);
       cargarCancion(newIndex);
+      setEstaReproduciendo(true);
+
     }
   };
 
   const cambiarVolumen = (e) => {
     const nuevoVolumen = e.target.value;
-    if (audioRef.current) {
+     if (audioRef.current) {
       const audio = audioRef.current;
       audio.volume = nuevoVolumen / 100;
       const estaEnSilencio = nuevoVolumen == 0;
@@ -141,8 +167,9 @@ function ReproducirCancion () {
   };
 
   const mutearDesmutear = () => {
+    if(audioRef.current.volume===0.0){audioRef.current.volume=0.5; setVolumen(50)}
     setMuted(!muted);  // Actualiza el estado de mute                    
-  const estaEnSilencio = audioRef.current.muted;
+    const estaEnSilencio = audioRef.current.muted;
     audioRef.current.muted = !estaEnSilencio; //cambio de mute a unmuted
   };
 
