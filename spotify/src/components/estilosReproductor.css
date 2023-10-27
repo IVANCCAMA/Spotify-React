@@ -105,7 +105,7 @@
   .progress-bar {
     
     width: 30%;
-    background-color: #333;
+    background-color: #ffffff;
     height: 5px;
     position: absolute;
     left: 35%;
@@ -116,7 +116,7 @@
   
   .progress-line {
     background-color: #fff;
-    height: 7px;
+    height: 5px;
     position: absolute;
     top: 0;
     width: 100%;
