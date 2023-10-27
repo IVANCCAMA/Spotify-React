@@ -49,7 +49,7 @@ function CrearLista() {
       console.error('Error al obtener la lista de canciones del usuario:', error);
       return null;
     }
-  };
+};
 
   const ExisteArtista = async (nombreArtista) => {
     try {
