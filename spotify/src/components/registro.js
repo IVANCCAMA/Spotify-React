@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
-import { alfanumerico } from './form.js';
+import { alfanumerico, verificarString } from './form.js';
 import './form.css'
 import Alerta from './alerta';
 import bcrypt from 'bcryptjs';
@@ -45,11 +45,11 @@ function Registro() {
       document.getElementById('username').classList.add('active');
       return null;
     }
-    if (campos.password.length > 20 || campos.password.length < 1) {
+    if (campos.password.length > 20 || campos.password.length < 8) {
       document.getElementById('password').classList.add('active');
       return null;
     }
-    if (campos.passwordConfirm.length > 20 || campos.passwordConfirm.length < 1) {
+    if (campos.passwordConfirm.length > 20 || campos.passwordConfirm.length < 8) {
       document.getElementById('passwordConfirm').classList.add('active');
       return null;
     }
@@ -60,18 +60,26 @@ function Registro() {
     // nombre
     const id_usuario = await ExisteArtista(campos.username);
     if (id_usuario != null) {
-      console.log('Error, nombre en uso intente otro');
+      setModalMessage(`El nombre que deseas registrar ya está en uso, escoge otro`);
+      await setIsModalOpen(true);
       document.getElementById('username').classList.add('active');
       return null;
     }
 
     // passwprd
-    // revisar que tenga las especificaciones de una password
+    if (!(verificarString(campos.password, "", "mayusculas minusculas specialChars numeros")
+    && !(verificarString(campos.password, "", "acentos") || verificarString(campos.password, "", "espacio")))) {
+      document.getElementById('password').classList.add('active');
+      setModalMessage(`La contraseña no cumple con las especificaciones`);
+      await setIsModalOpen(true);
+      return null;
+    }
 
     // passwordConfirm
     if (campos.password !== campos.passwordConfirm) {
-      console.log("Las contraseñas no coinciden.");
       document.getElementById('passwordConfirm').classList.add('active');
+      setModalMessage(`La confirmacion y la contraseña no coinciden`);
+      await setIsModalOpen(true);
       return null;
     }
 
@@ -79,6 +87,7 @@ function Registro() {
     for (const userType of userTypes) {
       if (campos.userType === userType) {
         try {
+          // Encrypting
           const saltRounds = 10;
           const hash = await bcrypt.hash(campos.password, saltRounds);
           return {
@@ -89,7 +98,8 @@ function Registro() {
             fecha_nacimiento: "2020-08-03"
           };
         } catch (error) {
-          console.error("Error al encriptar la contraseña:", error);
+          setModalMessage(`Error al encriptar la contraseña`);
+          await setIsModalOpen(true);
           return null;
         }
       }
@@ -174,6 +184,22 @@ function Registro() {
     e.target.value = newValue;
   };
 
+  const handlePassword = (e) => {
+    const password = e.target.value;
+    if (password.length < 1) {
+      e.target.classList.remove('active');
+    } else if (password.length < 8) {
+      e.target.classList.add('active');
+    } else {
+      if (verificarString(password, "", "mayusculas minusculas specialChars numeros")
+      && !(verificarString(password, "", "acentos") || verificarString(password, "", "espacio"))) {
+        e.target.classList.remove('active');
+      } else {
+        e.target.classList.add('active');
+      }
+    }
+  }
+
   return (
     <div className="modal-form">
       <form className="modal-box" id="form" onSubmit={validarForm}>
@@ -204,7 +230,8 @@ function Registro() {
                 id="password"
                 name="password"
                 placeholder="Escriba su contraseña"
-                onChange={handle}
+                title='Mínimo 8 caracteres, entre ellos mayusculas, minusculas, números y caracteres especiales. Sin acentos ni espacios.'
+                onChange={handlePassword}
               />
             </div>
           </div>
@@ -219,7 +246,13 @@ function Registro() {
                 id="passwordConfirm"
                 name="passwordConfirm"
                 placeholder="Confirme su contraseña"
-                onChange={handle}
+                onChange={(e) => {
+                  if (e.target.value === document.getElementById('password').value) {
+                    e.target.classList.remove('active');
+                  } else {
+                    e.target.classList.add('active');
+                  }
+                }}
               />
             </div>
           </div>
