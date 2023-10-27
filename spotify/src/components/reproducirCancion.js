@@ -17,39 +17,49 @@ function ReproducirCancion () {
   const [cancionSelect, setCancionSelect] = useState(null);
   const [progreso, setProgreso] = useState(0);
   const [muted, setMuted] = useState(false);  // Mute - Unmuted
-  
- 
+  const [dragging, setDragging] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
+  const [progressIndicatorStartX, setProgressIndicatorStartX] = useState(0);
+
   
 
-  // Recupera cancion selecionada de ListaCanciones.js
+  // Recupera canción seleccionada de ListaCanciones.js
   useEffect(() => {
     if (cancionSeleccionada) {
       setCancionSelect(cancionSeleccionada);
-  
+
       // Actualización de los nombres
       setNombreArtista(cancionSeleccionada.nombre_usuario);
       setNombreMusica(cancionSeleccionada.nombre_cancion);
-  
+
       const audio = audioRef.current;
       audio.src = cancionSeleccionada.path_cancion; // Establecemos la fuente de la canción
       audio.play().then(() => {  // Inicia la reproducción de la canción automáticamente
         setEstaReproduciendo(true);
       });
-  
+
       const handleTimeUpdate = () => {
         const porcentaje = (audio.currentTime / audio.duration) * 100;
         setProgreso(porcentaje);
       };
-  
+
       audio.addEventListener('timeupdate', handleTimeUpdate);
-      
+
       return () => {
         audio.removeEventListener('timeupdate', handleTimeUpdate);
       };
     }
   }, [cancionSeleccionada]);
   
-
+  const toggleReproduccion = () => {
+    const audio = audioRef.current;
+    if (audio.paused) {
+      audio.play();
+    } else {
+      audio.pause();
+    }
+    setEstaReproduciendo(!audio.paused);
+  };
 
 
   /** 
@@ -146,13 +156,15 @@ function ReproducirCancion () {
   };
 
   const actualizarProgreso = (e) => {
+    if (!dragging) {
+      return;
+    }
+
     const barraProgreso = progressIndicatorRef.current;
-    const audio = audioRef.current;
     const barraRect = barraProgreso.getBoundingClientRect();
-    const porcentaje = ((e.clientX - barraRect.left) / barraRect.width) * 100;
-    setProgreso(porcentaje);
-    const nuevaPosicion = (porcentaje / 100) * audio.duration;
-    audio.currentTime = nuevaPosicion;
+    const porcentaje = (e.clientX - barraRect.left) / barraRect.width;
+    const nuevaPosicion = porcentaje * audioRef.current.duration;
+    audioRef.current.currentTime = nuevaPosicion;
   };
 
   const mutearDesmutear = () => {
@@ -160,6 +172,51 @@ function ReproducirCancion () {
     setMuted(!muted);  // Actualiza el estado de mute                    
     const estaEnSilencio = audioRef.current.muted;
     audioRef.current.muted = !estaEnSilencio; //cambio de mute a unmuted
+  };
+
+  // Eventos para arrastrar el círculo
+  const iniciarArrastre = (e) => {
+    if (estaReproduciendo) {
+      audioRef.current.pause();
+    }
+    setDragging(true);
+    setDragStartX(e.clientX);
+    setProgressIndicatorStartX(progressIndicatorRef.current.getBoundingClientRect().left);
+  };
+
+  const finalizarArrastre = () => {
+    if (dragging) {
+      setDragging(false);
+      if (estaReproduciendo) {
+        const nuevaPosicion = (progreso / 100) * audioRef.current.duration;
+        audioRef.current.currentTime = nuevaPosicion;
+        audioRef.current.play();
+      }
+    }
+  };
+
+  const moverCirculo = (e) => {
+    if (dragging) {
+      const barraProgreso = progressIndicatorRef.current;
+      const barraRect = barraProgreso.getBoundingClientRect();
+      const porcentaje = ((e.clientX - progressIndicatorStartX) / barraRect.width) * 100;
+      setProgreso(porcentaje);
+    }
+  };
+  
+  
+  const reproducirDesdePosicion = (e) => {
+    if (dragging) return;
+    const barraProgreso = progressIndicatorRef.current;
+    const barraRect = barraProgreso.getBoundingClientRect();
+    const porcentaje = ((e.clientX - barraRect.left) / barraRect.width) * 100;
+
+    // Asegúrate de que el porcentaje esté dentro de los límites de la barra de progreso
+    const porcentajeValido = Math.max(0, Math.min(100, porcentaje));
+
+    setProgreso(porcentajeValido);
+    const nuevaPosicion = (porcentajeValido / 100) * audioRef.current.duration;
+    audioRef.current.currentTime = nuevaPosicion;
   };
 
    // <img src={portadaAlbum} alt="portada album" className="portada-album" /> */
@@ -188,12 +245,20 @@ function ReproducirCancion () {
 
       <div
         className="progress-bar"
+        onMouseDown={iniciarArrastre}
+        onMouseMove={moverCirculo}
+        onMouseUp={finalizarArrastre}
         onClick={actualizarProgreso}
-        ref={progressIndicatorRef}>
+        onClick={reproducirDesdePosicion}
+        ref={progressIndicatorRef}
+      >
         <div className="progress-line" style={{ width: `${progreso}%` }}></div>
         <div
           className="progress-indicator"
           style={{ left: `${progreso}%` }}
+          onMouseDown={iniciarArrastre}
+          onMouseMove={moverCirculo}
+          onMouseUp={finalizarArrastre}
         >
           <div className="progress-circle"></div>
         </div>

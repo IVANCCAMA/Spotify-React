@@ -110,6 +110,7 @@
     margin: auto;
     margin-top: 50px;
     /* z-index: -1; */
+    cursor: pointer;
   }
   
   .progress-line {
@@ -124,6 +125,7 @@
     position: absolute;
     top: -5px; 
     transform: translateX(-50%);
+    cursor: pointer;
   }
   
   .progress-circle {
