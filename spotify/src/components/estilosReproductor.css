@@ -60,33 +60,31 @@
     color: #fff;
     margin:  10px;
     cursor: pointer;
-     }
+  }
   
   .contenedor {
     display: flex;
-    align-items: center; 
-    padding-right: 100px;
+    padding: 15px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding-bottom: 45px;
+    padding-right: 50px;
+    
   }
 
   .boton-mute   {
-    position: absolute;
-    left: 82%;
     background: none;
     border: none;
-    color: #fff;
-    margin:  -45px;
+    margin-left: 20px;
     cursor: pointer;
   }
 
   .volumen {
-    position: absolute;
-    left: 80%;
-    flex: -1; 
-    text-align: right; 
+    margin-right: 20px;    
   }
   
   .volumen-slider {
-    width: 100%;
     margin-left: 20px;
   }
   .control-button:hover {
