@@ -59,7 +59,6 @@ function ReproducirCancion () {
   const clicReproducirPause = () => {
     if(audioRef.current && cancionSeleccionada) {
         const audio = audioRef.current;
-
         if (!estaReproduciendo) {
             audio.play().then(() => {
                 setEstaReproduciendo(true);
@@ -138,6 +137,9 @@ function ReproducirCancion () {
   const cambiarVolumen = (e) => {
     const nuevoVolumen = e.target.value;
     setVolumen(nuevoVolumen);
+    const estaEnSilencio = audioRef.current.muted;
+    if (estaEnSilencio){mutearDesmutear()}
+    if(nuevoVolumen==0){mutearDesmutear()}
     if (audioRef.current) {
       audioRef.current.volume = nuevoVolumen / 100;
     }
@@ -154,8 +156,9 @@ function ReproducirCancion () {
   };
 
   const mutearDesmutear = () => {
+    if(audioRef.current.volume==0.0){audioRef.current.volume=0.5; setVolumen(50)}
     setMuted(!muted);  // Actualiza el estado de mute                    
-  const estaEnSilencio = audioRef.current.muted;
+    const estaEnSilencio = audioRef.current.muted;
     audioRef.current.muted = !estaEnSilencio; //cambio de mute a unmuted
   };
 

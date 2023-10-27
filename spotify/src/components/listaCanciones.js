@@ -90,6 +90,11 @@ function ListaCanciones() {
                     <img src={songLogo} onClick={() => actualizarCancionSelecionada(cancion.id_cancion)} alt="Álbum" className="play-logo" />          
                     </div>
                   </div>
+                {/* Aquiii ojito*/}
+                <div className="duracion-logo">{cancion.duracion}</div>
+                <div> 
+                  <img src={songLogo} alt="Álbum" className="play-logo" onClick={() => actualizarCancionSelecionada(cancion.id_cancion)}/> 
+                </div>
 
             </div>
           ))
