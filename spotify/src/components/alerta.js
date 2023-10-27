@@ -22,3 +22,8 @@ function Alerta({ isOpen, mensaje, onClose }) {
 }
 
 export default Alerta;
+
+
+
+
+

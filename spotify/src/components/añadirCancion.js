@@ -271,11 +271,6 @@ function AñadirCancion() {
 
   const handle = (e) => {
     let newValue = eliminarEspacios(e.target.value);
-    if (alfanumerico(newValue)) {
-      e.target.classList.remove('active');
-    } else {
-      e.target.classList.add('active');
-    }
     if (newValue.length > 20) {
       newValue = newValue.slice(0, 20);
     }
