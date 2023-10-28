@@ -11,6 +11,7 @@
   bottom: 0;  /* Alinea el reproductor al fondo de la página */
   left: 0;  /* Alinea el reproductor a la izquierda de la página */
   z-index: 1000;  /* Asegura que el reproductor esté encima de otros elementos */
+  border-top: 5px solid black;
 }
 
 
