@@ -17,10 +17,10 @@ function ReproducirCancion () {
   const [cancionSelect, setCancionSelect] = useState(null);
   const [progreso, setProgreso] = useState(0);
   const [muted, setMuted] = useState(false);  // Mute - Unmuted
+//agregado samca83
+  const [tiempoActual, setTiempoActual] = useState("0:00");
+  const [duracionTotal, setDuracionTotal] = useState("0:00");
   
- 
-  
-
   // Recupera cancion selecionada de ListaCanciones.js
   useEffect(() => {
     if (cancionSeleccionada) {
@@ -38,6 +38,11 @@ function ReproducirCancion () {
       const handleTimeUpdate = () => {
         const porcentaje = (audio.currentTime / audio.duration) * 100;
         setProgreso(porcentaje);
+        //agregado samca83
+        const tiempoActual = secondsToString(Math.floor(audio.currentTime));
+        const duracionTotal = secondsToString(Math.floor(audio.duration));
+        setTiempoActual(tiempoActual);
+        setDuracionTotal(duracionTotal);
       };
   
       audio.addEventListener('timeupdate', handleTimeUpdate);
@@ -82,6 +87,7 @@ function ReproducirCancion () {
     
   }, [indiceCancionActual, listaCancionesReproduccion]);
   
+
   useEffect(() => {
     const audio = audioRef.current;
   
@@ -173,8 +179,32 @@ function ReproducirCancion () {
     const porcentaje = ((e.clientX - barraRect.left) / barraRect.width) * 100;
     setProgreso(porcentaje);
     const nuevaPosicion = (porcentaje / 100) * audio.duration;
+    ///agregado samca
+    const tiempoActual = secondsToString(Math.floor(nuevaPosicion));
+    const duracionTotal = secondsToString(Math.floor(audio.duration));
+    const tiempoFormateado = `${tiempoActual} / ${duracionTotal}`;
+    document.getElementById('timer').innerText = tiempoFormateado;
+    ///
     audio.currentTime = nuevaPosicion;
+
   };
+  ///agregado samca83
+  function secondsToString(seconds) {
+    if (!isNaN(seconds)) {
+      const horas = Math.floor(seconds / 3600);
+      const minutos = Math.floor((seconds % 3600) / 60);
+      const segundos = seconds % 60;
+  
+      if (horas > 0) {
+        return `${horas}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+      } else {
+        return `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+      }
+    } else {
+      return '0:00'; // Manejo especial para NaN
+    }
+  }
+  /////
 
   const mutearDesmutear = () => {
     if(audioRef.current.volume==0.0){audioRef.current.volume=0.5; setVolumen(50)}//fix SSDM - 357,
@@ -194,31 +224,41 @@ function ReproducirCancion () {
         </div>
       </div>
 
-      <div className="controls">
-        <audio ref={audioRef} />
-        <button onClick={cancionAnterior} className="boton-control">
-          <FaBackward />
-        </button>
-        <button onClick={clicReproducirPause} className="boton-control">
-                {estaReproduciendo ? <FaPause /> : <FaPlay />}
-        </button>
-        <button onClick={sigCancion} className="boton-control">
-          <FaForward />
-        </button>
-      </div>
+      <div>
 
-      <div
-        className="progress-bar"
-        onClick={actualizarProgreso}
-        ref={progressIndicatorRef}>
-        <div className="progress-line" style={{ width: `${progreso}%` }}></div>
-        <div
-          className="progress-indicator"
-          style={{ left: `${progreso}%` }}
-        >
-          <div className="progress-circle"></div>
-        </div>
       </div>
+        <div className="controls">
+          <div className="ubiIzq">
+              <div className="tiempo-actual">
+                {tiempoActual}
+              </div>
+          </div>
+          <div className="ubiCenter">
+            <audio ref={audioRef} />
+            <button onClick={cancionAnterior} className="boton-control">
+              <FaBackward />
+            </button>
+            <button onClick={clicReproducirPause} className="boton-control">
+              {estaReproduciendo ? <FaPause /> : <FaPlay />}
+            </button>
+            <button onClick={sigCancion} className="boton-control">
+              <FaForward />
+            </button>  
+          </div>
+          <div className="ubiDer">
+              <div className="duracion-total">
+                {duracionTotal}
+              </div>
+          </div>
+          
+        </div>
+
+        <div className="progress-bar" onClick={actualizarProgreso} ref={progressIndicatorRef}>
+          <div className="progress-line" style={{ width: `${progreso}%` }}></div>
+          <div className="progress-indicator" style={{ left: `${progreso}%` }}>
+            <div className="progress-circle"></div>
+          </div>
+        </div>
       
       <div className = "contenedor">
         <button onClick={mutearDesmutear} className="boton-mute">
