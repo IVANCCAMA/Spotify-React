@@ -33,6 +33,7 @@ function ReproducirCancion () {
       cargarCancion(cancionBuscada)
        
       const audio = audioRef.current;
+      //agregado EdiTeo -- Para q' los estados de los icnos se cambien
       audio.play()
   
       const handleTimeUpdate = () => {
@@ -87,7 +88,7 @@ function ReproducirCancion () {
     
   }, [indiceCancionActual, listaCancionesReproduccion]);
   
-
+//Agredado por EdiTeo
   useEffect(() => {
     const audio = audioRef.current;
   
@@ -122,6 +123,7 @@ function ReproducirCancion () {
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
     };
+///
   }, [sigCancion]);
   
 
