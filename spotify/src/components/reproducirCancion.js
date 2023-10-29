@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import React, { useState, useRef, useContext, useEffect, useCallback} from "react";
 import { FaPlay, FaPause, FaForward, FaBackward, FaVolumeOff, FaVolumeUp } from 'react-icons/fa';
@@ -26,12 +27,12 @@ function ReproducirCancion () {
     if (cancionSeleccionada) {
       setCancionSelect(cancionSeleccionada);
       console.log(cancionSeleccionada)
-      const cancionBuscada = listaCancionesReproduccion .indexOf(cancionSeleccionada);
+      const cancionBuscada = listaCancionesReproduccion.indexOf(cancionSeleccionada);
       setIndiceCancionActual(cancionBuscada);
       // Actualización de los nombres
       // codigo remplazado por cargarCancion ya que tenemos el indice
       cargarCancion(cancionBuscada)
-       
+      
       const audio = audioRef.current;
       //agregado EdiTeo -- Para q' los estados de los icnos se cambien
       audio.play()
@@ -60,7 +61,7 @@ function ReproducirCancion () {
   /** 
    * Para Reproducción y pausar la canción
    * */ 
- 
+
   const clicReproducirPause = () => {
     if(audioRef.current && cancionSeleccionada) {
         const audio = audioRef.current;
@@ -168,7 +169,7 @@ function ReproducirCancion () {
     setVolumen(nuevoVolumen);
     const estaEnSilencio = audioRef.current.muted;
     if (estaEnSilencio){mutearDesmutear()}// fix SSDM - 362
-    if(nuevoVolumen==0){mutearDesmutear()}// fix SSDM - 360
+    if(nuevoVolumen===0){mutearDesmutear()}// fix SSDM - 360
     if (audioRef.current) {
       audioRef.current.volume = nuevoVolumen / 100;
     }
@@ -211,7 +212,7 @@ function ReproducirCancion () {
   /////
 
   const mutearDesmutear = () => {
-    if(audioRef.current.volume==0.0){audioRef.current.volume=0.5; setVolumen(50)}//fix SSDM - 357,
+    if(audioRef.current.volume===0.0){audioRef.current.volume=0.5; setVolumen(50)}//fix SSDM - 357,
     setMuted(!muted);  // Actualiza el estado de mute                    
     const estaEnSilencio = audioRef.current.muted;
     audioRef.current.muted = !estaEnSilencio; //cambio de mute a unmuted
