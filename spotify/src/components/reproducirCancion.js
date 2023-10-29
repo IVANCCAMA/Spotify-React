@@ -179,10 +179,12 @@ function ReproducirCancion () {
     const porcentaje = ((e.clientX - barraRect.left) / barraRect.width) * 100;
     setProgreso(porcentaje);
     const nuevaPosicion = (porcentaje / 100) * audio.duration;
+
     ///agregado samca
     const tiempoActual = secondsToString(Math.floor(nuevaPosicion));
     const duracionTotal = secondsToString(Math.floor(audio.duration));
     const tiempoFormateado = `${tiempoActual} / ${duracionTotal}`;
+
     document.getElementById('timer').innerText = tiempoFormateado;
     ///
     audio.currentTime = nuevaPosicion;
@@ -221,6 +223,11 @@ function ReproducirCancion () {
           <span className="nombre-artista">{nombreArtista}</span>
           - 
           <span className="nombre-musica">{nombreMusica}</span>
+          <span className="nombre-musica">
+            <div className="timer oculto" id="timer">
+                {tiempoActual} / {duracionTotal}
+            </div>
+          </span>
         </div>
       </div>
 
