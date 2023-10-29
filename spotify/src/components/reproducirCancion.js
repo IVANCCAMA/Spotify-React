@@ -201,7 +201,7 @@ function ReproducirCancion () {
         return `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
       }
     } else {
-      return '0:00'; // Manejo especial para NaN
+      return '00:00'; // Manejo especial para NaN
     }
   }
   /////
