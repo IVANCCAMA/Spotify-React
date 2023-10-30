@@ -4,16 +4,18 @@ import './inicioHome.css';
 import { Link } from "react-router-dom";
 function Inicio() {
   return (
-    <div>
+    // <div>
+    <>
       <header className="header">
         <Link  to="/registro" className='boton-registro'><strong>Regístrate</strong></Link>  
       </header>
       <div className="contenedor-imagen">
         <div className="logoInicio">
-            <img src={logo} alt="" width="400" />
+          <img src={logo} alt="" width="400" />
         </div>
       </div>
-    </div>
+    </>
+    // </div>
   );
 }
 
