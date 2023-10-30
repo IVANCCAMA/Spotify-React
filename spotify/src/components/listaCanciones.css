@@ -5,6 +5,13 @@
   --borde-album: 5px solid white;
 }
 
+.general-config {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .album-config{
   position: relative;
   display: flex;
@@ -103,8 +110,6 @@
 /* Estilos de canciones */
 .song-config {
   position: relative;
-  right: 175px;
-  bottom: 350px;
 }
 
 .song-list {
