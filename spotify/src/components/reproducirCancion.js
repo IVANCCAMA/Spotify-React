@@ -169,12 +169,16 @@ function ReproducirCancion () {
 
   const cambiarVolumen = (e) => {
     const nuevoVolumen = e.target.value;
-    setVolumen(nuevoVolumen);
-    const estaEnSilencio = audioRef.current.muted;
-    if (estaEnSilencio){mutearDesmutear()}// fix SSDM - 362
-    if(nuevoVolumen===0){mutearDesmutear()}// fix SSDM - 360
-    if (audioRef.current) {
-      audioRef.current.volume = nuevoVolumen / 100;
+     if (audioRef.current) {
+      const audio = audioRef.current;
+      audio.volume = nuevoVolumen / 100;
+      const estaEnSilencio = nuevoVolumen === "0";
+  
+      if (estaEnSilencio !== muted) {
+        setMuted(estaEnSilencio); // Actualiza el estado de mute
+        audio.muted = estaEnSilencio; // Cambia el estado de mute en el audio
+      }
+      setVolumen(nuevoVolumen);
     }
   };
 
