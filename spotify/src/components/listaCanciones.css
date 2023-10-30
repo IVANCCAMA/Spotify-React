@@ -33,9 +33,12 @@
 
 .album-details {
   position: relative;
-  top: 35px;
+  top: 32px;
 }
 
+.album-details > * {
+  margin-bottom: -8px;
+}
 .album-list {
   padding: 20px;
   border-radius: 10px;
@@ -90,7 +93,7 @@
   position: relative;
   left: 10px;
   bottom: 35px;
-  font-size: 50px;
+  font-size: 40px;
 }
 
 .artist-name,
