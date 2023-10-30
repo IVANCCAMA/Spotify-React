@@ -15,6 +15,7 @@
 .album-config{
   position: relative;
   display: flex;
+  margin: 40px;
 }
 
 .song-config {
