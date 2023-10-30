@@ -6,7 +6,7 @@ function Inicio() {
   return (
     <div>
       <header className="header">
-        <Link  to="/registro" className='boton-registro'>Regístrate</Link>  
+        <Link  to="/registro" className='boton-registro'><strong>Regístrate</strong></Link>  
       </header>
       <div className="contenedor-imagen">
         <div className="logoInicio">
