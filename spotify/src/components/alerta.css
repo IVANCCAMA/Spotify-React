@@ -1,11 +1,8 @@
 /* MODAL ALERTA */
 
 .modal-alerta {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: absolute;
+    top: 30%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,7 +12,7 @@
 
 .modal-alert-content {
     background-color: white;
-    width: 600px;
+    width: 420px;
     height: 200px;
     text-align: center;
     box-sizing: border-box; 
