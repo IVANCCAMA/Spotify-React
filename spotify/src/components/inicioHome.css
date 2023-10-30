@@ -12,8 +12,9 @@
 
 /* Estilos para el contenedor de la imagen */
 .contenedor-imagen {
+  position: relative;
     width: 100%; /* Asegúrate de que el contenedor ocupe todo el ancho disponible */
-    height: 90vh; /* Asegúrate de que el contenedor ocupe toda la altura visible de la ventana */
+    height: 100%; /* Asegúrate de que el contenedor ocupe toda la altura visible de la ventana */
     display: flex;
     justify-content: center; /* Centra horizontalmente */
     align-items: center; /* Centra verticalmente */
@@ -23,11 +24,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-.logoInicio img {
-  margin: 0 auto;
-  margin-left: 250px;
-  margin-bottom: 100px;
 }
 
 .boton-registro {

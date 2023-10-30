@@ -5,18 +5,13 @@
   --borde-album: 5px solid white;
 }
 
-/* Estilos generales */
-.general-config {
-  position: absolute;
-}
-
-/* Estilos de álbum */
-.album-config {
-  padding-top: 100px;
+.album-config{
   position: relative;
   display: flex;
-  right: 175px; 
-  bottom: 350px;
+}
+
+.song-config {
+  position: relative;
 }
 
 .album-info {
