@@ -15,6 +15,7 @@ function ReproducirCancion () {
   const [nombreArtista, setNombreArtista] = useState('Nombre artista');
   const [volumen, setVolumen] = useState(50);
   const [estaReproduciendo, setEstaReproduciendo] = useState(false); 
+  // eslint-disable-next-line no-unused-vars
   const [cancionSelect, setCancionSelect] = useState(null);
   const [progreso, setProgreso] = useState(0);
   const [dragging, setDragging] = useState(false);
@@ -33,6 +34,7 @@ function ReproducirCancion () {
       const cancionBuscada = listaCancionesReproduccion.indexOf(cancionSeleccionada);
       setIndiceCancionActual(cancionBuscada);
       cargarCancion(cancionBuscada)
+
       const audio = audioRef.current;
       //agregado EdiTeo -- Para q' los estados de los icnos se cambien
       audio.play();
