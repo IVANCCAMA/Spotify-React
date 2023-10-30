@@ -1,21 +1,13 @@
 /* MENU */
 .menu {
-  
-  height: 86.2%;
-  width: 250px;
-  position: fixed;
-  z-index: 1;
+  height: 100vh;
+  position: sticky;
   top: 0;
-  left: 0;
+  min-width: 250px;
+  z-index: 1;
   background-color: #006666;
   border: 5px solid #000000;
   overflow-y: auto;
-  margin: flex;
-}
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
 }
 
 .menu .profile .logo {

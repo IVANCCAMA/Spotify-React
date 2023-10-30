@@ -4,13 +4,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px;
-  height: 89px;
-  width: 100%;  /* Ajustado al 100% para cubrir todo el ancho de la pantalla */
-  position: fixed;  /* Hace que el reproductor se fije en la posición */
-  bottom: 0;  /* Alinea el reproductor al fondo de la página */
-  left: 0;  /* Alinea el reproductor a la izquierda de la página */
-  z-index: 1000;  /* Asegura que el reproductor esté encima de otros elementos */
+  /* padding: 5px; */
+  min-height: 90px;
+  width: 100%;
+  /* width: 100vh; */
+  position: sticky;
+  position: fixed;
+  bottom: 0;
+  z-index: 1000;
 }
 
 
@@ -65,9 +66,10 @@
   .contenedor {
     display: flex;
     padding: 15px;
-    position: fixed;
+    /* position: fixed; */
+    position: relative;
+    margin-left: auto;
     bottom: 0;
-    right: 0;
     padding-bottom: 45px;
     padding-right: 50px;
     

@@ -98,7 +98,6 @@ function ListaCanciones() {
         )}
       </div>
     </div>
-  <ReproducirCancion />
   </ListProvider>
   );
   

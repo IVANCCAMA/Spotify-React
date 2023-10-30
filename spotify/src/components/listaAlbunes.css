@@ -1,15 +1,17 @@
 
 .albumes-list {
-  padding: 40px;
+  /* padding: 30px; */
+  position: relative;
   border-radius: 10px;
   display: grid;
   grid-template-columns: repeat(3, minmax(320px, 1fr)); /* Ancho flexible */
-  gap: 1em;
-  max-width: 1000px;
-  margin: 0 0px 10px 100px;
+  gap: 2em;
+  /* max-width: 1000px; */
+  /* margin: 0 0px 10px 100px; */
   /* margin-top: 100%; */
-  grid-auto-rows: minmax(150px, 180px);
-  padding-bottom: 80px; 
+  grid-auto-rows: minmax(150px);
+  height: 100%;
+  width: 100%;
 }
 
 .albumes-details {
@@ -28,7 +30,7 @@
 
 .albumes-logo {
   display: block;
-  padding: 100px;
+  /* padding: 100px; */
 }
 
 .albumes-title {
@@ -79,7 +81,7 @@
 @media screen and (max-width: 1280px) {
   .albumes-list {
     grid-template-columns: repeat(2, 1fr); 
-    margin: 0 0 50px 200px;
+    /* margin: 0 0 50px 200px; */
     /* margin-top: 170%; */
   }
 }
@@ -87,7 +89,7 @@
 @media screen and (max-width: 1000px) {
   .albumes-list {
     grid-template-columns: repeat(1, 1fr);
-    margin: 0 0 50px 200px;
+    /* margin: 0 0 50px 200px; */
     
   }
 
@@ -96,7 +98,7 @@
 @media screen and (max-width: 768px) {
   .albumes-list {
     grid-template-columns: repeat(1, 1fr);
-    margin: 0 0 50px 0; 
+    /* margin: 0 0 50px 0;  */
      
 
   }

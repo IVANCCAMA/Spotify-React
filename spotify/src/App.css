@@ -7,3 +7,26 @@ body {
   min-height: 100vh;
 }
 
+.app-container {
+  height: 100%;
+  /* height: 100vh; */
+  /* max-height: 100vh; 
+  min-height: 100vh;  */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.container-super {
+  /* height: 100%;
+  width: 100%; */
+  flex: 1; /* Toma todo el espacio disponible en altura */
+  display: flex;;
+}
+
+.content {
+  height: 100%;
+  width: 100%;
+  padding: 50px;
+  padding-bottom: 130px;
+}

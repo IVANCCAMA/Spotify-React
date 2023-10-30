@@ -8,13 +8,8 @@
     display: flex;
     flex-direction: column; /* Cambiado a columna para colocar títulos encima de campos */
     align-items: center;
-    overflow: hidden;
-    margin-left: auto;
-    position: absolute;
-    left: 50%;
-    right: 50%;
-    translate: 77.5% -50%;
-    margin-right: 0;
+    position: relative;
+    margin: auto;
 }
 
 /* Contenedor del formulario */
