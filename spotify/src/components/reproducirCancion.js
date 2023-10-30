@@ -18,6 +18,9 @@ function ReproducirCancion () {
   // eslint-disable-next-line no-unused-vars
   const [cancionSelect, setCancionSelect] = useState(null);
   const [progreso, setProgreso] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
+  const [progressIndicatorStartX, setProgressIndicatorStartX] = useState(0);
   const [muted, setMuted] = useState(false);  // Mute - Unmuted
 //agregado samca83
   const [tiempoActual, setTiempoActual] = useState("0:00");
@@ -30,13 +33,11 @@ function ReproducirCancion () {
       console.log(cancionSeleccionada)
       const cancionBuscada = listaCancionesReproduccion.indexOf(cancionSeleccionada);
       setIndiceCancionActual(cancionBuscada);
-      // Actualización de los nombres
-      // codigo remplazado por cargarCancion ya que tenemos el indice
       cargarCancion(cancionBuscada)
-      
+
       const audio = audioRef.current;
       //agregado EdiTeo -- Para q' los estados de los icnos se cambien
-      audio.play()
+      audio.play();
   
       const handleTimeUpdate = () => {
         const porcentaje = (audio.currentTime / audio.duration) * 100;
@@ -62,7 +63,7 @@ function ReproducirCancion () {
   /** 
    * Para Reproducción y pausar la canción
    * */ 
- 
+
   const clicReproducirPause = () => {
     if(audioRef.current && cancionSeleccionada) {
         const audio = audioRef.current;
@@ -79,6 +80,7 @@ function ReproducirCancion () {
     }
   };
   const sigCancion = useCallback(() => {
+    
     let newIndex = (indiceCancionActual + 1) %listaCancionesReproduccion.length;
     if (!listaCancionesReproduccion[newIndex]) {
         console.error(`No se encontró una canción en el índice ${newIndex}`);
@@ -177,23 +179,54 @@ function ReproducirCancion () {
   };
 
   const actualizarProgreso = (e) => {
-    const barraProgreso = progressIndicatorRef.current;
-    const audio = audioRef.current;
-    const barraRect = barraProgreso.getBoundingClientRect();
-    const porcentaje = ((e.clientX - barraRect.left) / barraRect.width) * 100;
-    setProgreso(porcentaje);
-    const nuevaPosicion = (porcentaje / 100) * audio.duration;
+    if(estaReproduciendo){
+      const barraProgreso = progressIndicatorRef.current;
+      const audio = audioRef.current;
+      const barraRect = barraProgreso.getBoundingClientRect();
+      const porcentaje = ((e.clientX - barraRect.left) / barraRect.width) * 100;
+      setProgreso(porcentaje);
+      const nuevaPosicion = (porcentaje / 100) * audio.duration;
 
-    ///agregado samca
-    const tiempoActual = secondsToString(Math.floor(nuevaPosicion));
-    const duracionTotal = secondsToString(Math.floor(audio.duration));
-    const tiempoFormateado = `${tiempoActual} / ${duracionTotal}`;
+      ///agregado samca
+      const tiempoActual = secondsToString(Math.floor(nuevaPosicion));
+      const duracionTotal = secondsToString(Math.floor(audio.duration));
+      const tiempoFormateado = `${tiempoActual} / ${duracionTotal}`;
 
-    document.getElementById('timer').innerText = tiempoFormateado;
-    ///
-    audio.currentTime = nuevaPosicion;
-
+      document.getElementById('timer').innerText = tiempoFormateado;
+      ///
+      audio.currentTime = nuevaPosicion;
+    }
   };
+
+  const iniciarArrastre = (e) => {
+    if (estaReproduciendo) {
+      audioRef.current.pause();
+      setDragging(true);
+      setDragStartX(e.clientX);
+      setProgressIndicatorStartX(progressIndicatorRef.current.getBoundingClientRect().left);
+    }
+  };
+
+  const moverCirculo = (e) => {
+    if (dragging) {
+      const barraProgreso = progressIndicatorRef.current;
+      const barraRect = barraProgreso.getBoundingClientRect();
+      const porcentaje = ((e.clientX - progressIndicatorStartX) / barraRect.width) * 100;
+      setProgreso(porcentaje);
+    }
+  };
+
+  const finalizarArrastre = () => {
+    if (dragging) {
+      setDragging(false);
+      /* if (estaReproduciendo) { */
+        const nuevaPosicion = (progreso / 100) * audioRef.current.duration;
+        audioRef.current.currentTime = nuevaPosicion;
+        audioRef.current.play();
+      /* } */
+    }
+  };
+
   ///agregado samca83
   function secondsToString(seconds) {
     if (!isNaN(seconds)) {
@@ -219,8 +252,9 @@ function ReproducirCancion () {
     audioRef.current.muted = !estaEnSilencio; //cambio de mute a unmuted
   };
 
-   // <img src={portadaAlbum} alt="portada album" className="portada-album" /> */
-   return (
+  
+
+  return (
     <div className="reproductorMusica">
       <div className="info-cancion">
         <div className="detalles-musica">
@@ -264,7 +298,14 @@ function ReproducirCancion () {
           
         </div>
 
-        <div className="progress-bar" onClick={actualizarProgreso} ref={progressIndicatorRef}>
+        <div 
+        className="progress-bar" 
+        onClick={actualizarProgreso} /* 
+        onMouseDown={iniciarArrastre}
+        onMouseMove={moverCirculo}
+        onMouseUp={finalizarArrastre} */
+        ref={progressIndicatorRef}
+        >
           <div className="progress-line" style={{ width: `${progreso}%` }}></div>
           <div className="progress-indicator" style={{ left: `${progreso}%` }}>
             <div className="progress-circle"></div>
