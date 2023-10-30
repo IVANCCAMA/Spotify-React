@@ -10,7 +10,7 @@ function ReproducirCancion () {
   const [indiceCancionActual, setIndiceCancionActual] = useState(0);
   const audioRef = useRef();
   const progressIndicatorRef = useRef();
-  const [nombreMusica, setNombreMusica] = useState('Nombre musica');
+  const [nombreMusica, setNombreMusica] = useState('Nombre música');
   const [nombreArtista, setNombreArtista] = useState('Nombre artista');
   const [volumen, setVolumen] = useState(50);
   const [estaReproduciendo, setEstaReproduciendo] = useState(false); 
