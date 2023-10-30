@@ -43,15 +43,16 @@
     white-space: nowrap;
     line-height: 1.2;
     font-size: 20px;
+    font-weight: bold;
 }
 
   .controls {
     position: absolute;
-    left: 45%;
+    left: 42.5%;
     display: flex;
-    align-items: center; /* Asegúrate de que los controles estén alineados verticalmente */
-    justify-content: center; /* Centra los controles horizontalmente */
-    margin-top: -35px; /* Ajusta este valor según cuánto quieras mover los controles hacia arriba */
+    align-items: center;
+    justify-content: space-between; 
+    margin-top: -35px;
     padding-right: 0;
   }
   
@@ -103,17 +104,17 @@
   }
   
   .progress-bar {
-    
     width: 30%;
     background-color: #ffffff;
     height: 5px;
     position: absolute;
-    left: 35%;
+    left: 34.8%;
     margin: auto;
-    margin-top: 50px;
+    margin-top: 40px;
     /* z-index: -1; */
     cursor: pointer;
   }
+
   
   .progress-line {
     background-color: #fff;
@@ -147,3 +148,25 @@
     justify-content: center;
     /* Estilos específicos para centrar horizontalmente la barra de progreso */
   }
+
+  /* agregado por Samca83 */
+  .ubiIzq {
+    margin-left: -90px;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+
+  .ubiDer {
+    margin-left: 90px;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+
+  .ubiCenter {
+    margin-left: 90px;
+  }
+ 
+  .oculto {
+    display: none;
+  }
+  
