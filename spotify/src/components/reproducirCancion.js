@@ -201,13 +201,14 @@ function ReproducirCancion () {
       audio.currentTime = nuevaPosicion;
     }
   };
-
+  //////////////BARRA DE PROGRESO 
   const iniciarArrastre = (e) => {
     if (estaReproduciendo) {
       audioRef.current.pause();
       setDragging(true);
       setDragStartX(e.clientX);
       setProgressIndicatorStartX(progressIndicatorRef.current.getBoundingClientRect().left);
+      document.body.style.cursor = 'pointer';
     }
   };
 
@@ -220,16 +221,71 @@ function ReproducirCancion () {
     }
   };
 
-  const finalizarArrastre = () => {
+  const mantenerArrastreGlobal = (e) => {
     if (dragging) {
-      setDragging(false);
-      /* if (estaReproduciendo) { */
-        const nuevaPosicion = (progreso / 100) * audioRef.current.duration;
+      const barraProgreso = progressIndicatorRef.current;
+      const barraRect = barraProgreso.getBoundingClientRect();
+      const mouseX = e.clientX;
+      const barraLeft = barraRect.left;
+      const barraWidth = barraRect.width;
+  
+      if (mouseX >= barraLeft && mouseX <= barraLeft + barraWidth) {
+        const porcentaje = ((mouseX - barraLeft) / barraWidth) * 100;
+        setProgreso(porcentaje);
+        const nuevaPosicion = (porcentaje / 100) * audioRef.current.duration;
         audioRef.current.currentTime = nuevaPosicion;
-        audioRef.current.play();
-      /* } */
+  
+        const tiempoActual = secondsToString(Math.floor(nuevaPosicion));
+        const duracionTotal = secondsToString(Math.floor(audioRef.current.duration));
+        const tiempoFormateado = `${tiempoActual} / ${duracionTotal}`;
+        document.getElementById('timer').innerText = tiempoFormateado;
+      }
     }
   };
+  const finalizarArrastreGlobal = () => {
+    if (dragging) {
+      setDragging(false);
+      document.body.style.cursor = 'default'; // Cambiar el cursor de vuelta al predeterminado
+      const nuevaPosicion = (progreso / 100) * audioRef.current.duration;
+      audioRef.current.currentTime = nuevaPosicion;
+      audioRef.current.play(); // Continuar la reproducción
+    }
+  };
+  
+  // Agregar el event listener para el movimiento del mouse global
+  useEffect(() => {
+    document.addEventListener("mousemove", mantenerArrastreGlobal);
+  
+    return () => {
+      document.removeEventListener("mousemove", mantenerArrastreGlobal);
+    };
+  }, [dragging]);
+
+  useEffect(() => {
+    document.addEventListener("mousemove", mantenerArrastreGlobal);
+    document.addEventListener("mouseup", finalizarArrastreGlobal);
+  
+    return () => {
+      document.removeEventListener("mousemove", mantenerArrastreGlobal);
+      document.removeEventListener("mouseup", finalizarArrastreGlobal);
+    };
+  }, []);
+
+  useEffect(() => {
+    const mantenerArrastreGlobal = (e) => {
+      if (dragging) {
+        actualizarProgreso(e);
+      }
+    };
+
+    document.addEventListener("mousemove", mantenerArrastreGlobal);
+
+    return () => {
+      document.removeEventListener("mousemove", mantenerArrastreGlobal);
+    };
+  }, [dragging]);
+
+/////////////////////FINALIZA BARRA DE PROGRESO
 
   ///agregado samca83
   function secondsToString(seconds) {
@@ -304,10 +360,10 @@ function ReproducirCancion () {
 
         <div 
         className="progress-bar" 
-        onClick={actualizarProgreso} /* 
+        onClick={actualizarProgreso} 
         onMouseDown={iniciarArrastre}
         onMouseMove={moverCirculo}
-        onMouseUp={finalizarArrastre} */
+        onMouseUp={finalizarArrastreGlobal}
         ref={progressIndicatorRef}
         >
           <div className="progress-line" style={{ width: `${progreso}%` }}></div>
