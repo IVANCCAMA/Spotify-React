@@ -137,8 +137,8 @@
 
 .ventana-informacion {
     position: absolute;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
+    background-color: #ffffff;
+    border: 1px solid #ffffff;
     padding: 10px;
     top: 110%;
     width: 100%;
@@ -153,6 +153,15 @@
 
 .ventana-informacion p.active {
     color: #09AA1A;
+}
+
+.ojito {
+    position: absolute;
+    right: 15px;
+    bottom: 6px;
+    cursor: pointer;
+    font-size: 21px;
+    border: none;
 }
 
 /* Botones del formulario */

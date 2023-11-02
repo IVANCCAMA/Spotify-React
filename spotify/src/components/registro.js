@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { Link } from "react-router-dom";
 import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import { alfanumerico, verificarString } from './form.js';
@@ -10,10 +11,6 @@ import bcrypt from 'bcryptjs';
 function Registro() {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const userTypes = ['Distribuidora musical', 'Oyente'];
-  const [botonHabilitado, setBotonHabilitado] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [redirectTo, setRedirectTo] = useState(null);
   const requirements = [
     { validOption: "longitudMin", p: "La contraseña debe tener al menos 8 caracteres" },
     { validOption: "mayusculas", p: "La contraseña debe tener al menos una letra mayúscula" },
@@ -21,6 +18,13 @@ function Registro() {
     { validOption: "numeros", p: "La contraseña debe tener al menos un número" },
     { validOption: "specialChars", p: "La contraseña debe tener al menos un carácter especial" }
   ];
+
+  const [botonHabilitado, setBotonHabilitado] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [redirectTo, setRedirectTo] = useState(null);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [passwordConfirmVisible, setPasswordConfirmVisible] = useState(false);
 
   function handleCloseAndRedirect() {
     setIsModalOpen(false);
@@ -231,7 +235,7 @@ function Registro() {
               <label htmlFor="password">Contraseña *</label>
               <input required
                 autoComplete="new-password"
-                type="password"
+                type={passwordVisible ? "text" : "password"}
                 className="validar"
                 id="password"
                 name="password"
@@ -245,6 +249,13 @@ function Registro() {
                   <p id={`requerimiento-${req.validOption}`} key={req.validOption}>{req.p}</p>
                 ))}
               </div>
+              <button
+                type='button'
+                className='ojito'
+                onClick={() => { setPasswordVisible(!passwordVisible); }}
+              >
+                {passwordVisible ? (<VscEyeClosed />) : (<VscEye />)}
+              </button>
             </div>
           </div>
 
@@ -253,19 +264,23 @@ function Registro() {
               <label htmlFor="passwordConfirm">Confirmar contraseña *</label>
               <input required
                 autoComplete="new-password"
-                type="password"
+                type={passwordConfirmVisible ? "text" : "password"}
                 className="validar"
                 id="passwordConfirm"
                 name="passwordConfirm"
                 placeholder="Confirme su contraseña"
                 onChange={(e) => {
-                  if (e.target.value === document.getElementById('password').value) {
-                    e.target.classList.remove('active');
-                  } else {
-                    e.target.classList.add('active');
-                  }
+                  const passwordInput = document.getElementById('password');
+                  e.target.classList.toggle('active', e.target.value !== passwordInput.value);
                 }}
               />
+              <button
+                type='button'
+                className='ojito'
+                onClick={() => { setPasswordConfirmVisible(!passwordConfirmVisible); }}
+              >
+                {passwordConfirmVisible ? (<VscEyeClosed />) : (<VscEye />)}
+              </button>
             </div>
           </div>
 
