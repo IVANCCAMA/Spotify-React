@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router-dom";
 import './listaCanciones.css';
-import songLogo from '../logos/play-logo.png';
+import songLogo from '../logos/play-logo.ico';
 import axios from "axios";
 import ReproducirCancion from './reproducirCancion';
 import { ListProvider, useListContext } from './ListContext';
