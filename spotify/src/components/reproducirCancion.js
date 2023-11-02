@@ -80,17 +80,21 @@ function ReproducirCancion () {
     }
   };
   const sigCancion = useCallback(() => {
-    
-    let newIndex = (indiceCancionActual + 1) %listaCancionesReproduccion.length;
-    if (!listaCancionesReproduccion[newIndex]) {
+    if (audioRef.current) {
+      const audio= audioRef.current;
+      audio.pause(); // Pausa la canción actual antes de cambiar
+  
+      let newIndex = (indiceCancionActual + 1) % listaCancionesReproduccion.length;
+      if (!listaCancionesReproduccion[newIndex]) {
         console.error(`No se encontró una canción en el índice ${newIndex}`);
         return;
+      }
+  
+      setIndiceCancionActual(newIndex);
+      cargarCancion(newIndex);
     }
-    
-    setIndiceCancionActual(newIndex);
-    cargarCancion(newIndex);
-    
   }, [indiceCancionActual, listaCancionesReproduccion]);
+  
   
 //Agredado por EdiTeo
   useEffect(() => {
@@ -130,31 +134,43 @@ function ReproducirCancion () {
 ///
   }, [sigCancion]);
   
-
   const cargarCancion = (indice) => {
-    
-      const cancion = listaCancionesReproduccion[indice];
-      if (!cancion) {
-          console.error(`No se encontró una canción en el índice ${indice}`);
-          return;
-      }
-      
-      setNombreMusica(cancion.nombre_cancion || "Nombre desconocido");
-      setNombreArtista(cancion.nombre_usuario || "Artista desconocido");
-
-      if (audioRef.current) {
-        const audio = audioRef.current;
-        audio.src = cancion.path_cancion;
-        audio.load(); // Carga la nueva canción
-        audio.play();
-        if (!estaReproduciendo) {
-          //fix samuel cambio a valor para reproducir parece que cambia si es sig desde reproducir o desde la pagina
-          console.log("llege?");
+    const cancion = listaCancionesReproduccion[indice];
+    if (!cancion) {
+      console.error(`No se encontró una canción en el índice ${indice}`);
+      return;
+    }
+  
+    setNombreMusica(cancion.nombre_cancion || "Nombre desconocido");
+    setNombreArtista(cancion.nombre_usuario || "Artista desconocido");
+  
+    if (audioRef.current) {
+      const audio = audioRef.current;
+  
+      // Pausa la reproducción actual
+      audio.pause();
+  
+      // Detiene la reproducción actual y carga la nueva canción
+      audio.src = cancion.path_cancion;
+  
+      // Agregar un controlador de eventos para 'loadeddata'
+      audio.addEventListener('loadeddata', () => {
+        // La canción se ha cargado correctamente
+        // Reproduce la canción si estaba reproduciéndose
+        if (estaReproduciendo) {
           audio.play();
-          
         }
-      }
-    };
+      });
+  
+      // Reiniciar el tiempo actual del audio (opcional)
+      audio.currentTime = 0;
+  
+      // Cargar la nueva canción
+      audio.load();
+    }
+  };
+  
+  
 
     const cancionAnterior = useCallback(() => {
       if (indiceCancionActual !== null) {
@@ -181,26 +197,55 @@ function ReproducirCancion () {
       setVolumen(nuevoVolumen);
     }
   };
+  const audio = audioRef.current;
 
-  const actualizarProgreso = (e) => {
-    if(estaReproduciendo){
+  /* audio.addEventListener('ended', function() {
+    // La canción actual ha terminado, así que cambia a la siguiente canción
+    sigCancion();
+  }); */
+  
+
+  function actualizarProgreso(e) {
+    if (estaReproduciendo) {
       const barraProgreso = progressIndicatorRef.current;
       const audio = audioRef.current;
       const barraRect = barraProgreso.getBoundingClientRect();
       const porcentaje = ((e.clientX - barraRect.left) / barraRect.width) * 100;
-      setProgreso(porcentaje);
+  
       const nuevaPosicion = (porcentaje / 100) * audio.duration;
-
-      ///agregado samca
-      const tiempoActual = secondsToString(Math.floor(nuevaPosicion));
-      const duracionTotal = secondsToString(Math.floor(audio.duration));
-      const tiempoFormateado = `${tiempoActual} / ${duracionTotal}`;
-
-      document.getElementById('timer').innerText = tiempoFormateado;
-      ///
-      audio.currentTime = nuevaPosicion;
+      const tiempoActual = Math.max(0, Math.min(audio.duration, nuevaPosicion));
+  
+      // Actualiza la barra de progreso
+      setProgreso((tiempoActual / audio.duration) * 100);
+  
+      // Actualiza el tiempo actual del reproductor de audio
+      if (!isNaN(nuevaPosicion) && isFinite(nuevaPosicion)) {
+        // Pausa la reproducción antes de cambiar el tiempo
+        audio.pause();
+        audio.currentTime = tiempoActual;
+        // Comprueba si estaba pausado antes del cambio
+        const estabaPausado = audio.paused;
+        if (!estabaPausado) {
+          // Solo reanuda la reproducción si no estaba pausado
+          audio.play();
+        }
+  
+        // Formatea y muestra el tiempo en el reproductor
+        const tiempoActualFormateado = secondsToString(Math.floor(tiempoActual));
+        const duracionTotal = secondsToString(Math.floor(audio.duration));
+        const tiempoFormateado = `${tiempoActualFormateado} / ${duracionTotal}`;
+        document.getElementById('timer').innerText = tiempoFormateado;
+  
+        // Escucha el evento 'ended' para cambiar de canción cuando corresponda
+        audio.addEventListener('ended', function() {
+          // La canción actual ha terminado, así que cambia a la siguiente canción
+          sigCancion();
+        });
+      }
     }
-  };
+  }
+  
+  
   //////////////BARRA DE PROGRESO 
   const iniciarArrastre = (e) => {
     if (estaReproduciendo) {
