@@ -8,7 +8,7 @@ import { ListContext } from "./ListContext";
 function ReproducirCancion () {
 
   const { listaCancionesReproduccion, cancionSeleccionada } = useContext(ListContext);
-  const [indiceCancionActual, setIndiceCancionActual] = useState(0);
+  const [indiceCancionActual, setIndiceCancionActual] = useState(null);// fix SSMD428-429 mejor que ya no puedan reproducir sin selecionar cancion
   const audioRef = useRef();
   const progressIndicatorRef = useRef();
   const [nombreMusica, setNombreMusica] = useState('Nombre música');
@@ -81,14 +81,17 @@ function ReproducirCancion () {
   };
   const sigCancion = useCallback(() => {
     
-    let newIndex = (indiceCancionActual + 1) %listaCancionesReproduccion.length;
-    if (!listaCancionesReproduccion[newIndex]) {
-        console.error(`No se encontró una canción en el índice ${newIndex}`);
-        return;
-    }
     
-    setIndiceCancionActual(newIndex);
-    cargarCancion(newIndex);
+    if(indiceCancionActual!=null){
+      let newIndex = (indiceCancionActual + 1) %listaCancionesReproduccion.length;
+      if (!listaCancionesReproduccion[newIndex]) {
+          console.error(`No se encontró una canción en el índice ${newIndex}`);
+          return;
+      }
+      
+      setIndiceCancionActual(newIndex);
+      cargarCancion(newIndex);
+    }
     
   }, [indiceCancionActual, listaCancionesReproduccion]);
   
