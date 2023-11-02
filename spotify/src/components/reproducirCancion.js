@@ -248,13 +248,26 @@ function ReproducirCancion () {
     }
   }
   /////
+ 
 
   const mutearDesmutear = () => {
-    if(audioRef.current.volume===0.0){audioRef.current.volume=0.5; setVolumen(50)}//fix SSDM - 357,
-    setMuted(!muted);  // Actualiza el estado de mute                    
-    const estaEnSilencio = audioRef.current.muted;
-    audioRef.current.muted = !estaEnSilencio; //cambio de mute a unmuted
+    if (audioRef.current) {
+      const audio = audioRef.current;
+      const estaEnSilencio = !audio.muted;
+  
+      if (estaEnSilencio) {
+        audio.volume = 0; // Establecer el volumen en 0 si está en silencio
+        setVolumen(0); // Actualizar el estado de volumen a 0
+      } else {
+        audio.volume = 0.5; // Establecer el volumen en 0.5 (50%) si no está en silencio
+        setVolumen(50); // Actualizar el estado de volumen a 50
+      }
+  
+      setMuted(estaEnSilencio); // Actualiza el estado de mute
+      audio.muted = estaEnSilencio; // Cambia el estado de mute en el audio
+    }
   };
+  
 
   
 
