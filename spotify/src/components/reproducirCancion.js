@@ -82,7 +82,7 @@ function ReproducirCancion () {
   const sigCancion = useCallback(() => {
     
     
-    if(indiceCancionActual!=null){
+    if(indiceCancionActual!=null){ //fix SSDM 429 
       let newIndex = (indiceCancionActual + 1) %listaCancionesReproduccion.length;
       if (!listaCancionesReproduccion[newIndex]) {
           console.error(`No se encontró una canción en el índice ${newIndex}`);
