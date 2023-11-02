@@ -1,6 +1,6 @@
 export const OPTIONS = {
-  default: /^[a-zA-Z0-9\s]+$/,
-  alfanumerico: /[a-zA-Z0-9]+/,
+  default: /^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+$/,
+  alfanumerico: /[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+/,
   acentos: /[áéíóúÁÉÍÓÚ]+/,
   letras: /[a-zA-Z]+/,
   numeros: /[0-9]+/,
