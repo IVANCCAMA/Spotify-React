@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { Link } from "react-router-dom";
 import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import { alfanumerico, verificarString } from './form.js';
@@ -10,10 +11,20 @@ import bcrypt from 'bcryptjs';
 function Registro() {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const userTypes = ['Distribuidora musical', 'Oyente'];
+  const requirements = [
+    { validOption: "longitudMin", p: "La contraseña debe tener al menos 8 caracteres" },
+    { validOption: "mayusculas", p: "La contraseña debe tener al menos una letra mayúscula" },
+    { validOption: "minusculas", p: "La contraseña debe tener al menos una letra minúscula" },
+    { validOption: "numeros", p: "La contraseña debe tener al menos un número" },
+    { validOption: "specialChars", p: "La contraseña debe tener al menos un carácter especial" }
+  ];
+
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [redirectTo, setRedirectTo] = useState(null);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [passwordConfirmVisible, setPasswordConfirmVisible] = useState(false);
 
   function handleCloseAndRedirect() {
     setIsModalOpen(false);
@@ -45,11 +56,11 @@ function Registro() {
       document.getElementById('username').classList.add('active');
       return null;
     }
-    if (campos.password.length > 20 || campos.password.length < 8) {
+    if (campos.password.length < 8) {
       document.getElementById('password').classList.add('active');
       return null;
     }
-    if (campos.passwordConfirm.length > 20 || campos.passwordConfirm.length < 8) {
+    if (campos.passwordConfirm.length < 8) {
       document.getElementById('passwordConfirm').classList.add('active');
       return null;
     }
@@ -67,12 +78,13 @@ function Registro() {
     }
 
     // passwprd
-    if (!(verificarString(campos.password, "", "mayusculas minusculas specialChars numeros")
-    && !(verificarString(campos.password, "", "acentos") || verificarString(campos.password, "", "espacio")))) {
-      document.getElementById('password').classList.add('active');
-      setModalMessage(`La contraseña no cumple con las especificaciones`);
-      await setIsModalOpen(true);
-      return null;
+    for (const req of requirements) {
+      if (!verificarString(campos.password, "", req.validOption)) {
+        document.getElementById('password').classList.add('active');
+        setModalMessage(`La contraseña no cumple con las especificaciones`);
+        await setIsModalOpen(true);
+        return null;
+      }
     }
 
     // passwordConfirm
@@ -186,18 +198,16 @@ function Registro() {
 
   const handlePassword = (e) => {
     const password = e.target.value;
-    if (password.length < 1) {
-      e.target.classList.remove('active');
-    } else if (password.length < 8) {
-      e.target.classList.add('active');
-    } else {
-      if (verificarString(password, "", "mayusculas minusculas specialChars numeros")
-      && !(verificarString(password, "", "acentos") || verificarString(password, "", "espacio"))) {
-        e.target.classList.remove('active');
-      } else {
-        e.target.classList.add('active');
-      }
-    }
+    const hasInput = password.length > 0;
+
+    requirements.forEach(req => {
+      const element = document.getElementById(`requerimiento-${req.validOption}`);
+      const isValid = hasInput && verificarString(password, "", req.validOption);
+
+      element.classList.toggle('active', isValid);
+    });
+
+    e.target.classList.toggle('active', hasInput && !requirements.every(req => verificarString(password, "", req.validOption)));
   }
 
   return (
@@ -225,14 +235,27 @@ function Registro() {
               <label htmlFor="password">Contraseña *</label>
               <input required
                 autoComplete="new-password"
-                type="password"
+                type={passwordVisible ? "text" : "password"}
                 className="validar"
                 id="password"
                 name="password"
                 placeholder="Escriba su contraseña"
-                title='Mínimo 8 caracteres, entre ellos mayusculas, minusculas, números y caracteres especiales. Sin acentos ni espacios.'
                 onChange={handlePassword}
+                onFocus={(e) => { e.target.nextElementSibling.style.display = 'block'; }}
+                onBlur={(e) => { e.target.nextElementSibling.style.display = 'none'; }}
               />
+              <div className="ventana-informacion">
+                {requirements.map((req) => (
+                  <p id={`requerimiento-${req.validOption}`} key={req.validOption}>{req.p}</p>
+                ))}
+              </div>
+              <button
+                type='button'
+                className='ojito'
+                onClick={() => { setPasswordVisible(!passwordVisible); }}
+              >
+                {passwordVisible ? (<VscEyeClosed />) : (<VscEye />)}
+              </button>
             </div>
           </div>
 
@@ -241,19 +264,23 @@ function Registro() {
               <label htmlFor="passwordConfirm">Confirmar contraseña *</label>
               <input required
                 autoComplete="new-password"
-                type="password"
+                type={passwordConfirmVisible ? "text" : "password"}
                 className="validar"
                 id="passwordConfirm"
                 name="passwordConfirm"
                 placeholder="Confirme su contraseña"
                 onChange={(e) => {
-                  if (e.target.value === document.getElementById('password').value) {
-                    e.target.classList.remove('active');
-                  } else {
-                    e.target.classList.add('active');
-                  }
+                  const passwordInput = document.getElementById('password');
+                  e.target.classList.toggle('active', e.target.value !== passwordInput.value);
                 }}
               />
+              <button
+                type='button'
+                className='ojito'
+                onClick={() => { setPasswordConfirmVisible(!passwordConfirmVisible); }}
+              >
+                {passwordConfirmVisible ? (<VscEyeClosed />) : (<VscEye />)}
+              </button>
             </div>
           </div>
 
