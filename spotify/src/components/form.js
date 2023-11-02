@@ -1,5 +1,5 @@
 export const OPTIONS = {
-  default: /^[a-zA-Z0-9]+$/,
+  default: /^[a-zA-Z0-9\s]+$/,
   alfanumerico: /[a-zA-Z0-9]+/,
   acentos: /[áéíóúÁÉÍÓÚ]+/,
   letras: /[a-zA-Z]+/,
@@ -9,7 +9,8 @@ export const OPTIONS = {
   empiezaMinusculas: /^[a-z]+/,
   empiezaMayusculas: /^[A-Z]+/,
   espacio: /\s/,
-  specialChars: /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\\¿¡/·¬çªº]+/,
+  longitudMin: /^.{8,}$/,
+  specialChars: /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\\¿¡/·¬çªº´¨]+/,
   agrupacion: /[(){}\[\]]+/,
   matematicas: /[+*/-=]+/,
   comillas: /['"`]+/,
@@ -72,7 +73,6 @@ export function verificarString(str, charsToOmit = "", validOption = "default") 
     const regex = OPTIONS[opt];
     if (regex) {
       if (!regex.test(cleanStr)) {  
-        console.log(`<${opt}>`);
         return false;
       }
     }
