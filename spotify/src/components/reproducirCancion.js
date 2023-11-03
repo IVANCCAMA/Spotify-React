@@ -297,13 +297,13 @@ function ReproducirCancion () {
           </div>
           <div className="ubiCenter">
             <audio ref={audioRef} />
-            <button onClick={cancionAnterior} className="boton-control">
+            <button onClick={cancionAnterior} className="boton-anterior">
               <FaBackward />
             </button>
             <button onClick={clicReproducirPause} className="boton-control">
               {estaReproduciendo ? <FaPause /> : <FaPlay />}
             </button>
-            <button onClick={sigCancion} className="boton-control">
+            <button onClick={sigCancion} className="boton-siguiente">
               <FaForward />
             </button>  
           </div>
