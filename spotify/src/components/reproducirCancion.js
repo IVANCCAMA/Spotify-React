@@ -181,10 +181,18 @@ function ReproducirCancion () {
         console.log("porque no llega a reproducir anterior", newIndex)
         cargarCancion(newIndex);
       }
-      
+    
       
   }, [indiceCancionActual, listaCancionesReproduccion]);
-
+  const inicioCancion=useCallback(()=>{ 
+    //metodo creado por samuel
+    //vuelve a crear a cargar la cancion para que este pueda seguir desde el inicio
+    if (indiceCancionActual !== null) {
+      let newIndex = indiceCancionActual
+      setIndiceCancionActual(newIndex);
+      cargarCancion(newIndex);
+    }
+  }, [indiceCancionActual, listaCancionesReproduccion]);
   const cambiarVolumen = (e) => {
     const nuevoVolumen = e.target.value;
      if (audioRef.current) {
@@ -400,7 +408,10 @@ function ReproducirCancion () {
           </div>
           <div className="ubiCenter">
             <audio ref={audioRef} />
-            <button onClick={cancionAnterior} className="boton-anterior">
+
+            <button onDoubleClick={cancionAnterior} onClick={inicioCancion} className="boton-control">
+             
+
               <FaBackward />
             </button>
             <button onClick={clicReproducirPause} className="boton-control">
