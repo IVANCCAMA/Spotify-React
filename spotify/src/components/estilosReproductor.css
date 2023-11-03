@@ -23,6 +23,7 @@
     margin: 0;
     border: none;
     padding: 0;
+    
   }
   /*
   .portada-album {
@@ -56,12 +57,28 @@
     padding-right: 0;
   }
   
-  .boton-control {
+ 
+  .boton-control, .boton-siguiente, .boton-anterior {
+    font-size: 23px;  
+    padding: 8px;  
+    border: none;  
+    cursor: pointer; 
     background: none;
-    border: none;
     color: #fff;
     margin:  10px;
     cursor: pointer;
+    margin-top: 29px;
+    margin-left: 2px;
+    
+  }
+  .boton-control{
+    margin-left: 2px;
+  }
+   .boton-anterior {
+    margin-left: 33px;
+  }
+  .boton-siguiente{
+    margin-left:-8px;
   }
   
   .contenedor {
@@ -80,10 +97,12 @@
     border: none;
     margin-left: 20px;
     cursor: pointer;
+     
   }
 
   .volumen {
-    margin-right: 20px;    
+    margin-right: 20px;  
+     
   }
   
   .volumen-slider {
@@ -103,17 +122,19 @@
   }
   
   .progress-bar {
-    width: 30%;
+    width: 34.85%;
     background-color: #ffffff;
     height: 5px;
     position: absolute;
-    left: 34.8%;
+    left: 35.9%;
     margin: auto;
     margin-top: 40px;
     /* z-index: -1; */
     cursor: pointer;
   }
-
+  .duracion-total{
+    margin-left: 34px;
+  }
   
   .progress-line {
     background-color: #fff;
@@ -163,6 +184,7 @@
 
   .ubiCenter {
     margin-left: 90px;
+    
   }
  
   .oculto {

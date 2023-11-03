@@ -271,6 +271,11 @@ function AñadirCancion() {
 
   const handle = (e) => {
     let newValue = eliminarEspacios(e.target.value);
+    if (alfanumerico(newValue)) {
+      e.target.classList.remove('active');
+    } else {
+      e.target.classList.add('active');
+    }
     if (newValue.length > 20) {
       newValue = newValue.slice(0, 20);
     }
@@ -324,7 +329,7 @@ function AñadirCancion() {
           </div>
 
           <div className="campo">
-            <div className="input-boxx">
+            <div className="input-box">
               <label className="elemento" htmlFor="genero">Género musical *</label>
               <select name="genero" id='genero' defaultValue={'default'} required>
                 <option disabled hidden value='default'>Seleccionar género</option>

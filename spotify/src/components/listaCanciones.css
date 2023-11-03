@@ -125,12 +125,12 @@
   white-space: nowrap;
   margin-top: 5px;
   margin-bottom: 5px;
-  cursor: pointer;
+  cursor: default;
   transition: color 2s;
   justify-content: space-between; 
 }
 
-.song-container:hover div {   
+.play-logo:hover {   
   color: var(--color-texto-principal);
   cursor: pointer;
   background-color: #008080;
@@ -148,6 +148,7 @@
   margin-right: 10px;
   position: absolute;
   left: 579px;
+  border-radius:50%;
 }
 
 .duracion-logo {
