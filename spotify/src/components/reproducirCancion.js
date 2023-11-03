@@ -8,7 +8,7 @@ import { ListContext } from "./ListContext";
 function ReproducirCancion () {
 
   const { listaCancionesReproduccion, cancionSeleccionada } = useContext(ListContext);
-  const [indiceCancionActual, setIndiceCancionActual] = useState(0);
+  const [indiceCancionActual, setIndiceCancionActual] = useState(null);// fix SSMD428-429 mejor que ya no puedan reproducir sin selecionar cancion
   const audioRef = useRef();
   const progressIndicatorRef = useRef();
   const [nombreMusica, setNombreMusica] = useState('Nombre música');
@@ -80,17 +80,23 @@ function ReproducirCancion () {
     }
   };
   const sigCancion = useCallback(() => {
+
     
-    let newIndex = (indiceCancionActual + 1) %listaCancionesReproduccion.length;
-    if (!listaCancionesReproduccion[newIndex]) {
-        console.error(`No se encontró una canción en el índice ${newIndex}`);
-        return;
+    
+    if(indiceCancionActual!=null){ //fix SSDM 429 
+      let newIndex = (indiceCancionActual + 1) %listaCancionesReproduccion.length;
+      if (!listaCancionesReproduccion[newIndex]) {
+          console.error(`No se encontró una canción en el índice ${newIndex}`);
+          return;
+      }
+      
+      setIndiceCancionActual(newIndex);
+      cargarCancion(newIndex);
     }
     
-    setIndiceCancionActual(newIndex);
-    cargarCancion(newIndex);
-    
+
   }, [indiceCancionActual, listaCancionesReproduccion]);
+  
   
 //Agredado por EdiTeo
   useEffect(() => {
@@ -130,31 +136,43 @@ function ReproducirCancion () {
 ///
   }, [sigCancion]);
   
-
   const cargarCancion = (indice) => {
-    
-      const cancion = listaCancionesReproduccion[indice];
-      if (!cancion) {
-          console.error(`No se encontró una canción en el índice ${indice}`);
-          return;
-      }
-      
-      setNombreMusica(cancion.nombre_cancion || "Nombre desconocido");
-      setNombreArtista(cancion.nombre_usuario || "Artista desconocido");
-
-      if (audioRef.current) {
-        const audio = audioRef.current;
-        audio.src = cancion.path_cancion;
-        audio.load(); // Carga la nueva canción
-        audio.play();
-        if (!estaReproduciendo) {
-          //fix samuel cambio a valor para reproducir parece que cambia si es sig desde reproducir o desde la pagina
-          console.log("llege?");
+    const cancion = listaCancionesReproduccion[indice];
+    if (!cancion) {
+      console.error(`No se encontró una canción en el índice ${indice}`);
+      return;
+    }
+  
+    setNombreMusica(cancion.nombre_cancion || "Nombre desconocido");
+    setNombreArtista(cancion.nombre_usuario || "Artista desconocido");
+  
+    if (audioRef.current) {
+      const audio = audioRef.current;
+  
+      // Pausa la reproducción actual
+      audio.pause();
+  
+      // Detiene la reproducción actual y carga la nueva canción
+      audio.src = cancion.path_cancion;
+  
+      // Agregar un controlador de eventos para 'loadeddata'
+      audio.addEventListener('loadeddata', () => {
+        // La canción se ha cargado correctamente
+        // Reproduce la canción si estaba reproduciéndose
+        if (estaReproduciendo) {
           audio.play();
-          
         }
-      }
-    };
+      });
+  
+      // Reiniciar el tiempo actual del audio (opcional)
+      audio.currentTime = 0;
+  
+      // Cargar la nueva canción
+      audio.load();
+    }
+  };
+  
+  
 
     const cancionAnterior = useCallback(() => {
       if (indiceCancionActual !== null) {
@@ -189,33 +207,63 @@ function ReproducirCancion () {
       setVolumen(nuevoVolumen);
     }
   };
+  const audio = audioRef.current;
 
-  const actualizarProgreso = (e) => {
-    if(estaReproduciendo){
+  /* audio.addEventListener('ended', function() {
+    // La canción actual ha terminado, así que cambia a la siguiente canción
+    sigCancion();
+  }); */
+  
+
+  function actualizarProgreso(e) {
+    if (estaReproduciendo) {
       const barraProgreso = progressIndicatorRef.current;
       const audio = audioRef.current;
       const barraRect = barraProgreso.getBoundingClientRect();
       const porcentaje = ((e.clientX - barraRect.left) / barraRect.width) * 100;
-      setProgreso(porcentaje);
+  
       const nuevaPosicion = (porcentaje / 100) * audio.duration;
-
-      ///agregado samca
-      const tiempoActual = secondsToString(Math.floor(nuevaPosicion));
-      const duracionTotal = secondsToString(Math.floor(audio.duration));
-      const tiempoFormateado = `${tiempoActual} / ${duracionTotal}`;
-
-      document.getElementById('timer').innerText = tiempoFormateado;
-      ///
-      audio.currentTime = nuevaPosicion;
+      const tiempoActual = Math.max(0, Math.min(audio.duration, nuevaPosicion));
+  
+      // Actualiza la barra de progreso
+      setProgreso((tiempoActual / audio.duration) * 100);
+  
+      // Actualiza el tiempo actual del reproductor de audio
+      if (!isNaN(nuevaPosicion) && isFinite(nuevaPosicion)) {
+        // Pausa la reproducción antes de cambiar el tiempo
+        audio.pause();
+        audio.currentTime = tiempoActual;
+        // Comprueba si estaba pausado antes del cambio
+        const estabaPausado = audio.paused;
+        if (!estabaPausado) {
+          // Solo reanuda la reproducción si no estaba pausado
+          audio.play();
+        }
+  
+        // Formatea y muestra el tiempo en el reproductor
+        const tiempoActualFormateado = secondsToString(Math.floor(tiempoActual));
+        const duracionTotal = secondsToString(Math.floor(audio.duration));
+        const tiempoFormateado = `${tiempoActualFormateado} / ${duracionTotal}`;
+        document.getElementById('timer').innerText = tiempoFormateado;
+  
+        // Escucha el evento 'ended' para cambiar de canción cuando corresponda
+        audio.addEventListener('ended', function() {
+          // La canción actual ha terminado, así que cambia a la siguiente canción
+          sigCancion();
+        });
+      }
     }
-  };
-
+  }
+  
+  
+  //////////////BARRA DE PROGRESO 
   const iniciarArrastre = (e) => {
     if (estaReproduciendo) {
       audioRef.current.pause();
       setDragging(true);
       setDragStartX(e.clientX);
       setProgressIndicatorStartX(progressIndicatorRef.current.getBoundingClientRect().left);
+      document.body.style.cursor = 'pointer';
     }
   };
 
@@ -228,16 +276,71 @@ function ReproducirCancion () {
     }
   };
 
-  const finalizarArrastre = () => {
+  const mantenerArrastreGlobal = (e) => {
     if (dragging) {
-      setDragging(false);
-      /* if (estaReproduciendo) { */
-        const nuevaPosicion = (progreso / 100) * audioRef.current.duration;
+      const barraProgreso = progressIndicatorRef.current;
+      const barraRect = barraProgreso.getBoundingClientRect();
+      const mouseX = e.clientX;
+      const barraLeft = barraRect.left;
+      const barraWidth = barraRect.width;
+  
+      if (mouseX >= barraLeft && mouseX <= barraLeft + barraWidth) {
+        const porcentaje = ((mouseX - barraLeft) / barraWidth) * 100;
+        setProgreso(porcentaje);
+        const nuevaPosicion = (porcentaje / 100) * audioRef.current.duration;
         audioRef.current.currentTime = nuevaPosicion;
-        audioRef.current.play();
-      /* } */
+  
+        const tiempoActual = secondsToString(Math.floor(nuevaPosicion));
+        const duracionTotal = secondsToString(Math.floor(audioRef.current.duration));
+        const tiempoFormateado = `${tiempoActual} / ${duracionTotal}`;
+        document.getElementById('timer').innerText = tiempoFormateado;
+      }
     }
   };
+  const finalizarArrastreGlobal = () => {
+    if (dragging) {
+      setDragging(false);
+      document.body.style.cursor = 'default'; // Cambiar el cursor de vuelta al predeterminado
+      const nuevaPosicion = (progreso / 100) * audioRef.current.duration;
+      audioRef.current.currentTime = nuevaPosicion;
+      audioRef.current.play(); // Continuar la reproducción
+    }
+  };
+  
+  // Agregar el event listener para el movimiento del mouse global
+  useEffect(() => {
+    document.addEventListener("mousemove", mantenerArrastreGlobal);
+  
+    return () => {
+      document.removeEventListener("mousemove", mantenerArrastreGlobal);
+    };
+  }, [dragging]);
+
+  useEffect(() => {
+    document.addEventListener("mousemove", mantenerArrastreGlobal);
+    document.addEventListener("mouseup", finalizarArrastreGlobal);
+  
+    return () => {
+      document.removeEventListener("mousemove", mantenerArrastreGlobal);
+      document.removeEventListener("mouseup", finalizarArrastreGlobal);
+    };
+  }, []);
+
+  useEffect(() => {
+    const mantenerArrastreGlobal = (e) => {
+      if (dragging) {
+        actualizarProgreso(e);
+      }
+    };
+
+    document.addEventListener("mousemove", mantenerArrastreGlobal);
+
+    return () => {
+      document.removeEventListener("mousemove", mantenerArrastreGlobal);
+    };
+  }, [dragging]);
+
+/////////////////////FINALIZA BARRA DE PROGRESO
 
   ///agregado samca83
   function secondsToString(seconds) {
@@ -305,14 +408,16 @@ function ReproducirCancion () {
           </div>
           <div className="ubiCenter">
             <audio ref={audioRef} />
+
             <button onDoubleClick={cancionAnterior} onClick={inicioCancion} className="boton-control">
              
+
               <FaBackward />
             </button>
             <button onClick={clicReproducirPause} className="boton-control">
               {estaReproduciendo ? <FaPause /> : <FaPlay />}
             </button>
-            <button onClick={sigCancion} className="boton-control">
+            <button onClick={sigCancion} className="boton-siguiente">
               <FaForward />
             </button>  
           </div>
@@ -326,10 +431,10 @@ function ReproducirCancion () {
 
         <div 
         className="progress-bar" 
-        onClick={actualizarProgreso} /* 
+        onClick={actualizarProgreso} 
         onMouseDown={iniciarArrastre}
         onMouseMove={moverCirculo}
-        onMouseUp={finalizarArrastre} */
+        onMouseUp={finalizarArrastreGlobal}
         ref={progressIndicatorRef}
         >
           <div className="progress-line" style={{ width: `${progreso}%` }}></div>
