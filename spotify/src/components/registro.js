@@ -199,16 +199,23 @@ function Registro() {
   const handlePassword = (e) => {
     const password = e.target.value;
     const hasInput = password.length > 0;
-
+    //Editeo
+    const isPasswordValid = requirements.every(req => verificarString(password, "", req.validOption));
+    //
     requirements.forEach(req => {
       const element = document.getElementById(`requerimiento-${req.validOption}`);
       const isValid = hasInput && verificarString(password, "", req.validOption);
-
+  
       element.classList.toggle('active', isValid);
     });
-
-    e.target.classList.toggle('active', hasInput && !requirements.every(req => verificarString(password, "", req.validOption)));
+  
+    e.target.classList.toggle('active', hasInput && !isPasswordValid);
+    //Editeo
+    //  Confirmar Contraseña
+    const confirmPasswordInput = document.getElementById('passwordConfirm');
+    confirmPasswordInput.classList.toggle('active', confirmPasswordInput.value !== password || !isPasswordValid);
   }
+  
 
   return (
     <div className="modal-form">
@@ -271,7 +278,9 @@ function Registro() {
                 placeholder="Confirme su contraseña"
                 onChange={(e) => {
                   const passwordInput = document.getElementById('password');
-                  e.target.classList.toggle('active', e.target.value !== passwordInput.value);
+                  //Editeo
+                  const isPasswordValid = requirements.every(req => verificarString(passwordInput.value, "", req.validOption));
+                  e.target.classList.toggle('active', e.target.value !== passwordInput.value || !isPasswordValid);
                 }}
               />
               <button
