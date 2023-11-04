@@ -261,7 +261,7 @@ function Registro() {
                 className='ojito'
                 onClick={() => { setPasswordVisible(!passwordVisible); }}
               >
-                {passwordVisible ? (<VscEyeClosed />) : (<VscEye />)}
+                {passwordVisible ? (<VscEye />) : (<VscEyeClosed />)}
               </button>
             </div>
           </div>
