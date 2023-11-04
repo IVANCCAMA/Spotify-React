@@ -210,7 +210,44 @@ function ReproducirCancion () {
   };
   
   //////////////BARRA DE PROGRESO 
+  const actualizarProgreso = (e) => {
+    if (estaReproduciendo) {
+      const barraProgreso = progressIndicatorRef.current;
+      const audio = audioRef.current;
+      const barraRect = barraProgreso.getBoundingClientRect();
+      const mouseX = e.clientX;
+      const barraLeft = barraRect.left;
+      const barraWidth = barraRect.width;
+  
+      if (mouseX >= barraLeft && mouseX <= barraLeft + barraWidth) {
+        const porcentaje = ((mouseX - barraLeft) / barraWidth) * 100;
+        const nuevaPosicion = (porcentaje / 100) * audio.duration;
+        audio.currentTime = nuevaPosicion;
+        audio.play(); // Comienza la reproducción desde la nueva posición
+      }
+    }
+  };
+  
+
   const iniciarArrastre = (e) => {
+
+    const barraProgreso = progressIndicatorRef.current;
+
+    barraProgreso.addEventListener('click', (e) => {
+      const barraRect = barraProgreso.getBoundingClientRect();
+      const mouseX = e.clientX;
+      const barraLeft = barraRect.left;
+      const barraWidth = barraRect.width;
+
+      if (mouseX >= barraLeft && mouseX <= barraLeft + barraWidth) {
+        const porcentaje = ((mouseX - barraLeft) / barraWidth) * 100;
+        const nuevaPosicion = (porcentaje / 100) * audioRef.current.duration;
+        audioRef.current.currentTime = nuevaPosicion;
+        audioRef.current.play(); // Comienza la reproducción desde la nueva posición
+      }
+    });
+
+
     if (estaReproduciendo) {
       const barraProgreso = progressIndicatorRef.current;
       const barraRect = barraProgreso.getBoundingClientRect();
@@ -297,8 +334,6 @@ function ReproducirCancion () {
     }
   }
   /////
- 
-
   const mutearDesmutear = () => {
     if (audioRef.current) {
       const audio = audioRef.current;
@@ -316,9 +351,6 @@ function ReproducirCancion () {
       audio.muted = estaEnSilencio; // Cambia el estado de mute en el audio
     }
   };
-  
-
-  
 
   return (
     <div className="reproductorMusica">
