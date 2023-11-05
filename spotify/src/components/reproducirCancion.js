@@ -266,6 +266,7 @@ function ReproducirCancion () {
   };
   
   const moverCirculo = (e) => {
+    e.preventDefault();
     if (dragging) {
       const barraProgreso = progressIndicatorRef.current;
       const barraRect = barraProgreso.getBoundingClientRect();
@@ -287,15 +288,31 @@ function ReproducirCancion () {
   };
   
   
-  const finalizarArrastreGlobal = () => {
+  const finalizarArrastreGlobal = (e) => {
     if (dragging) {
       setDragging(false);
       document.body.style.cursor = 'default';
-      
-      const nuevaPosicion = (progreso / 100) * audioRef.current.duration;
-      audioRef.current.currentTime = nuevaPosicion;
-      audioRef.current.play(); // Continuar la reproducción
+  
+      const barraProgreso = progressIndicatorRef.current;
+      const barraRect = barraProgreso.getBoundingClientRect();
+      const barraWidth = barraRect.width;
+      const mouseX = e.clientX;
+      const barraLeft = barraRect.left;
+  
+      if (mouseX >= barraLeft && mouseX <= barraLeft + barraWidth) {
+        const porcentaje = ((mouseX - barraLeft) / barraWidth) * 100;
+        const nuevaPosicion = (porcentaje / 100) * audioRef.current.duration;
+  
+        setProgreso(porcentaje); // Actualizar la posición del círculo
+        audioRef.current.currentTime = nuevaPosicion; // Establecer la posición de reproducción
+  
+        if (estaReproduciendo) {
+          audioRef.current.play(); // Continuar la reproducción desde la nueva posición
+        }
+      }
     }
+  
+    e.preventDefault();
   };
   
   
@@ -308,7 +325,7 @@ function ReproducirCancion () {
       document.removeEventListener("mousemove", moverCirculo);
       document.removeEventListener("mouseup", finalizarArrastreGlobal);
     }
-    
+  
     return () => {
       document.removeEventListener("mousemove", moverCirculo);
       document.removeEventListener("mouseup", finalizarArrastreGlobal);
