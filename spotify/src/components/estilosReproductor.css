@@ -68,17 +68,16 @@
     margin:  10px;
     cursor: pointer;
     margin-top: 29px;
-    margin-left: 2px;
     
   }
   .boton-control{
-    margin-left: 2px;
+    margin-left: 16.7px;
   }
    .boton-anterior {
-    margin-left: 33px;
+    margin-left: 32px;
   }
   .boton-siguiente{
-    margin-left:-8px;
+    margin-left:8px;
   }
   
   .contenedor {
@@ -133,7 +132,7 @@
     cursor: pointer;
   }
   .duracion-total{
-    margin-left: 34px;
+    margin-left: 21px;
   }
   
   .progress-line {
