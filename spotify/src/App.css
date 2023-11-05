@@ -16,11 +16,12 @@ body {
 
 .container-super {
   flex: 1;
-  display: flex;;
+  display: flex;
 }
 
 .content {
   width: 100%;
   padding: 50px;
   padding-bottom: 130px;
+  display: flex;
 }
