@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-useless-escape */
 export const OPTIONS = {
   default: /^[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+$/,
   alfanumerico: /[a-zA-Z0-9áéíóúÁÉÍÓÚüÜñÑ\s]+/,
