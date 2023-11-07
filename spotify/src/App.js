@@ -10,6 +10,7 @@ import Inicio from './components/inicioHome';
 import ListaCanciones from './components/listaCanciones';
 import { ListProvider } from './components/ListContext';
 import PerfilUsuario from './components/perfilUsuario';
+import Encabeazado from "./components/encabezado";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <div className="app-container">
         <div className='container-super'>
           <MenuLateral />
+          <Encabeazado /> 
           <div className="content">
             <Routes>
               <Route path="/" element={<Inicio />} />
