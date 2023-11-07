@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import React, { useState, useRef, useContext, useEffect, useCallback} from "react";
@@ -19,6 +20,7 @@ function ReproducirCancion () {
   const [cancionSelect, setCancionSelect] = useState(null);
   const [progreso, setProgreso] = useState(0);
   const [dragging, setDragging] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [dragStartX, setDragStartX] = useState(0);
   const [progressIndicatorStartX, setProgressIndicatorStartX] = useState(0);
   const [muted, setMuted] = useState(false);  // Mute - Unmuted
@@ -199,7 +201,7 @@ function ReproducirCancion () {
       if (audioRef.current) {
       const audio = audioRef.current;
       audio.volume = nuevoVolumen / 100;
-      const estaEnSilencio = nuevoVolumen === "0";
+      const estaEnSilencio = nuevoVolumen === 0;
   
       if (estaEnSilencio !== muted) {
         setMuted(estaEnSilencio); // Actualiza el estado de mute

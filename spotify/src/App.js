@@ -9,6 +9,7 @@ import ReproducirCancion from './components/reproducirCancion';
 import Inicio from './components/inicioHome';
 import ListaCanciones from './components/listaCanciones';
 import { ListProvider } from './components/ListContext';
+import PerfilUsuario from './components/perfilUsuario';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
               <Route path="/crearAlbum" element={<CrearLista />} />
               <Route path="/añadirCancion" element={<AñadirCancion />} />
               <Route path="/registro" element={<Registro />} />
+              <Route path="/perfil" element={< PerfilUsuario />} />
               <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
             </Routes>
           </div>
