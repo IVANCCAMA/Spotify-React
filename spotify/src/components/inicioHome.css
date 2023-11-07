@@ -39,3 +39,18 @@
 .boton-registro:hover {
   background-color: #0056b3; /* Cambia el color de fondo al pasar el cursor sobre el botón */
 }
+
+.boton-iniciarsesion {
+  background-color: #006666;
+  color: #fff; /* Cambia el color del texto del botón según tus preferencias */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 22px;
+  transition: background-color 0.3s;
+}
+
+.boton-iniciarsesion:hover {
+  background-color: #0056b3; /* Cambia el color de fondo al pasar el cursor sobre el botón */
+}
