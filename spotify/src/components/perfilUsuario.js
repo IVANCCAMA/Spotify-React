@@ -1,6 +1,7 @@
 import React from "react";
 import { Icon } from '@iconify/react';
 import './perfilUsuario.css';
+import { Link } from "react-router-dom";
 
 function PerfilUsuario() {
     return (
@@ -13,10 +14,10 @@ function PerfilUsuario() {
                     <div>perfil</div>
                     <div className="user-profile-alias">
                         <div className="contenedor-alias">Alias del oyente</div>
-                        <div className= "contenedor-editar">
+                        <button className= "contenedor-editar">
                             <Icon icon="material-symbols:edit-outline" color="white" width={16} height={16} />
                             <div>Editar</div>
-                        </div>
+                        </button>
                     </div>
                     <div>n listas de reproducción</div>
                 </div>
@@ -24,7 +25,7 @@ function PerfilUsuario() {
             <div className="contenedor-listas-user">
                 <div className="contenedor-listas-user-1">
                     <div>Listas de reproducciones</div>
-                    <div>Mostar todo</div>
+                    <Link to = "/" className="mostrar-todo" >Mostar todo</Link>
                 </div>
                 <div className="listas-usuer">
                     <div className="lista-reproduccion">

@@ -50,8 +50,14 @@
 }
 
 .contenedor-listas-user-1 {
+    font-weight: bold;
     display: flex;
     align-items: center;
+}
+
+.mostrar-todo {
+    padding-left: 70%;
+    align-items: end;
 }
 
 .listas-usuer {
