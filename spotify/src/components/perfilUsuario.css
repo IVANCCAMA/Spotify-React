@@ -1,12 +1,16 @@
-.user-profile-container {
+.contendor-perfil-usuario {
+    font-family: 'roboto';
     color: #f0f0f0;
+}
+
+.user-profile-container {
     display: flex;
     align-items: center; 
     background-color: #008080;
     position: relative; 
     height: 100%;
     top: 70%;
-    padding: 1%; 
+    padding-left: 1%; 
 }
 
 .user-profile-column {
@@ -16,11 +20,9 @@
 
 .user-info-row {
     flex: 1; 
-    padding: 20px;
 }
 
 .user-profile-alias {
-    
     align-items: center;
     font-size: 35px;
     display: flex;
@@ -28,7 +30,7 @@
 
 .contenedor-alias {
     width: 300px;
-    
+    font-weight: bold;
 }
 
 .contenedor-editar {
@@ -40,3 +42,86 @@
     border-color: white;
     display: flex;
 }
+
+.contenedor-listas-user {
+    padding: 1%;
+    align-items: center;
+}
+
+.contenedor-listas-user-1 {
+    display: flex;
+}
+
+.listas-usuer {
+    /* background-color: #008080; */
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.lista-reproduccion {
+    /* background-color: #5d08cc; */
+    width: 100%;
+    align-items: center;
+    position: relative;
+    display: flex;
+    padding: 1%;
+}
+
+.lista-image {
+    width: 120px;
+    height: 120px;
+    border: 5px solid white; 
+}
+
+.lista-details {
+    width: 50%;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.lista-item {
+display: flex;
+flex-direction: row; 
+align-items: center; 
+padding-left: 20px;
+}
+
+.lista-logo {
+display: block;
+}
+
+.lista-title {
+padding: 10px;
+font-weight: bold;
+font-size: 25px;
+display: block;
+align-items: center;
+text-align: justify;
+white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+overflow: hidden; /* Oculta el contenido que desborda el contenedor */
+text-overflow: ellipsis; /* Muestra puntos suspensivos (...) cuando el texto desborda */
+word-wrap: break-word; /* Permite dividir palabras largas en varias líneas */
+max-width: 100%;
+}
+
+.user-name {
+padding: 7px;
+position: relative;
+top: 0px;
+font-weight: bold;
+font-size: 16px;
+display: block;
+align-items: center;
+text-align: justify;
+font-family: var(--fuente-1);
+}
+
+.lista-songs {
+padding: 7px;
+font-weight: bold;
+font-size: 16px;
+display: block;
+align-items: center;
+}
+
