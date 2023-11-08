@@ -7,7 +7,8 @@
   gap: 2em;
   grid-auto-rows: minmax(150px);
   height: 100%;
-  width: 100%;
+  width: 80%;
+  padding-top: 1%;
 }
 
 .albumes-details {
