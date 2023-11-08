@@ -7,3 +7,30 @@
     padding: 1%;
     justify-content: flex-end; /* Alinea el botón a la derecha */
   }
+
+  
+
+.menu-options {
+  position: absolute;
+  top: 68px; /* Ajusta la posición vertical según tus necesidades */
+  right: 12px; /* Ajusta la posición horizontal según tus necesidades */
+  background-color: #006666;
+  border: 1px solid #ffffff;
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+.menu-options a {
+  /* font-weight: bold; */
+  font-family: 'roboto';
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 6px;
+}
+
+.menu-options a:hover {
+  background-color: #dcdcdc71;
+}

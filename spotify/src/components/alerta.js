@@ -15,7 +15,7 @@ function Alerta({ isOpen, mensaje, onClose }) {
                 <span id="modal-mensaje">{mensaje}</span>
             </div>
             <div className="separador"></div>
-            <button className='boton-modal' autoFocus onClick={onClose}>OK</button>
+            <button className='boton-modal' autoFocus onClick={onClose}>Aceptar</button>
         </div>
     </div>
   );
