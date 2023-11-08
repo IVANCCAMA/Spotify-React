@@ -13,7 +13,8 @@ function MenuLateral() {
     { separador: true },
     { to: '/Albumes', src: group, alt: 'Álbumes', title: 'Álbumes' },
     { to: '/crearAlbum', src: plus, alt: 'Crear álbum', title: 'Crear álbum' },
-    { to: '/añadirCancion', src: plus, alt: 'Cargar canción', title: 'Cargar canción' }
+    { to: '/añadirCancion', src: plus, alt: 'Cargar canción', title: 'Cargar canción' },
+    { to: '/listaReproduccion', src: plus, alt: 'Crear lista de reproduccion', title: 'Crear lista de reproduccion' }
   ];
 
   return (
