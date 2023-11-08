@@ -1,14 +1,3 @@
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-  justify-content: flex-end; /* Alinea el botón a la derecha */
-}
 
 /* Estilos para el contenedor de la imagen */
 .contenedor-imagen {

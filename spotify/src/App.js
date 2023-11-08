@@ -18,18 +18,22 @@ function App() {
       <div className="app-container">
         <div className='container-super'>
           <MenuLateral />
-          <Encabeazado /> 
-          <div className="content">
-            <Routes>
-              <Route path="/" element={<Inicio />} />
-              <Route path="/Albumes" element={<ListaAlbumes />} />
-              <Route path="/crearAlbum" element={<CrearLista />} />
-              <Route path="/añadirCancion" element={<AñadirCancion />} />
-              <Route path="/registro" element={<Registro />} />
-              <Route path="/perfil" element={< PerfilUsuario />} />
-              <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
-            </Routes>
+          <div className='contenedor-header-pincipal'>
+            <Encabeazado /> 
+            <div className="content">
+              <Routes>
+                <Route path="/" element={<Inicio />} />
+                <Route path="/Albumes" element={<ListaAlbumes />} />
+                <Route path="/crearAlbum" element={<CrearLista />} />
+                <Route path="/añadirCancion" element={<AñadirCancion />} />
+                <Route path="/registro" element={<Registro />} />
+                <Route path="/perfil" element={< PerfilUsuario />} />
+                <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
+              </Routes>
+            </div>
           </div>
+          
+          
         </div>
         <ReproducirCancion />
       </div>

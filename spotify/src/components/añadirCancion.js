@@ -331,7 +331,7 @@ function AñadirCancion() {
 
           <div className="campo">
             <div className="input-box">
-              <label className="elemento" htmlFor="genero">Género musical *</label>
+              <label className="album" htmlFor="genero">Género musical *</label>
               <select name="genero" id='genero' defaultValue={'default'} required>
                 <option disabled hidden value='default'>Seleccionar género</option>
                 {generos.map((genero) => (
