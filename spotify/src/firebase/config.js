@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { initializeApp } from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { v4 } from "uuid";

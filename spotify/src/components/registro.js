@@ -1,12 +1,10 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { Link } from "react-router-dom";
-import { RecuperarDuracion, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import { alfanumerico, verificarString } from './form.js';
 import './form.css'
 import Alerta from './alerta';
-import bcrypt from 'bcryptjs';
 
 function Registro() {
   const database = 'https://spfisbackend-production.up.railway.app/api';
@@ -99,9 +97,6 @@ function Registro() {
     for (const userType of userTypes) {
       if (campos.userType === userType) {
         try {
-          // Encrypting
-          const saltRounds = 10;
-          const hash = await bcrypt.hash(campos.password, saltRounds);
           return {
             nombre_usuario: campos.username,
             correo_usuario: `${campos.username.replace(/ /g, '_')}@localhost`,
