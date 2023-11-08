@@ -1,7 +1,7 @@
 import React from "react";
 import logo from '../logos/logo.png';
 import './inicioHome.css';
-import Encabeazado from "./encabezado";
+
 function Inicio() {
   return (
     // <div>

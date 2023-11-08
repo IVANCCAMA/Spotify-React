@@ -1,0 +1,42 @@
+.user-profile-container {
+    color: #f0f0f0;
+    display: flex;
+    align-items: center; 
+    background-color: #008080;
+    position: relative; 
+    height: 100%;
+    top: 70%;
+    padding: 1%; 
+}
+
+.user-profile-column {
+    padding: 1%;    
+    flex: 0 0 ; /* Establece el ancho fijo de la columna del perfil */
+}
+
+.user-info-row {
+    flex: 1; 
+    padding: 20px;
+}
+
+.user-profile-alias {
+    
+    align-items: center;
+    font-size: 35px;
+    display: flex;
+}
+
+.contenedor-alias {
+    width: 300px;
+    
+}
+
+.contenedor-editar {
+    
+    align-items: center;
+    height: fit-content;
+    border: 3px solid #f0f0f0;
+    font-size: 16px;
+    border-color: white;
+    display: flex;
+}
