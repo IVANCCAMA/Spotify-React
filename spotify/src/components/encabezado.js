@@ -17,6 +17,7 @@ function Encabezado() {
     return (
         <div>
             <header className="header">
+                <Link  to="/iniciarsesion" className='boton-iniciarsesion'><strong>Iniciar Sesión</strong></Link> 
                 <Link to="/registro" className='boton-registro'><strong>Regístrate</strong></Link>
                 <button onClick={toggleMenu}>
                     <Icon icon="gg:profile" color="white" width="45" height="45" />
