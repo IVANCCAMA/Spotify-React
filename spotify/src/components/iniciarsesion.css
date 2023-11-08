@@ -2,7 +2,6 @@
 .modal-form {
     width: 100%;
     max-width: 415px;
-    
     height: auto; /* Cambiado a altura automática */
     background: #008080;
     border: 4px solid #000000;
@@ -25,6 +24,7 @@
     align-items: flex-start; /* Alinear elementos a la izquierda */
     margin: 0 auto;
     font-family: var(--fuente-1);
+    margin-bottom: 10px;
 }
 /* Contenedor del formulario */
 .modal-form .modal-box {
@@ -51,6 +51,7 @@
     flex-direction: column; /* Cambiado a columna para colocar título encima del campo */
     align-items: flex-start; /* Alinear elementos a la izquierda */
     margin: 0 auto;
+    margin-bottom: 20px; /*sEPARACION CONTRA--NOMBRE CONTENT*/
 }
  
  
@@ -83,7 +84,7 @@
     justify-content: space-between;
     padding: 40px;
     gap: 40px;
-    
+    margin-top: 10px;
 }
 
 .btn-box button {
