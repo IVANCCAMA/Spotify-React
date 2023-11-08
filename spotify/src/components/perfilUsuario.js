@@ -77,9 +77,59 @@ function PerfilUsuario() {
                         {/*  </Link>
                         ))} */}
                     </div>
+
+                    <div className="lista-reproduccion">
+                        {/* {albumes.map((album, index) => (
+                            <Link to={`/lista-canciones/${album.id_lista}`} key={album.id_lista} className="lista-item"> */}
+                            <img
+                                src={"album.path_image"}
+                                alt="Álbum"
+                                className="lista-image"
+                            />
+                            <div className="lista-details">
+                                <div className="lista-title">{"album.titulo_lista"}</div>
+                                <div className="user-name">{"album.nombre_usuario"}</div>
+                                <div className="lista-songs">{"album.cantidad_canciones"} canciones</div>
+                            </div>
+                        {/*  </Link>
+                        ))} */}
+                    </div>
+
+                    <div className="lista-reproduccion">
+                        {/* {albumes.map((album, index) => (
+                            <Link to={`/lista-canciones/${album.id_lista}`} key={album.id_lista} className="lista-item"> */}
+                            <img
+                                src={"album.path_image"}
+                                alt="Álbum"
+                                className="lista-image"
+                            />
+                            <div className="lista-details">
+                                <div className="lista-title">{"album.titulo_lista"}</div>
+                                <div className="user-name">{"album.nombre_usuario"}</div>
+                                <div className="lista-songs">{"album.cantidad_canciones"} canciones</div>
+                            </div>
+                        {/*  </Link>
+                        ))} */}
+                    </div>
+
+                    <div className="lista-reproduccion">
+                        {/* {albumes.map((album, index) => (
+                            <Link to={`/lista-canciones/${album.id_lista}`} key={album.id_lista} className="lista-item"> */}
+                            <img
+                                src={"album.path_image"}
+                                alt="Álbum"
+                                className="lista-image"
+                            />
+                            <div className="lista-details">
+                                <div className="lista-title">{"album.titulo_lista"}</div>
+                                <div className="user-name">{"album.nombre_usuario"}</div>
+                                <div className="lista-songs">{"album.cantidad_canciones"} canciones</div>
+                            </div>
+                        {/*  </Link>
+                        ))} */}
+                    </div>
                 </div>
 
-                
             </div>
         </div>
     );
