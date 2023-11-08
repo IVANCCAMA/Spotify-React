@@ -11,7 +11,7 @@ function PerfilUsuario() {
                     <Icon icon="gg:profile" color="white" width="100px" height="100px" />
                 </div>
                 <div className="user-info-row">
-                    <div>perfil</div>
+                    <div>PERFIL</div>
                     <div className="user-profile-alias">
                         <div className="contenedor-alias">Alias del oyente</div>
                         <button className= "contenedor-editar">
