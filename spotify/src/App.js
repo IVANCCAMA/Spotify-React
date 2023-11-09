@@ -27,7 +27,7 @@ function App() {
                 <Route path="/" element={<Inicio />} />
                 <Route path="/Albumes" element={<ListaAlbumes />} />
                 <Route path="/crearAlbum" element={<CrearLista />} />
-                <Route path="/listaReproduccion" element={<CrearListaReproduccion />} />
+                <Route path="/crearListaReproduccion" element={<CrearListaReproduccion />} />
                 <Route path="/añadirCancion" element={<AñadirCancion />} />
                 <Route path="/registro" element={<Registro />} />
                 <Route path="/perfil" element={< PerfilUsuario />} />
