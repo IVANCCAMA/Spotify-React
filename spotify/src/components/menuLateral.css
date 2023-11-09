@@ -30,7 +30,7 @@
 }
 
 .menu .menu-items .item a .icon {
-  width: 25px; /* Ancho fijo para los iconos */
+  width: 40px; /* Ancho fijo para los iconos */
   margin-right: 10px;
 }
 
