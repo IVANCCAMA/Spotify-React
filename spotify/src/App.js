@@ -11,6 +11,7 @@ import ListaCanciones from './components/listaCanciones';
 import { ListProvider } from './components/ListContext';
 import PerfilUsuario from './components/perfilUsuario';
 import Encabeazado from "./components/encabezado";
+import CrearListaReproduccion from './components/listaReproduccion';
 import IniciarSesion from "./components/iniciarsesion";
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
                 <Route path="/" element={<Inicio />} />
                 <Route path="/Albumes" element={<ListaAlbumes />} />
                 <Route path="/crearAlbum" element={<CrearLista />} />
+                <Route path="/crearListaReproduccion" element={<CrearListaReproduccion />} />
                 <Route path="/añadirCancion" element={<AñadirCancion />} />
                 <Route path="/registro" element={<Registro />} />
                 <Route path="/perfil" element={< PerfilUsuario />} />

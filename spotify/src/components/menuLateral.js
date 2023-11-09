@@ -14,7 +14,7 @@ function MenuLateral() {
     { to: '/Albumes', src: group, alt: 'Álbumes', title: 'Álbumes' },
     { to: '/crearAlbum', src: plus, alt: 'Crear álbum', title: 'Crear álbum' },
     { to: '/añadirCancion', src: plus, alt: 'Cargar canción', title: 'Cargar canción' },
-    { to: '/crearLista', src: plus, alt: 'Crear lista de reproducción', title: 'Crear lista de reproducción' }
+    { to: '/crearListaReproduccion', src: plus, alt: 'Crear lista de reproducción', title: 'Crear lista de reproducción' }
   ];
 
   return (
