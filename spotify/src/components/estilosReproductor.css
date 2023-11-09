@@ -6,188 +6,100 @@
   justify-content: space-between;
   padding: 5px;
   height: 89px;
-  width: 100%;  /* Ajustado al 100% para cubrir todo el ancho de la pantalla */
-  position: fixed;  /* Hace que el reproductor se fije en la posición */
-  bottom: 0;  /* Alinea el reproductor al fondo de la página */
-  left: 0;  /* Alinea el reproductor a la izquierda de la página */
-  z-index: 1000;  /* Asegura que el reproductor esté encima de otros elementos */
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
   border-top: 5px solid black;
 }
 
-
-  .info-cancion, .detalles-musica{
-    position: absolute;
-    right: 70%;
-    display: flex;
-    align-items: center;
-    margin: 0;
-    border: none;
-    padding: 0;
-    
-  }
-  /*
-  .portada-album {
-    width: 100px;
-    height: 50px;
-    object-fit: cover;
-  }*/
- 
-  .detalles-musica {
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-  }
-.nombre-musica,
-.nombre-artista {
-  margin: 0 10px;   /* Aumenta el espacio antes y después para compensar la eliminación del guion */
-    white-space: nowrap;
-    line-height: 1.2;
-    font-size: 20px;
-    font-weight: bold;
+.detalles-musica {
+  position: relative;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
 }
 
-  .controls {
-    position: absolute;
-    left: 42.5%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between; 
-    margin-top: -35px;
-    padding-right: 0;
-  }
-  
- 
-  .boton-control, .boton-siguiente, .boton-anterior {
-    font-size: 23px;  
-    padding: 8px;  
-    border: none;  
-    cursor: pointer; 
-    background: none;
-    color: #fff;
-    margin:  10px;
-    cursor: pointer;
-    margin-top: 29px;
-    
-  }
-  .boton-control{
-    margin-left: 16.7px;
-  }
-   .boton-anterior {
-    margin-left: 32px;
-  }
-  .boton-siguiente{
-    margin-left:8px;
-  }
-  
-  .contenedor {
-    display: flex;
-    padding: 15px;
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    padding-bottom: 45px;
-    padding-right: 50px;
-    
-  }
+.detalles-musica span {
+  margin: 0 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
 
-  .boton-mute   {
-    background: none;
-    border: none;
-    margin-left: 20px;
-    cursor: pointer;
-     
-  }
+.controls {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 40%;
+  height: 80%;
+}
 
-  .volumen {
-    margin-right: 20px;  
-     
-  }
-  
-  .volumen-slider {
-    margin-left: 20px;
-  }
-  .control-button:hover {
-    color: black; 
-  }
-  .control-button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 1.5rem; /* Tamaño de los iconos */
-    transition: color 0.3s ease; /* Transición suave del color */
-    
-  }
-  
-  .progress-bar {
-    width: 34.85%;
-    background-color: #ffffff;
-    height: 5px;
-    position: absolute;
-    left: 35.9%;
-    margin: auto;
-    margin-top: 40px;
-    /* z-index: -1; */
-    cursor: pointer;
-  }
-  .duracion-total{
-    margin-left: 21px;
-  }
-  
-  .progress-line {
-    background-color: #fff;
-    height: 5px;
-    position: absolute;
-    top: 0;
-    width: 100%;
-  }
-  
-  .progress-indicator {
-    position: absolute;
-    top: -5px; 
-    transform: translateX(-50%);
-    cursor: pointer;
-  }
-  
-  .progress-circle {
-    background-color: #fff;
-    height: 15px; 
-    width: 15px; 
-    border-radius: 50%; 
-    user-select: none;
-  }
-  .contenedor-controles {
-    display: flex;
-    justify-content: center;
-    /* Estilos específicos para centrar horizontalmente los controles */
-  }
-  
-  .contenedor-progreso {
-    display: flex;
-    justify-content: center;
-    /* Estilos específicos para centrar horizontalmente la barra de progreso */
-  }
+.controls span {
+  font-weight: 700;
+}
 
-  /* agregado por Samca83 */
-  .ubiIzq {
-    margin-left: -90px;
-    font-weight: bold;
-    margin-top: 20px;
-  }
+.boton-control {
+  font-size: 23px;
+  padding: 8px;
+  border: none;
+  cursor: pointer;
+  background: none;
+  color: #fff;
+  margin: 0 10px;
+  cursor: pointer;
+}
 
-  .ubiDer {
-    margin-left: 90px;
-    font-weight: bold;
-    margin-top: 20px;
-  }
+.contenedor {
+  display: flex;
+  padding: 15px;
+  position: relative;
+}
 
-  .ubiCenter {
-    margin-left: 90px;
-    
-  }
- 
-  .oculto {
-    display: none;
-  }
-  
+.boton-mute {
+  background: none;
+  border: none;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.volumen {
+  margin-right: 20px;
+}
+
+.volumen-slider {
+  margin-left: 20px;
+}
+
+.progress-bar {
+  width: 100%;
+  background-color: #ffffff;
+  height: 5px;
+  position: relative;
+  cursor: pointer;
+}
+
+.progress-line {
+  background-color: #fff;
+  height: 5px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.progress-indicator {
+  position: absolute;
+  top: -5px;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.progress-circle {
+  background-color: #fff;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+}
