@@ -373,81 +373,68 @@ function ReproducirCancion () {
 
   return (
     <div className="reproductorMusica">
-      <div className="info-cancion">
-        <div className="detalles-musica">
-          <span className="nombre-artista">{nombreArtista}</span>
-          - 
-          <span className="nombre-musica">{nombreMusica}</span>
-          <span className="nombre-musica">
-            <div className="timer oculto" id="timer">
-                {tiempoActual} / {duracionTotal}
-            </div>
-          </span>
-        </div>
+      <div className="detalles-musica">
+        <span>{nombreArtista} · {nombreMusica}</span>
       </div>
 
-      <div>
+      <div className="controls">
+        <span>{tiempoActual}</span>
 
-      </div>
-        <div className="controls">
-          <div className="ubiIzq">
-              <div className="tiempo-actual">
-                {tiempoActual}
-              </div>
-          </div>
-          <div className="ubiCenter">
-            <audio ref={audioRef} />
+        <audio ref={audioRef} />
 
-            <button onDoubleClick={cancionAnterior} onClick={inicioCancion} className="boton-control">
-            
+        <div>
+          <button
+            onDoubleClick={cancionAnterior}
+            onClick={inicioCancion}
+            className="boton-control">
+            <FaBackward />
+          </button>
 
-              <FaBackward />
-            </button>
-            <button onClick={clicReproducirPause} className="boton-control">
-              {estaReproduciendo ? <FaPause /> : <FaPlay />}
-            </button>
-            <button onClick={sigCancion} className="boton-siguiente">
-              <FaForward />
-            </button>  
-          </div>
-          <div className="ubiDer">
-              <div className="duracion-total">
-                {duracionTotal}
-              </div>
-          </div>
-          
+          <button
+            onClick={clicReproducirPause}
+            className="boton-control">
+            {estaReproduciendo ? <FaPause /> : <FaPlay />}
+          </button>
+
+          <button
+            onClick={sigCancion}
+            className="boton-control">
+            <FaForward />
+          </button>
         </div>
 
-        <div 
-        className="progress-bar" 
-        /* onClick={actualizarProgreso}  */
-        onMouseDown={iniciarArrastre}
-        onMouseMove={moverCirculo}
-        onMouseUp={finalizarArrastreGlobal}
-        ref={progressIndicatorRef}
+        <span className="time">{duracionTotal}</span>
+
+        <div
+          className="progress-bar"
+          onClick={actualizarProgreso}
+          onMouseDown={iniciarArrastre}
+          onMouseMove={moverCirculo}
+          onMouseUp={finalizarArrastreGlobal}
+          ref={progressIndicatorRef}
         >
           <div className="progress-line" style={{ width: `${progreso}%` }}></div>
           <div className="progress-indicator" style={{ left: `${progreso}%` }}>
             <div className="progress-circle"></div>
           </div>
         </div>
-      
-      <div className = "contenedor">
+      </div>
+
+      <div className="contenedor">
         <button onClick={mutearDesmutear} className="boton-mute">
           {muted ? <FaVolumeOff /> : <FaVolumeUp />}
         </button>
 
-        <div className="volumen" >      
-          <input type="range" 
-            min="0" 
-            max="100" 
-            value={volumen} 
-            className="volumen-slider" 
+        <div className="volumen" >
+          <input type="range"
+            min="0"
+            max="100"
+            value={volumen}
+            className="volumen-slider"
             onChange={cambiarVolumen}
           />
         </div>
       </div>
-
     </div>
   );
   
