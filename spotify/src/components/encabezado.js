@@ -11,7 +11,7 @@ function Encabezado() {
         setIsMenuOpen(!isMenuOpen);
     };
 
-    // Esto es para verificar si la ruta actual es 'iniciarsesion' o 'registro'
+    // Es si la ruta actual es 'iniciarsesion' o 'registro'
     const isAuthRoute = location.pathname === '/iniciarsesion' || location.pathname === '/registro';
 
     return (
@@ -24,9 +24,11 @@ function Encabezado() {
                         <Link to="/registro" className='boton-registro'><strong>Regístrate</strong></Link>
                     </>
                 )}
+                  {!isAuthRoute && (
                 <button onClick={toggleMenu}>
                     <Icon icon="gg:profile" color="white" width="45" height="45" />
                 </button>
+                 )}
                 {isMenuOpen && (
                     <div className="menu-options">
                         <Link to="/perfil">Perfil</Link>
