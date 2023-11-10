@@ -1,4 +1,4 @@
- import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { Link } from "react-router-dom";
 import './iniciarsesion.css'
@@ -67,4 +67,4 @@ function IniciarSesion() {
     </div>
   );
 };
-export default IniciarSesion;
+export default IniciarSesion;         
