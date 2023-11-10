@@ -10,8 +10,8 @@
     align-items: center;
     position: relative;
     margin: auto;
-    margin-top: 79px;
 }
+
 .form-title{
     color: #FFFFFF; /* White text color */
     font-size: 28px;
@@ -34,7 +34,6 @@
     max-height: 100%;
     margin: 0 auto;
     margin-top: 43px;
-    
     margin-bottom: -15px;
 }
 .modal-box .inter-modal {

@@ -12,6 +12,15 @@
     margin: auto;
 }
 
+.form-title{
+    font-weight: bold;
+    font-family: var(--fuente-1);
+    font-size: 24px;
+    color: #fff;
+    margin: 0 10%;
+    margin-bottom: 20px;
+}
+
 /* Contenedor del formulario */
 .modal-form .modal-box {
     width: 100%;
@@ -20,8 +29,9 @@
     max-height: 100%;
     margin: 0 auto;
     margin-top: 35px;
-    margin-bottom: -15px;
+    margin-bottom: 10px;
 }
+
 .modal-box .inter-modal {
     display: flex;
     flex-direction: column;
@@ -36,7 +46,6 @@
     flex-direction: column;
     align-items: flex-start;
     margin: 0 auto;
-    /* margin-bottom: 7px; */
 }
 
 .input-box input,
@@ -49,40 +58,9 @@
     padding: 0 10px;
 }
 
-/* Contenedor de campo de entrada */
-.input-boxx {
-    display: flex;
-    flex-direction: column; /* Cambiado a columna para colocar el label debajo */
-    
-
-}
 .elemento {
     margin-left: 40px;
 }
-
-.input-boxx input,
-.input-boxx select {
-    width: 335px;
-    height: 40px; /* Altura del campo de entrada */
-    outline: none;
-    font-size: 12px;
-    color: #000000;
-    font-weight: bold;
-    padding: 0 10px;
-    margin-bottom: 5px; /* Espacio entre el campo de entrada y el label */
-}
-
-.input-boxx select {
-    margin-left: 40px; /* Espacio entre el campo de entrada y el select */
-}
-
-/* Estilo para el label */
-.input-boxx label {
-    font-weight: bold;
-    font-size: 16px; /* Tamaño de fuente del label */
-    color: #fff;
-}
-
 
 .input-box select {
     font-weight: bold;
@@ -231,13 +209,4 @@
     padding: 12px 40px;
     text-decoration: none;
     text-align: center; /* Alinea el texto al centro */
-}
-
-
-.titulo_crearLista{
-    font-weight: bold;
-    font-size: 24px;
-    color: #fff;
-    margin-left: 10%;
-    margin-bottom: 3%;
 }

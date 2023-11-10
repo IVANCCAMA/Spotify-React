@@ -13,13 +13,12 @@ function CrearListaReproduccion() {
   const [modalMessage, setModalMessage] = useState("");
   const [isOnline, setIsOnline] = useState(window.navigator.onLine); // Verifica si hay conexión inicialmente
 
-
   const handleOnlineStatusChange = () => {
     setIsOnline(window.navigator.onLine);
   };
 
-  useEffect(() => { 
-    mostrarNombreArchivo(); 
+  useEffect(() => {
+    mostrarNombreArchivo();
   }, [botonHabilitado, isModalOpen, modalMessage]);
 
   useEffect(() => {
@@ -31,18 +30,16 @@ function CrearListaReproduccion() {
       window.removeEventListener('offline', handleOnlineStatusChange);
     };
   }, []);
-  
+
   const [redirectTo, setRedirectTo] = useState(null);
 
   function handleCloseAndRedirect() {
-      setIsModalOpen(false);
-      if (redirectTo) {
-          window.location.replace(redirectTo);
-      }
+    setIsModalOpen(false);
+    if (redirectTo) {
+      window.location.replace(redirectTo);
+    }
   }
 
-
- 
   const validarCampos = async (campos) => {
     if (campos.titulo.length > 20 || campos.titulo.length < 1 || !alfanumerico(campos.titulo)) {
       document.getElementById('titulo_lista').classList.add('active');
@@ -52,7 +49,6 @@ function CrearListaReproduccion() {
       console.log("No se selecciono archivo");
       return null;
     }
-
   };
 
   const validarFormatoArchivo = async (archivo) => {
@@ -87,7 +83,6 @@ function CrearListaReproduccion() {
   };
 
   const validarForm = async (e) => {
-    
     setBotonHabilitado(false);
     try {
       if (isOnline) {
@@ -134,7 +129,7 @@ function CrearListaReproduccion() {
           setModalMessage(`Lista creada exitosamente`);
           setIsModalOpen(true);
           setRedirectTo("/");
-          
+
         } catch (error) {
           console.error('Error:', error);
           setModalMessage(`Error al subir o procesar el archivo`);
@@ -187,24 +182,15 @@ function CrearListaReproduccion() {
   };
 
   return (
-
-
-
-    
     <div className="modal-form">
       <form className="modal-box" id="form" onSubmit={validarForm}>
         <div className="inter-modal">
-
+          <div className="form-title">
+            <span>Crear lista</span>
+          </div>
           
           <div className="campo">
-
-
-        <div className="titulo_crearLista">
-          <label htmlFor="titulo_lista">Crear lista</label>
-                </div>
-
             <div className="input-box">
-                
               <label htmlFor="titulo_lista">Nombre de la lista *</label>
               <input autoFocus required
                 type="text"
@@ -218,11 +204,7 @@ function CrearListaReproduccion() {
             </div>
           </div>
 
-       
-
           {/* SELECCIONAR ARCHIVO */}
-
-
           <div className="campo campo-cargar-cancion">
             <div className="input-box">
               <label>Portada de la lista</label>
@@ -258,7 +240,7 @@ function CrearListaReproduccion() {
         isOpen={isModalOpen}
         mensaje={modalMessage}
         onClose={handleCloseAndRedirect}
-      />   
+      />
     </div>
   );
 }
