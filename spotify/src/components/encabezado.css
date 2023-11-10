@@ -1,19 +1,23 @@
-.header {
-    background-color: #008080;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1%;
-    justify-content: flex-end; /* Alinea el botón a la derecha */
-  }
-
-  
+.header-Encabesado {
+  background-color: #006666;
+  /* background-color: #008080; */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid black;
+  border-radius: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  justify-content: flex-end;
+  position: fixed;
+  z-index: 1;
+}
 
 .menu-options {
   position: absolute;
-  top: 68px; /* Ajusta la posición vertical según tus necesidades */
-  right: 12px; /* Ajusta la posición horizontal según tus necesidades */
+  top: 68px;
+  right: 12px;
   background-color: #006666;
   border: 1px solid #ffffff;
   padding: 0px;
@@ -23,7 +27,6 @@
 }
 
 .menu-options a {
-  /* font-weight: bold; */
   font-family: 'roboto';
   border: 1px solid #ffffff;
   color: #ffffff;

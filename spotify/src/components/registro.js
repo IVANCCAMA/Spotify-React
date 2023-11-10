@@ -289,7 +289,7 @@ function Registro() {
           </div>
 
           <div className="campo">
-            <div className="input-boxx">
+            <div className="input-box">
               <label className="elemento" htmlFor="userType">Tipo de usuario *</label>
               <select name="userType" id='userType' defaultValue={'default'} required>
                 <option disabled hidden value='default'>Seleccionar tipo de usuario</option>

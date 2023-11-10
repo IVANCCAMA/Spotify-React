@@ -16,8 +16,8 @@
 }
 
 .boton-registro {
-  background-color: #006666;
-  color: #fff; /* Cambia el color del texto del botón según tus preferencias */
+  background-color: #008080;
+  color: #fff;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -26,12 +26,12 @@
 }
 
 .boton-registro:hover {
-  background-color: #0056b3; /* Cambia el color de fondo al pasar el cursor sobre el botón */
+  background-color: #66b2b2;
 }
 
 .boton-iniciarsesion {
-  background-color: #006666;
-  color: #fff; /* Cambia el color del texto del botón según tus preferencias */
+  background-color: #008080;
+  color: #fff;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -41,5 +41,5 @@
 }
 
 .boton-iniciarsesion:hover {
-  background-color: #0056b3; /* Cambia el color de fondo al pasar el cursor sobre el botón */
+  background-color: #66b2b2;
 }
