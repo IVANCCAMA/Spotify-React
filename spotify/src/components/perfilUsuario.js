@@ -37,10 +37,6 @@ function PerfilUsuario({ userConnected }) {
           <div>PERFIL</div>
           <div className="user-profile-alias">
             <div className="contenedor-alias">Alias del oyente</div>
-            <button className="contenedor-editar">
-              <Icon icon="material-symbols:edit-outline" color="white" width={16} height={16} />
-              <div>Editar</div>
-            </button>
           </div>
           <div>n listas de reproducción</div>
         </div>
