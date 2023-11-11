@@ -59,6 +59,7 @@ function MenuLateral({ userType, isLogin }) {
       if (requiresAuthentication && !isUserAuthenticated) {
         setModalMessage('Funcionalidad no permitida. Inicie sesión por favor.');
         setIsModalOpen(true);
+        setRedirectTo("/");
       }
     }
   };
