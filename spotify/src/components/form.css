@@ -1,4 +1,11 @@
 /* Formulario */
+.form-contend {
+    position: fixed;
+    z-index: 1;
+    width: calc(100% - 250px);
+    height: calc(100% - 160px);
+}
+
 .modal-form {
     width: 100%;
     max-width: 425px;
@@ -10,9 +17,10 @@
     align-items: center;
     position: relative;
     margin: auto;
+    z-index: 0;
 }
 
-.form-title{
+.form-title {
     font-weight: bold;
     font-family: var(--fuente-1);
     font-size: 24px;
@@ -58,10 +66,6 @@
     padding: 0 10px;
 }
 
-.elemento {
-    margin-left: 40px;
-}
-
 .input-box select {
     font-weight: bold;
 }
@@ -73,8 +77,8 @@
 
 .campo-cargar-cancion {
     display: flex;
-    flex-direction: column; /* Cambiado a columna para colocar título encima del campo */
-    align-items: center; /* Alinear elementos a la izquierda */
+    flex-direction: column;
+    align-items: center;
     text-align: center;
 }
 
@@ -93,7 +97,6 @@
     display: flex;
     justify-content: center;
     margin-top: 0px;
-    
 }
 
 /* Estilo de validación */
@@ -152,15 +155,23 @@
     gap: 40px;
 }
 
+.custom-link,
 .btn-box button {
     width: 150px;
-    height:  50px;
+    height: 50px;
     background: #FFFFFF;
     outline: none;
     cursor: pointer;
     font-size: 16px;
     color: #000000;
     font-weight: bold;
+}
+
+.custom-link {
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Botón de subir */
@@ -192,21 +203,5 @@
 }
 
 #selectList {
-    color: #000; /* Cambia el color del texto a negro (o el color que desees) */
-}
-
-/* estilos.css */
-.custom-link {
-    /* Estilos de fondo, color y padding */
-    width: 150px;
-    height: 50px;
-    background: #FFFFFF;
-    outline: none;
-    cursor: pointer;
-    font-size: 16px;
-    color: #000000;
-    font-weight: bold;
-    padding: 12px 40px;
-    text-decoration: none;
-    text-align: center; /* Alinea el texto al centro */
+    color: #000;
 }

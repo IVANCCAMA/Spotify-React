@@ -1,39 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
-import { Link, useLocation } from "react-router-dom"; // Importar useLocation
+import { Link, useLocation } from "react-router-dom";
 import "./encabezado.css"
+import IniciarSesion from "./iniciarsesion";
 
-function Encabezado() {
+function Encabezado({ updateShowForm }) {
+  // recuperar el estado
+  const [isLogined, setIsLogined] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  useEffect(() => { updateShowForm(showForm); }, [showForm]);
+
+  // puede servir para controlar el direccionamiento a traves de link
   const location = useLocation();
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
-  const isAuthRoute = location.pathname === '/iniciarsesion' || location.pathname === '/registro';
+  const isAuthRoute = location.pathname === '/iniciarsesion'
+    || location.pathname === '/registro' || location.pathname === '/';
+  useEffect(() => { setShowForm(false); }, [location.pathname]);
 
   return (
-    <div>
-      <header className="header-Encabesado">
-        {!isAuthRoute && (
-          <>
-            <Link to="/iniciarsesion" className='boton-iniciarsesion'><strong>Iniciar Sesión</strong></Link>
-            <Link to="/registro" className='boton-registro'><strong>Regístrate</strong></Link>
-          </>
-        )}
-        {!isAuthRoute && (
-          <button onClick={toggleMenu}>
+    <div className="header-Encabesado">
+      {!isLogined ? (
+        <>
+          {isAuthRoute ? (
+            <Link to="/iniciarsesion" className='btn-header'><strong>Iniciar Sesión</strong></Link>
+          ) : (
+            <button className='btn-header'
+              onClick={() => { setShowForm(!showForm); }}>
+              <strong>Iniciar Sesión</strong>
+            </button>
+          )}
+          <Link to="/registro" className='btn-header'><strong>Regístrate</strong></Link>
+        </>
+      ) : (
+        <>
+          <button
+            onClick={() => { setIsMenuOpen(!isMenuOpen); }}>
             <Icon icon="gg:profile" color="white" width="45" height="45" />
           </button>
-        )}
-        {isMenuOpen && (
-          <div className="menu-options">
+
+          <div
+            className="menu-options"
+            style={{ display: isMenuOpen ? 'flex' : 'none' }}>
             <Link to="/perfil">Perfil</Link>
             <Link to="/">Cerrar sesión</Link>
           </div>
-        )}
-      </header>
+        </>
+      )}
     </div>
   );
 }
