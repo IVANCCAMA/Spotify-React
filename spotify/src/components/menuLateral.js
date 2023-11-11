@@ -4,13 +4,16 @@ import logo from '../logos/logo.png';
 import home from '../logos/home.png';
 import group from '../logos/group.png';
 import plus from '../logos/plus.png';
+import iconBiblioteca from '../logos/iconobilioteca.png';
 import './menuLateral.css';
 
 function MenuLateral({ userType }) {
+
   const OyenteOptions = [
     { to: '/', src: home, alt: 'Home', title: 'Inicio' },
     { separador: true },
-    { to: '/crearListaReproduccion', src: plus, alt: 'Crear lista de reproducción', title: 'Crear lista de reproducción' }
+    { to: '/crearListaReproduccion', src: plus, alt: 'Crear lista de reproducción', title: 'Crear lista de reproducción' },
+    { to: '/biblioteca', src: iconBiblioteca, alt: 'Biblioteca', title: 'Biblioteca' },
   ];
   const DistMusicOptions = [
     { to: '/', src: home, alt: 'Home', title: 'Inicio' },
