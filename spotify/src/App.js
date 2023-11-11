@@ -14,6 +14,7 @@ import PerfilUsuario from './components/perfilUsuario';
 import Encabeazado from "./components/encabezado";
 import CrearListaReproduccion from './components/listaReproduccion';
 import IniciarSesion from "./components/iniciarsesion";
+import ListaCancionesUser from './components/listaCancionesUser';
 
 function App() {
   // ejemlpo de guardar el user
@@ -48,6 +49,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Inicio />} />
               <Route path="/Albumes" element={<Albumes />} />
+              {/* <Route path="/Albumes-user" element={<Albumes />} /> */}
               <Route path="/iniciarsesion" element={< IniciarSesion
                 signOn={(user) => { setUserConnected(user); }} />} />
               <Route path="/crearAlbum" element={<CrearLista />} />
@@ -56,6 +58,7 @@ function App() {
               <Route path="/registro" element={<Registro />} />
               <Route path="/perfil" element={< PerfilUsuario userConnected={userConnected} />} />
               <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
+              <Route path="/lista-canciones-user/:id_lista" element={<ListaCancionesUser />} />
             </Routes>
           </div>
         </div>
