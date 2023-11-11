@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import './listaAlbunes.css';
  
-function ListaAlbumesUser({albumes}) {
+function ListaAlbumesUser({albumes, style = null }) {
   return (
-    <div className="albumes-list">
+    <div className="albumes-list" style={style }>
       {albumes.map((album, index) => (
         <Link to={`/lista-canciones-user/${album.id_lista}`} key={album.id_lista} className="albumes-item">
           <img

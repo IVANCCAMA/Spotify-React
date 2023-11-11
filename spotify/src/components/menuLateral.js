@@ -12,15 +12,15 @@ function MenuLateral({ userType }) {
   const OyenteOptions = [
     { to: '/', src: home, alt: 'Home', title: 'Inicio' },
     { separador: true },
-    { to: '/crearListaReproduccion', src: plus, alt: 'Crear lista de reproducción', title: 'Crear lista de reproducción' },
     { to: '/biblioteca', src: iconBiblioteca, alt: 'Biblioteca', title: 'Biblioteca' },
+    { to: '/crearListaReproduccion', src: plus, alt: 'Crear lista de reproducción', title: 'Crear lista de reproducción' }
   ];
   const DistMusicOptions = [
     { to: '/', src: home, alt: 'Home', title: 'Inicio' },
     { separador: true },
     { to: '/Albumes', src: group, alt: 'Álbumes', title: 'Álbumes' },
     { to: '/crearAlbum', src: plus, alt: 'Crear álbum', title: 'Crear álbum' },
-    { to: '/añadirCancion', src: plus, alt: 'Cargar canción', title: 'Cargar canción' },
+    { to: '/añadirCancion', src: plus, alt: 'Cargar canción', title: 'Cargar canción' }
   ];
 
   const [menuOptions, setMenuOptions] = useState([]);
