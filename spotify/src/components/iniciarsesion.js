@@ -7,23 +7,15 @@ import Alerta from './alerta';
 import { alfanumerico } from './form.js';
 import { useNavigate } from 'react-router-dom';
 
-function IniciarSesion({ showForm = true, signOn }) {
+function IniciarSesion({ signOn }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [btnCancel, setBtnCancel] = useState(false);
   const [redirectTo, setRedirectTo] = useState(null);
   const [isOnline, setIsOnline] = useState(window.navigator.onLine);
   const navigate = useNavigate();
-
-  const location = useLocation();
-  const isLoginRoute = location.pathname === '/iniciarsesion';
-  const dynamicStyle = {
-    display: showForm !== btnCancel ? 'flex' : 'none',
-    background: isLoginRoute ? '' : 'rgba(128, 128, 128, 0.5)'
-  };
 
   function handleCloseAndRedirect() {
     setIsModalOpen(false);
@@ -102,17 +94,13 @@ function IniciarSesion({ showForm = true, signOn }) {
           setIsModalOpen(true);
           return;
         }
-        
+
         try {
           // guardar user
           signOn(user);
 
           // redireccionar
           navigate('/Albumes');
-          
-          // Cerrar o ocultar el modal de inicio de sesión
-          setBtnCancel(true);
-
         } catch (error) {
           console.error('Error:', error);
           setModalMessage(`Error al subir o procesar el archivo`);
@@ -134,70 +122,58 @@ function IniciarSesion({ showForm = true, signOn }) {
   };
 
   return (
-    <div className='form-contend' style={dynamicStyle}>
-      <div className="modal-form">
-        <form className="modal-box" id="form" onSubmit={validarForm}>
-          <div className="inter-modal">
-            <div className="form-title">
-              <span>Inicia sesión en React Music</span>
+    <div className="modal-form">
+      <form className="modal-box" id="form" onSubmit={validarForm}>
+        <div className="inter-modal">
+          <div className="form-title">
+            <span>Inicia sesión en React Music</span>
+          </div>
+
+          <div className="campo">
+            <div className="input-box">
+              <label htmlFor="username">Nombre de usuario *</label>
+              <input autoFocus required
+                type="text"
+                id="username"
+                name="username"
+                placeholder="Escriba su nombre de usuario"
+              />
             </div>
+          </div><br />
 
-            <div className="campo">
-              <div className="input-box">
-                <label htmlFor="username">Nombre de usuario *</label>
-                <input autoFocus required
-                  type="text"
-                  id="username"
-                  name="username"
-                  placeholder="Escriba su nombre de usuario"
-                />
-              </div>
-            </div><br />
+          <div className="campo">
+            <div className="input-box">
+              <label htmlFor="password">Contraseña *</label>
+              <input required
+                type={passwordVisible ? "text" : "password"}
+                id="password"
+                name="password"
+                placeholder="Escriba su contraseña"
+              />
 
-            <div className="campo">
-              <div className="input-box">
-                <label htmlFor="password">Contraseña *</label>
-                <input required
-                  type={passwordVisible ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  placeholder="Escriba su contraseña"
-                />
-
-                <button
-                  type='button'
-                  className='ojito'
-                  onClick={() => { setPasswordVisible(!passwordVisible); }}
-                >
-                  {passwordVisible ? (<VscEye />) : (<VscEyeClosed />)}
-                </button>
-              </div>
-            </div>
-
-            <div className="campo">
-              <div className="btn-box">
-                <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
-
-                {isLoginRoute ? (
-                  <Link to="/" className="custom-link">Cancelar</Link>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn-next"
-                    onClick={() => { setBtnCancel(!btnCancel) }}>
-                    Cancelar
-                  </button>
-                )}
-              </div>
+              <button
+                type='button'
+                className='ojito'
+                onClick={() => { setPasswordVisible(!passwordVisible); }}
+              >
+                {passwordVisible ? (<VscEye />) : (<VscEyeClosed />)}
+              </button>
             </div>
           </div>
-        </form>
-        <Alerta
-          isOpen={isModalOpen}
-          mensaje={modalMessage}
-          onClose={handleCloseAndRedirect}
-        />
-      </div>
+
+          <div className="campo">
+            <div className="btn-box">
+              <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
+              <Link to="/" className="custom-link">Cancelar</Link>
+            </div>
+          </div>
+        </div>
+      </form>
+      <Alerta
+        isOpen={isModalOpen}
+        mensaje={modalMessage}
+        onClose={handleCloseAndRedirect}
+      />
     </div>
   );
 };

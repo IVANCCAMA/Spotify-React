@@ -1,3 +1,14 @@
 .album-content {
     width: 100%;
 }
+
+.albums-title {
+    align-items: center;
+    font-size: 35px;
+    display: flex;
+    position: relative;
+    font-family: 'roboto';
+    color: #f0f0f0;
+    width: 100%;
+    padding: 1em 1em 0;
+}
