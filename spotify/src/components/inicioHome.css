@@ -23,6 +23,7 @@
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin-right: 20px;
 }
 
 .boton-registro:hover {
@@ -36,7 +37,7 @@
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
-  margin-right: 22px;
+  margin-right: 20px;
   transition: background-color 0.3s;
 }
 
