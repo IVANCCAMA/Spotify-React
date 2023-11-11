@@ -1,14 +1,12 @@
 .header-Encabesado {
   background-color: #006666;
-  /* background-color: #008080; */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-bottom: 1px solid black;
   border-radius: 10px;
   width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px;
+  height: 70px;
   justify-content: flex-end;
   position: fixed;
   z-index: 1;
@@ -36,4 +34,19 @@
 
 .menu-options a:hover {
   background-color: #dcdcdc71;
+}
+
+.btn-header {
+  background-color: #008080;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 20px;
+}
+
+.btn-header:hover {
+  background-color: #66b2b2;
 }

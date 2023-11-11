@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import CrearLista from './components/crearLista';
 import AñadirCancion from './components/añadirCancion';
 import MenuLateral from './components/menuLateral';
@@ -15,13 +16,18 @@ import CrearListaReproduccion from './components/listaReproduccion';
 import IniciarSesion from "./components/iniciarsesion";
 
 function App() {
+  const [showForm, setShowForm] = useState(false);
+  const location = useLocation();
+  const isLoginRoute = location.pathname === '/iniciarsesion';
+
   return (
     <ListProvider>
       <div className="app-container">
-        <Encabeazado />
+        <Encabeazado updateShowForm={(showForm) => { setShowForm(showForm); }} />
         <div className='container-super'>
           <MenuLateral />
           <div className="content">
+            {!isLoginRoute && <IniciarSesion showForm={showForm} />}
             <Routes>
               <Route path="/" element={<Inicio />} />
               <Route path="/Albumes" element={<ListaAlbumes />} />

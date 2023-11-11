@@ -20,7 +20,7 @@ body {
 
 .content {
   background: #66b2b2;
-  padding: 100px 30px 120px;
+  margin: 70px 0 90px;
   width: 100%;
   display: flex;
 }

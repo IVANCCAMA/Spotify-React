@@ -211,7 +211,6 @@ function Registro() {
     confirmPasswordInput.classList.toggle('active', confirmPasswordInput.value !== password || !isPasswordValid);
   }
   
-
   return (
     <div className="modal-form">
       <form className="modal-box" id="form" onSubmit={validarForm}>
@@ -242,6 +241,8 @@ function Registro() {
                 id="password"
                 name="password"
                 placeholder="Escriba su contraseña"
+                minLength={8}
+                maxLength={40}
                 onChange={handlePassword}
                 onFocus={(e) => { e.target.nextElementSibling.style.display = 'block'; }}
                 onBlur={(e) => { e.target.nextElementSibling.style.display = 'none'; }}
@@ -271,6 +272,8 @@ function Registro() {
                 id="passwordConfirm"
                 name="passwordConfirm"
                 placeholder="Confirme su contraseña"
+                minLength={8}
+                maxLength={40}
                 onChange={(e) => {
                   const passwordInput = document.getElementById('password');
                   //Editeo
@@ -290,7 +293,7 @@ function Registro() {
 
           <div className="campo">
             <div className="input-box">
-              <label className="elemento" htmlFor="userType">Tipo de usuario *</label>
+              <label htmlFor="userType">Tipo de usuario *</label>
               <select name="userType" id='userType' defaultValue={'default'} required>
                 <option disabled hidden value='default'>Seleccionar tipo de usuario</option>
                 {userTypes.map((userType) => (
