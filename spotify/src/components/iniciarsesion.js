@@ -1,27 +1,21 @@
 import React, { useState } from 'react';
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { Link } from "react-router-dom";
-import './iniciarsesion.css'
+import './form.css'
 //import Alerta from './alerta';
 
 function IniciarSesion() {
   const [botonHabilitado] = useState(true);
-  //const [isModalOpen, setIsModalOpen] = useState(false);
-  //const [modalMessage, setModalMessage] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
- 
-
- 
-
-  
- 
-
 
   return (
     <div className="modal-form">
-      <form className="modal-box" id="form"  >
-      <h2 className="form-title">Inicia sesión en React Music</h2>
+      <form className="modal-box" id="form">
         <div className="inter-modal">
+          <div className="form-title">
+            <span>Inicia sesión en React Music</span>
+          </div>
+
           <div className="campo">
             <div className="input-box">
               <label htmlFor="username">Nombre de usuario *</label>
@@ -33,7 +27,7 @@ function IniciarSesion() {
                 placeholder="Escriba su nombre de usuario"
               />
             </div>
-          </div>
+          </div><br />
 
           <div className="campo">
             <div className="input-box">
@@ -44,18 +38,18 @@ function IniciarSesion() {
                 id="password"
                 name="password"
                 placeholder="Escriba su contraseña"
-             />
-              
+              />
+
               <button
                 type='button'
                 className='ojito'
                 onClick={() => { setPasswordVisible(!passwordVisible); }}
               >
-                {passwordVisible ? (<VscEyeClosed />) : (<VscEye />)}
+                {passwordVisible ? (<VscEye />) : (<VscEyeClosed />)}
               </button>
             </div>
           </div>
-         
+
           <div className="campo">
             <div className="btn-box">
               <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
@@ -67,4 +61,5 @@ function IniciarSesion() {
     </div>
   );
 };
-export default IniciarSesion;         
+
+export default IniciarSesion;   

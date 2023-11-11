@@ -18,32 +18,27 @@ function App() {
   return (
     <ListProvider>
       <div className="app-container">
+        <Encabeazado />
         <div className='container-super'>
           <MenuLateral />
-          <div className='contenedor-header-pincipal'>
-            <Encabeazado /> 
-            <div className="content">
-              <Routes>
-                <Route path="/" element={<Inicio />} />
-                <Route path="/Albumes" element={<ListaAlbumes />} />
-                <Route path="/crearAlbum" element={<CrearLista />} />
-                <Route path="/crearListaReproduccion" element={<CrearListaReproduccion />} />
-                <Route path="/añadirCancion" element={<AñadirCancion />} />
-                <Route path="/registro" element={<Registro />} />
-                <Route path="/perfil" element={< PerfilUsuario />} />
-                <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
-                <Route path="/iniciarsesion" element={< IniciarSesion/>} />
-              </Routes>
-            </div>
+          <div className="content">
+            <Routes>
+              <Route path="/" element={<Inicio />} />
+              <Route path="/Albumes" element={<ListaAlbumes />} />
+              <Route path="/crearAlbum" element={<CrearLista />} />
+              <Route path="/crearListaReproduccion" element={<CrearListaReproduccion />} />
+              <Route path="/añadirCancion" element={<AñadirCancion />} />
+              <Route path="/registro" element={<Registro />} />
+              <Route path="/perfil" element={< PerfilUsuario />} />
+              <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
+              <Route path="/iniciarsesion" element={< IniciarSesion />} />
+            </Routes>
           </div>
-          
-          
         </div>
         <ReproducirCancion />
       </div>
     </ListProvider>
   );
 }
-
 
 export default App;
