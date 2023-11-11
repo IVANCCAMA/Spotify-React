@@ -98,7 +98,7 @@ function IniciarSesion({ showForm = true, signOn }) {
 
         const user = await validarCampos(campos);
         if (user === null) {
-          setModalMessage(`Nombre o contraseña incorrecto`);
+          setModalMessage(` "Nombre o contraseña incorrecto" `);
           setIsModalOpen(true);
           return;
         }
