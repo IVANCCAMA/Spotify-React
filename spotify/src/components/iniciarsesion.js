@@ -100,7 +100,7 @@ function IniciarSesion({ signOn }) {
           signOn(user);
 
           // redireccionar
-          navigate('/Albumes');
+          navigate('/');
         } catch (error) {
           console.error('Error:', error);
           setModalMessage(`Error al subir o procesar el archivo`);

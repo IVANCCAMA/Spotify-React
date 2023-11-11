@@ -61,7 +61,7 @@ return (
         <div className="user-profile-alias">
           <div className="contenedor-alias">{userInfo?.nombre_usuario}</div>
         </div>
-        <div>N listas de reproducción</div>
+        <div>{userInfo?.cantidad_listas} listas de reproducion</div>
       </div>
     </div>
     <div className="contenedor-listas-user">
