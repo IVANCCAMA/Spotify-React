@@ -5,6 +5,7 @@ import './form.css';
 import axios from 'axios';
 import Alerta from './alerta';
 import { alfanumerico } from './form.js';
+import { useNavigate } from 'react-router-dom';
 
 function IniciarSesion({ showForm = true, signOn }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
@@ -15,6 +16,7 @@ function IniciarSesion({ showForm = true, signOn }) {
   const [btnCancel, setBtnCancel] = useState(false);
   const [redirectTo, setRedirectTo] = useState(null);
   const [isOnline, setIsOnline] = useState(window.navigator.onLine);
+  const navigate = useNavigate();
 
   const location = useLocation();
   const isLoginRoute = location.pathname === '/iniciarsesion';
@@ -96,7 +98,7 @@ function IniciarSesion({ showForm = true, signOn }) {
 
         const user = await validarCampos(campos);
         if (user === null) {
-          setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
+          setModalMessage(`Nombre o contraseña incorrecto`);
           setIsModalOpen(true);
           return;
         }
@@ -105,11 +107,11 @@ function IniciarSesion({ showForm = true, signOn }) {
           // guardar user
           signOn(user);
 
-          setModalMessage(`Lista creada exitosamente`);
-          setIsModalOpen(true);
+           
 
           // redireccionar
-          setRedirectTo("/Albumes");
+          navigate('/Albumes');
+
 
         } catch (error) {
           console.error('Error:', error);

@@ -3,7 +3,7 @@
   position: sticky;
   top: 0;
   min-width: 250px;
-  z-index: 1;
+  z-index: 3;
   background-color: #006666;
   /* border: 5px solid #000000; */
   border: 2px solid black;
