@@ -3,7 +3,6 @@ import axios from "axios";
 import { Icon } from '@iconify/react';
 import './perfilUsuario.css';
 import { Link } from "react-router-dom";
-import ListaAlbumes from './listaAlbunes';
 import ListaAlbumesUser from './listaAlbunesUser';
 
 function PerfilUsuario({ userConnected }) {
@@ -18,7 +17,7 @@ function PerfilUsuario({ userConnected }) {
         // primero verificar que esta logeado el user
         /* userConnected && userConnected.id */
         if (true) {          
-          const response = await axios.get(`http://spfisbackend-production.up.railway.app/api/usuarios/78`);
+          const response = await axios.get(`http://spfisbackend-production.up.railway.app/api/usuarios/${userConnected.id_usuario}`);
           const userData = response.data;
           console.log("Usuario logeado:", userData);
           setUserInfo(userData);
@@ -35,7 +34,7 @@ function PerfilUsuario({ userConnected }) {
     // Recuperar lista de canciones o lo que necesites
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://spfisbackend-production.up.railway.app/api/lista_canciones/oyente/78');
+        const response = await axios.get(`https://spfisbackend-production.up.railway.app/api/lista_canciones/oyente/${userConnected.id_usuario}`);
         const listaCanciones = response.data;
         listaCanciones.sort((a, b) => {
           return a.titulo_lista.localeCompare(b.titulo_lista);
@@ -48,7 +47,7 @@ function PerfilUsuario({ userConnected }) {
     };
 
     fetchData();
-  }, []); // Este useEffect se ejecutará solo una vez al montar el componente
+  }, [userConnected.id_usuario]); // Este useEffect se ejecutará solo una vez al montar el componente
 
 
 return (
@@ -61,10 +60,6 @@ return (
         <div>PERFIL</div>
         <div className="user-profile-alias">
           <div className="contenedor-alias">{userInfo?.nombre_usuario}</div>
-          <button className="contenedor-editar">
-            <Icon icon="material-symbols:edit-outline" color="white" width={16} height={16} />
-            <div>Editar</div>
-          </button>
         </div>
         <div>N listas de reproducción</div>
       </div>
