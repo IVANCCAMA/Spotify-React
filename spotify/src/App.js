@@ -16,46 +16,53 @@ import CrearListaReproduccion from './components/listaReproduccion';
 import IniciarSesion from "./components/iniciarsesion";
 
 function App() {
-  // ejemlpo de guardar el user
+  const [loggedIn, setLoggedIn] = useState(false);
   const [userConnected, setUserConnected] = useState(null);
 
-  const [showForm, setShowForm] = useState(false);
-  const location = useLocation();
-  const isLoginRoute = location.pathname === '/iniciarsesion' || location.pathname === '/crearAlbum'
-  || location.pathname === '/crearListaReproduccion' || location.pathname === '/añadirCancion'
-  || location.pathname === '/registro';
+  const login = (user) => {
+    setLoggedIn(true);
+    setUserConnected(user);
+  };
+
+  const logout = () => {
+    setLoggedIn(false);
+    setUserConnected(null);
+  };
 
   return (
     <ListProvider>
       <div className="app-container">
-        <Encabeazado
-          updateShowForm={(showForm) => { setShowForm(showForm); }}
-          userConnected={userConnected}
-          signOff={(shouldSignOff) => { if (shouldSignOff) { setUserConnected(null); } }}
-        />
+        <Encabeazado loggedIn={loggedIn} signOff={logout} />
         <div className='container-super'>
-          <MenuLateral
-            userConnected={userConnected}
-          />
+          <MenuLateral userType={loggedIn ? userConnected.tipo_usuario : null} />
           <div className="content">
-            {!isLoginRoute &&
-              <IniciarSesion
-                signOn={(user) => { setUserConnected(user); }}
-                showForm={showForm}
-              />
-            }
-
             <Routes>
-              <Route path="/" element={<Inicio />} />
-              <Route path="/Albumes" element={<Albumes />} />
-              <Route path="/iniciarsesion" element={< IniciarSesion
-                signOn={(user) => { setUserConnected(user); }} />} />
-              <Route path="/crearAlbum" element={<CrearLista />} />
-              <Route path="/crearListaReproduccion" element={<CrearListaReproduccion />} />
-              <Route path="/añadirCancion" element={<AñadirCancion />} />
-              <Route path="/registro" element={<Registro />} />
-              <Route path="/perfil" element={< PerfilUsuario userConnected={userConnected} />} />
               <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
+              {loggedIn ? (
+                <>
+                  {userConnected.tipo_usuario === "Distribuidora musical" ? (
+                    <>
+                      <Route path="/" element={<Inicio />} />
+                      <Route path="/Albumes" element={<Albumes />} />
+                      <Route path="/crearAlbum" element={<CrearLista />} />
+                      <Route path="/añadirCancion" element={<AñadirCancion />} />
+                    </>
+                  ) : (
+                    <>
+                      <Route path="/" element={<Albumes />} />
+                      <Route path="/crearListaReproduccion" element={<CrearListaReproduccion />} />
+                      <Route path="/perfil" element={< PerfilUsuario userConnected={userConnected} />} />
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Route path="/" element={<Albumes />} />
+                  <Route path="/iniciarsesion" element={< IniciarSesion signOn={login} />} />
+                  <Route path="/registro" element={<Registro />} />
+                </>
+              )}
+              <Route path="*" element={<Inicio to="/" />} />
             </Routes>
           </div>
         </div>
