@@ -5,7 +5,7 @@ import './perfilUsuario.css';
 import { Link } from "react-router-dom";
 import ListaAlbumes from './listaAlbunes';
 
-function PerfilUsuario() {
+function PerfilUsuario({ userConnected }) {
   // recuperar albumes del user
   const [albumes, setAlbumes] = useState([]);
 

@@ -9,7 +9,7 @@
   height: 70px;
   justify-content: flex-end;
   position: fixed;
-  z-index: 1;
+  z-index: 2;
 }
 
 .menu-options {
@@ -26,6 +26,7 @@
   transform-origin: top;
 }
 
+.menu-options button,
 .menu-options a {
   font-family: 'roboto';
   border: 1px solid #ffffff;
@@ -34,6 +35,7 @@
   padding: 6px;
 }
 
+.menu-options button:hover,
 .menu-options a:hover {
   background-color: #dcdcdc71;
 }
