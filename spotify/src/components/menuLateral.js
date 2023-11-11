@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from '../logos/logo.png';
 import home from '../logos/home.png';
@@ -6,16 +6,40 @@ import group from '../logos/group.png';
 import plus from '../logos/plus.png';
 import './menuLateral.css';
 
-function MenuLateral() {
-  // eslint-disable-next-line no-sparse-arrays
-  const menuOptions = [
+function MenuLateral({ userConnected }) {
+  const OyenteOptions = [
+    { to: '/Albumes', src: home, alt: 'Home', title: 'Inicio' },
+    { separador: true },
+    { to: '/crearListaReproduccion', src: plus, alt: 'Crear lista de reproducción', title: 'Crear lista de reproducción' }
+  ];
+  const DistMusicOptions = [
     { to: '/', src: home, alt: 'Home', title: 'Inicio' },
     { separador: true },
     { to: '/Albumes', src: group, alt: 'Álbumes', title: 'Álbumes' },
     { to: '/crearAlbum', src: plus, alt: 'Crear álbum', title: 'Crear álbum' },
     { to: '/añadirCancion', src: plus, alt: 'Cargar canción', title: 'Cargar canción' },
-    { to: '/crearListaReproduccion', src: plus, alt: 'Crear lista de reproducción', title: 'Crear lista de reproducción' }
   ];
+
+  const [menuOptions, setMenuOptions] = useState([]);
+
+  useEffect(() => {
+    console.log(userConnected);
+    if (userConnected !== null) {
+      switch (userConnected.tipo_usuario) {
+        case "Oyente":
+          setMenuOptions(OyenteOptions);
+          break;
+        case "Distribuidora musical":
+          setMenuOptions(DistMusicOptions);
+          break;
+        default:
+          setMenuOptions(OyenteOptions);
+          break;
+      } 
+    } else {
+      setMenuOptions(OyenteOptions);
+    }
+  }, [userConnected]);
 
   return (
     <div className="menu">

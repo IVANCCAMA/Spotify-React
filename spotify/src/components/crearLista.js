@@ -18,8 +18,8 @@ function CrearLista() {
     setIsOnline(window.navigator.onLine);
   };
 
-  useEffect(() => { 
-    mostrarNombreArchivo(); 
+  useEffect(() => {
+    mostrarNombreArchivo();
   }, [botonHabilitado, isModalOpen, modalMessage]);
 
   useEffect(() => {
@@ -31,14 +31,14 @@ function CrearLista() {
       window.removeEventListener('offline', handleOnlineStatusChange);
     };
   }, []);
-  
+
   const [redirectTo, setRedirectTo] = useState(null);
 
   function handleCloseAndRedirect() {
-      setIsModalOpen(false);
-      if (redirectTo) {
-          window.location.replace(redirectTo);
-      }
+    setIsModalOpen(false);
+    if (redirectTo) {
+      window.location.replace(redirectTo);
+    }
   }
   const getlistasbyid_user = async (id_usuario) => {
     try {
@@ -49,7 +49,7 @@ function CrearLista() {
       console.error('Error al obtener la lista de canciones del usuario:', error);
       return null;
     }
-};
+  };
 
   const ExisteArtista = async (nombreArtista) => {
     try {
@@ -164,7 +164,7 @@ function CrearLista() {
   };
 
   const validarForm = async (e) => {
-    
+
     setBotonHabilitado(false);
     try {
       if (isOnline) {
@@ -213,7 +213,7 @@ function CrearLista() {
           setModalMessage(`Lista creada exitosamente`);
           setIsModalOpen(true);
           setRedirectTo("/");
-          
+
         } catch (error) {
           console.error('Error:', error);
           setModalMessage(`Error al subir o procesar el archivo`);
@@ -361,7 +361,7 @@ function CrearLista() {
         isOpen={isModalOpen}
         mensaje={modalMessage}
         onClose={handleCloseAndRedirect}
-      />   
+      />
     </div>
   );
 }

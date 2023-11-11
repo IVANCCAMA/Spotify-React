@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import { Link, useLocation } from "react-router-dom";
 import "./encabezado.css"
-import IniciarSesion from "./iniciarsesion";
+// import IniciarSesion from "./iniciarsesion";
 
-function Encabezado({ updateShowForm }) {
-  // recuperar el estado
-  const [isLogined, setIsLogined] = useState(false);
+function Encabezado({ updateShowForm, userConnected, signOff }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
   useEffect(() => { updateShowForm(showForm); }, [showForm]);
@@ -19,7 +17,28 @@ function Encabezado({ updateShowForm }) {
 
   return (
     <div className="header-Encabesado">
-      {!isLogined ? (
+      {userConnected ? (
+        <>
+          <button className='btn-header' style={{ backgroundColor: '#006666' }}
+            onBlur={() => { setIsMenuOpen(false); }}
+            onClick={() => { setIsMenuOpen(!isMenuOpen); }}>
+            <Icon icon="gg:profile" color="white" width="45" height="45" />
+          </button>
+
+          <div
+            className="menu-options"
+            style={{ scale: isMenuOpen ? '1' : '0' }}>
+            <Link to="/perfil">Perfil</Link>
+            <button
+              onClick={() => {
+                signOff(true);
+                window.location.replace("/");
+              }}>
+              Cerrar sesión
+            </button>
+          </div>
+        </>
+      ) : (
         <>
           {isAuthRoute ? (
             <Link to="/iniciarsesion" className='btn-header'><strong>Iniciar Sesión</strong></Link>
@@ -30,20 +49,6 @@ function Encabezado({ updateShowForm }) {
             </button>
           )}
           <Link to="/registro" className='btn-header'><strong>Regístrate</strong></Link>
-        </>
-      ) : (
-        <>
-          <button
-            onClick={() => { setIsMenuOpen(!isMenuOpen); }}>
-            <Icon icon="gg:profile" color="white" width="45" height="45" />
-          </button>
-
-          <div
-            className="menu-options"
-            style={{ display: isMenuOpen ? 'flex' : 'none' }}>
-            <Link to="/perfil">Perfil</Link>
-            <Link to="/">Cerrar sesión</Link>
-          </div>
         </>
       )}
     </div>
