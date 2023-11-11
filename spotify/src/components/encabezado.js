@@ -2,22 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
 import { Link, useLocation } from "react-router-dom";
 import "./encabezado.css"
-// import IniciarSesion from "./iniciarsesion";
 
-function Encabezado({ updateShowForm, userConnected, signOff }) {
+function Encabezado({ loggedIn, signOff }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showForm, setShowForm] = useState(false);
-  useEffect(() => { updateShowForm(showForm); }, [showForm]);
-
-  // puede servir para controlar el direccionamiento a traves de link
-  const location = useLocation();
-  const isAuthRoute = location.pathname === '/iniciarsesion'
-    || location.pathname === '/registro' || location.pathname === '/';
-  useEffect(() => { setShowForm(false); }, [location.pathname]);
 
   return (
     <div className="header-Encabesado">
-      {userConnected ? (
+      {loggedIn ? (
         <>
           <button className='btn-header' style={{ backgroundColor: '#006666' }}
             onBlur={() => { setIsMenuOpen(false); }}
@@ -31,7 +22,7 @@ function Encabezado({ updateShowForm, userConnected, signOff }) {
             <Link to="/perfil">Perfil</Link>
             <button
               onClick={() => {
-                signOff(true);
+                signOff();
                 window.location.replace("/");
               }}>
               Cerrar sesión
@@ -40,14 +31,7 @@ function Encabezado({ updateShowForm, userConnected, signOff }) {
         </>
       ) : (
         <>
-          {isAuthRoute ? (
-            <Link to="/iniciarsesion" className='btn-header'><strong>Iniciar Sesión</strong></Link>
-          ) : (
-            <button className='btn-header'
-              onClick={() => { setShowForm(!showForm); }}>
-              <strong>Iniciar Sesión</strong>
-            </button>
-          )}
+          <Link to="/iniciarsesion" className='btn-header'><strong>Iniciar Sesión</strong></Link>
           <Link to="/registro" className='btn-header'><strong>Regístrate</strong></Link>
         </>
       )}

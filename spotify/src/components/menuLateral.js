@@ -6,9 +6,9 @@ import group from '../logos/group.png';
 import plus from '../logos/plus.png';
 import './menuLateral.css';
 
-function MenuLateral({ userConnected }) {
+function MenuLateral({ userType }) {
   const OyenteOptions = [
-    { to: '/Albumes', src: home, alt: 'Home', title: 'Inicio' },
+    { to: '/', src: home, alt: 'Home', title: 'Inicio' },
     { separador: true },
     { to: '/crearListaReproduccion', src: plus, alt: 'Crear lista de reproducción', title: 'Crear lista de reproducción' }
   ];
@@ -23,23 +23,19 @@ function MenuLateral({ userConnected }) {
   const [menuOptions, setMenuOptions] = useState([]);
 
   useEffect(() => {
-    console.log(userConnected);
-    if (userConnected !== null) {
-      switch (userConnected.tipo_usuario) {
-        case "Oyente":
-          setMenuOptions(OyenteOptions);
-          break;
-        case "Distribuidora musical":
-          setMenuOptions(DistMusicOptions);
-          break;
-        default:
-          setMenuOptions(OyenteOptions);
-          break;
-      } 
-    } else {
-      setMenuOptions(OyenteOptions);
+    console.log(userType);
+    switch (userType) {
+      case "Oyente":
+        setMenuOptions(OyenteOptions);
+        break;
+      case "Distribuidora musical":
+        setMenuOptions(DistMusicOptions);
+        break;
+      default:
+        setMenuOptions(OyenteOptions);
+        break;
     }
-  }, [userConnected]);
+  }, [userType]);
 
   return (
     <div className="menu">
