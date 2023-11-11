@@ -9,7 +9,7 @@ import Alerta from './alerta';
 import './menuLateral.css';
 import './alerta.css';
 
-function MenuLateral({ userType }) {
+function MenuLateral({ userType, isLogin }) {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -50,14 +50,16 @@ function MenuLateral({ userType }) {
 
   const handleItemClick = (menuOption) => {
     // Verificar si el usuario está autenticado
-    const isUserAuthenticated = false; // Debes actualizar esto con tu lógica real
+    const isUserAuthenticated = isLogin; // Debes actualizar esto con tu lógica real
     
-    // Verificar si la opción seleccionada requiere autenticación
-    const requiresAuthentication = menuOption.to === '/crearListaReproduccion' || menuOption.to === '/biblioteca';
-    
-    if (requiresAuthentication && !isUserAuthenticated) {
-      setModalMessage('Funcionalidad no permitida. Inicie sesión por favor.');
-      setIsModalOpen(true);
+    if(!isLogin){
+      // Verificar si la opción seleccionada requiere autenticación
+      const requiresAuthentication = menuOption.to === '/crearListaReproduccion' || menuOption.to === '/biblioteca';
+      
+      if (requiresAuthentication && !isUserAuthenticated) {
+        setModalMessage('Funcionalidad no permitida. Inicie sesión por favor.');
+        setIsModalOpen(true);
+      }
     }
   };
 

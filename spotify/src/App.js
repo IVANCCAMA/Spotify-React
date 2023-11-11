@@ -35,7 +35,7 @@ function App() {
       <div className="app-container">
         <Encabeazado loggedIn={loggedIn} signOff={logout} />
         <div className='container-super'>
-          <MenuLateral userType={loggedIn ? userConnected.tipo_usuario : null} />
+          <MenuLateral userType={loggedIn ? userConnected.tipo_usuario : null} isLogin = {loggedIn} />
           <div className="content">
             <Routes>
               <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
