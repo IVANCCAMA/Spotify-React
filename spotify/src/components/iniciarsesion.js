@@ -107,11 +107,11 @@ function IniciarSesion({ showForm = true, signOn }) {
           // guardar user
           signOn(user);
 
-           
-
           // redireccionar
           navigate('/Albumes');
-
+          
+          // Cerrar o ocultar el modal de inicio de sesión
+          setBtnCancel(true);
 
         } catch (error) {
           console.error('Error:', error);
