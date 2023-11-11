@@ -14,14 +14,16 @@
 
 .menu-options {
   position: absolute;
-  top: 68px;
-  right: 12px;
+  top: 70px;
+  right: 15px;
   background-color: #006666;
   border: 1px solid #ffffff;
   padding: 0px;
   display: flex;
   flex-direction: column;
   z-index: 1;
+  transition: scale .8s;
+  transform-origin: top;
 }
 
 .menu-options a {

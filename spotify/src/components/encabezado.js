@@ -6,7 +6,8 @@ import IniciarSesion from "./iniciarsesion";
 
 function Encabezado({ updateShowForm }) {
   // recuperar el estado
-  const [isLogined, setIsLogined] = useState(false);
+  const isLogined = true;
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showForm, setShowForm] = useState(false);
   useEffect(() => { updateShowForm(showForm); }, [showForm]);
@@ -33,14 +34,15 @@ function Encabezado({ updateShowForm }) {
         </>
       ) : (
         <>
-          <button
+          <button className='btn-header' style={{ backgroundColor: '#006666' }}
+            onBlur={() => { setIsMenuOpen(false); }}
             onClick={() => { setIsMenuOpen(!isMenuOpen); }}>
             <Icon icon="gg:profile" color="white" width="45" height="45" />
           </button>
 
           <div
             className="menu-options"
-            style={{ display: isMenuOpen ? 'flex' : 'none' }}>
+            style={{ scale: isMenuOpen ? '1' : '0' }}>
             <Link to="/perfil">Perfil</Link>
             <Link to="/">Cerrar sesión</Link>
           </div>

@@ -5,7 +5,7 @@ import AñadirCancion from './components/añadirCancion';
 import MenuLateral from './components/menuLateral';
 import Registro from './components/registro';
 import './App.css';
-import ListaAlbumes from './components/listaAlbunes';
+import Albumes from './components/albumes';
 import ReproducirCancion from './components/reproducirCancion';
 import Inicio from './components/inicioHome';
 import ListaCanciones from './components/listaCanciones';
@@ -30,7 +30,7 @@ function App() {
             {!isLoginRoute && <IniciarSesion showForm={showForm} />}
             <Routes>
               <Route path="/" element={<Inicio />} />
-              <Route path="/Albumes" element={<ListaAlbumes />} />
+              <Route path="/Albumes" element={<Albumes />} />
               <Route path="/crearAlbum" element={<CrearLista />} />
               <Route path="/crearListaReproduccion" element={<CrearListaReproduccion />} />
               <Route path="/añadirCancion" element={<AñadirCancion />} />
