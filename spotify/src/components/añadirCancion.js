@@ -7,27 +7,15 @@ import { alfanumerico } from './form.js';
 import './form.css'
 import Alerta from './alerta';
 
-function AñadirCancion() {
+function AñadirCancion({ setIsModalOpen, setModalMessage, setRedirectTo }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const generos = ['Pop', 'Rock and Roll', 'Disco', 'Country', 'Techno',
     'Reggae', 'Salsa', 'Flamenco', 'Ranchera', 'Hip hop/Rap',
     'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica'];
   const [listas, setListas] = useState([]);
   const [botonHabilitado, setBotonHabilitado] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, isModalOpen, modalMessage]);
+  useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, setIsModalOpen, setModalMessage]);
 
-  //
-  const [redirectTo, setRedirectTo] = useState(null);
-
-  function handleCloseAndRedirect() {
-    setIsModalOpen(false);
-    if (redirectTo) {
-      window.location.replace(redirectTo);
-    }
-  }
-  //
   const getlistasbyid_user = async (id_usuario) => {
     try {
       const query = `/usuarios/getlistasbyid_user/${id_usuario}`;
@@ -180,9 +168,7 @@ function AñadirCancion() {
 
       const nuevaCancion = await validarCampos(campos);
       if (nuevaCancion === null) {
-        if (!modalMessage) {
-          setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
-        }
+        setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
         setIsModalOpen(true);
         return;
       }
@@ -373,11 +359,6 @@ function AñadirCancion() {
           </div>
         </div>
       </form>
-      <Alerta
-        isOpen={isModalOpen}
-        mensaje={modalMessage}
-        onClose={handleCloseAndRedirect}
-      />
     </div>
   );
 };

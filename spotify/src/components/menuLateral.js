@@ -9,12 +9,7 @@ import Alerta from './alerta';
 import './menuLateral.css';
 import './alerta.css';
 
-function MenuLateral({ userType }) {
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [redirectTo, setRedirectTo] = useState(null);
-
+function MenuLateral({ userType, islogin, setIsModalOpen, setModalMessage, setRedirectTo }) {
   const OyenteOptions = [
     { to: '/', src: home, alt: 'Home', title: 'Inicio' },
     { separador: true },
@@ -43,30 +38,21 @@ function MenuLateral({ userType }) {
         setMenuOptions(OyenteOptions);
         break;
     }
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userType]);
-
 
   const handleItemClick = (menuOption) => {
     // Verificar si el usuario está autenticado
-    const isUserAuthenticated = false; // Debes actualizar esto con tu lógica real
+    const isUserAuthenticated = islogin; // Debes actualizar esto con tu lógica real
     
-    // Verificar si la opción seleccionada requiere autenticación
-    const requiresAuthentication = menuOption.to === '/crearListaReproduccion' || menuOption.to === '/biblioteca';
-    
-    if (requiresAuthentication && !isUserAuthenticated) {
-      setModalMessage('Funcionalidad no permitida. Inicie sesión por favor.');
-      setIsModalOpen(true);
-    }
+    if (true) {// Verificar si la opción seleccionada requiere autenticación
+      const requiresAuthentication = menuOption.to === '/crearListaReproduccion' || menuOption.to === '/biblioteca';
+      
+      if (requiresAuthentication) {
+        setModalMessage('Funcionalidad no permitida. Inicie sesión por favor.');
+        setIsModalOpen(true);
+        setRedirectTo("/");
+      }}
   };
-
-  function handleCloseAndRedirect() {
-    setIsModalOpen(false);
-    if (redirectTo) {
-      window.location.replace(redirectTo);
-    }
-  }
 
   return (
     <div className="menu">
@@ -92,12 +78,6 @@ function MenuLateral({ userType }) {
           )
         ))}
       </div>
-
-      <Alerta  className= "modal-alerta-user"
-        isOpen={isModalOpen}
-        mensaje={modalMessage}
-        onClose={handleCloseAndRedirect}
-      />
     </div>
   );
 }

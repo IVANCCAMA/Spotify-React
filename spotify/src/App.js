@@ -15,10 +15,38 @@ import Encabeazado from "./components/encabezado";
 import CrearListaReproduccion from './components/listaReproduccion';
 import IniciarSesion from "./components/iniciarsesion";
 import ListaCancionesUser from './components/listaCancionesUser';
+import Alerta from './components/alerta';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userConnected, setUserConnected] = useState(null);
+
+  // alerta modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  useEffect(() => {
+    if (!isModalOpen) {
+      setIsModalOpen(false);
+      setModalMessage("");
+    }
+  }, [isModalOpen]);
+  const [redirectTo, setRedirectTo] = useState(null);
+
+  // alerta default
+  const alertDefault = { isOpen: false, mensaje: '', redirectTo: null };
+  const [alertParameters, setAlertParameters] = useState(alertDefault);
+  useEffect(() => {
+    setAlertParameters(
+      { isOpen: isModalOpen, mensaje: modalMessage, redirectTo: redirectTo }
+    );
+  }, [isModalOpen, modalMessage, redirectTo]);
+  // reasignar al default al reload
+  const location = useLocation();
+  useEffect(() => {
+    setIsModalOpen(false);
+    setModalMessage("");
+    setRedirectTo(null);
+  }, [location.pathname]);
 
   const login = (user) => {
     setLoggedIn(true);
@@ -35,8 +63,16 @@ function App() {
       <div className="app-container">
         <Encabeazado loggedIn={loggedIn} signOff={logout} />
         <div className='container-super'>
-          <MenuLateral userType={loggedIn ? userConnected.tipo_usuario : null} />
+          <MenuLateral
+            islogin={loggedIn}
+            userType={loggedIn ? userConnected.tipo_usuario : null}
+            setIsModalOpen={setIsModalOpen}
+            setModalMessage={setModalMessage}
+            setRedirectTo={setRedirectTo}
+          />
           <div className="content">
+            <Alerta alertParameters={alertParameters} />
+
             <Routes>
               <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
               {loggedIn ? (
@@ -45,13 +81,25 @@ function App() {
                     <>
                       <Route path="/" element={<Inicio />} />
                       <Route path="/Albumes" element={<Albumes />} />
-                      <Route path="/crearAlbum" element={<CrearLista />} />
-                      <Route path="/añadirCancion" element={<AñadirCancion />} />
+                      <Route path="/crearAlbum" element={<CrearLista
+                        setIsModalOpen={setIsModalOpen}
+                        setModalMessage={setModalMessage}
+                        setRedirectTo={setRedirectTo}
+                      />} />
+                      <Route path="/añadirCancion" element={<AñadirCancion
+                        setIsModalOpen={setIsModalOpen}
+                        setModalMessage={setModalMessage}
+                        setRedirectTo={setRedirectTo}
+                      />} />
                     </>
                   ) : (
                     <>
                       <Route path="/" element={<Albumes />} />
-                      <Route path="/crearListaReproduccion" element={<CrearListaReproduccion />} />
+                      {/* <Route path="/crearListaReproduccion" element={<CrearListaReproduccion
+                        setIsModalOpen={setIsModalOpen}
+                        setModalMessage={setModalMessage}
+                        setRedirectTo={setRedirectTo}
+                         />} /> */}
                       <Route path="/perfil" element={< PerfilUsuario userConnected={userConnected} />} />
                       <Route path="/lista-canciones-user/:id_lista" element={<ListaCancionesUser />} />
                     </>
