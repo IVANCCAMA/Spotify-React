@@ -51,6 +51,8 @@ function PerfilUsuario({ userConnected }) {
   }, [userConnected.id_usuario]); // Este useEffect se ejecutará solo una vez al montar el componente
 
 
+  
+
 return (
   <div className="contendor-perfil-usuario">
     <div className="user-profile-container">

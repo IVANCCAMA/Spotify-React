@@ -16,6 +16,7 @@ import CrearListaReproduccion from './components/listaReproduccion';
 import IniciarSesion from "./components/iniciarsesion";
 import ListaCancionesUser from './components/listaCancionesUser';
 import Alerta from './components/alerta';
+import Biblioteca from './components/biblioteca';
 
 
 function App() {
@@ -100,6 +101,8 @@ function App() {
                         setRedirectTo={setRedirectTo}
                          />} /> */}
                       <Route path="/perfil" element={< PerfilUsuario userConnected={userConnected} />} />
+                      <Route path="/biblioteca" element={< Biblioteca userConnected={userConnected} />} />  q
+                     
                       <Route path="/lista-canciones-user/:id_lista" element={<ListaCancionesUser />} />
                     </>
                   )}

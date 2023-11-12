@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import axios from "axios";
  
-function Biblioteca() {
+function Biblioteca({ userConnected }) {
   const [albumes, setAlbumes] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://spfisbackend-production.up.railway.app/api/lista_canciones');
+        const response = await axios.get(`https://spfisbackend-production.up.railway.app/api/lista_canciones/oyente/${userConnected.id_usuario}`);
         const listaCanciones = response.data;
         listaCanciones.sort((a, b) => {
           return a.titulo_lista.localeCompare(b.titulo_lista);
@@ -20,12 +20,13 @@ function Biblioteca() {
     };
 
     fetchData();
-  }, []);
+  }, [userConnected]);
 
   return (
-    <div className="albumes-list">
+    <div className='albun-content'style={{gridTemplateColumns: 'repeat(3, minmax(300px, 1fr))'}}>
+    <div className="albumes-list" >
       {albumes.map((album, index) => (
-        <Link to={`/lista-canciones/${album.id_lista}`} key={album.id_lista} className="albumes-item">
+        <Link to={`/lista-canciones-user/${album.id_lista}`} key={album.id_lista} className="albumes-item">
           <img
             src={album.path_image}
             alt="Álbum"
@@ -38,6 +39,7 @@ function Biblioteca() {
           </div>
         </Link>
       ))}
+    </div>
     </div>
   );
 }
