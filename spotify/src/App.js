@@ -13,6 +13,7 @@ import PerfilUsuario from './components/perfilUsuario';
 import Encabeazado from "./components/encabezado";
 import CrearListaReproduccion from './components/listaReproduccion';
 import IniciarSesion from "./components/iniciarsesion";
+import Biblioteca from './components/biblioteca';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/perfil" element={< PerfilUsuario />} />
                 <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
                 <Route path="/iniciarsesion" element={< IniciarSesion/>} />
+                <Route path="/biblioteca" element={< Biblioteca/>} /> 
               </Routes>
             </div>
           </div>
