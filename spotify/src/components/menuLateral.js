@@ -9,7 +9,7 @@ import Alerta from './alerta';
 import './menuLateral.css';
 import './alerta.css';
 
-function MenuLateral({ userType, islogin, setIsModalOpen, setModalMessage, setRedirectTo }) {
+function MenuLateral({ userType, isLogin, setIsModalOpen, setModalMessage, setRedirectTo }) {
   const OyenteOptions = [
     { to: '/', src: home, alt: 'Home', title: 'Inicio' },
     { separador: true },
@@ -40,18 +40,16 @@ function MenuLateral({ userType, islogin, setIsModalOpen, setModalMessage, setRe
     }
   }, [userType]);
 
-  const handleItemClick = (menuOption) => {
-    // Verificar si el usuario está autenticado
-    const isUserAuthenticated = islogin; // Debes actualizar esto con tu lógica real
-    
-    if (true) {// Verificar si la opción seleccionada requiere autenticación
+  const handleItemClick = (e, menuOption) => {
+    if(!isLogin){
       const requiresAuthentication = menuOption.to === '/crearListaReproduccion' || menuOption.to === '/biblioteca';
-      
       if (requiresAuthentication) {
+        e.preventDefault();
         setModalMessage('Funcionalidad no permitida. Inicie sesión por favor.');
         setIsModalOpen(true);
         setRedirectTo("/");
-      }}
+      }
+    }
   };
 
   return (
@@ -68,7 +66,7 @@ function MenuLateral({ userType, islogin, setIsModalOpen, setModalMessage, setRe
             <div key={'separador-' + index} className="item separador border-b-5 border-black"></div>
           ) : (
             <div key={'item-' + index} className="item">
-              <Link key={'link-' + index} to={menuOption.to} onClick={() => handleItemClick(menuOption)}>
+              <Link key={'link-' + index} to={menuOption.to} onClick={(e) => handleItemClick(e, menuOption)}>
                 <div key={'icon-' + index} className="icon">
                   <img key={'img-' + index} src={menuOption.src} alt={menuOption.alt} width="30" />
                 </div>

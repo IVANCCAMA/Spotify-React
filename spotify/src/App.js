@@ -64,7 +64,7 @@ function App() {
         <Encabeazado loggedIn={loggedIn} signOff={logout} />
         <div className='container-super'>
           <MenuLateral
-            islogin={loggedIn}
+            isLogin={loggedIn}
             userType={loggedIn ? userConnected.tipo_usuario : null}
             setIsModalOpen={setIsModalOpen}
             setModalMessage={setModalMessage}
