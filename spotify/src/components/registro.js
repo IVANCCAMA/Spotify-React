@@ -4,9 +4,8 @@ import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { Link } from "react-router-dom";
 import { alfanumerico, verificarString } from './form.js';
 import './form.css'
-import Alerta from './alerta';
 
-function Registro() {
+function Registro({ setIsModalOpen, setModalMessage, setRedirectTo }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const userTypes = ['Distribuidora musical', 'Oyente'];
   const requirements = [
@@ -18,18 +17,8 @@ function Registro() {
   ];
 
   const [botonHabilitado, setBotonHabilitado] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [redirectTo, setRedirectTo] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [passwordConfirmVisible, setPasswordConfirmVisible] = useState(false);
-
-  function handleCloseAndRedirect() {
-    setIsModalOpen(false);
-    if (redirectTo) {
-      window.location.replace(redirectTo);
-    }
-  }
 
   const ExisteArtista = async (nombreArtista) => {
     try {
@@ -140,9 +129,7 @@ function Registro() {
 
       const newUser = await validarCampos(campos);
       if (newUser === null) {
-        if (!modalMessage) {
           setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
-        }
         setIsModalOpen(true);
         return;
       }
@@ -308,11 +295,6 @@ function Registro() {
           </div>
         </div>
       </form>
-      <Alerta
-        isOpen={isModalOpen}
-        mensaje={modalMessage}
-        onClose={handleCloseAndRedirect}
-      />
     </div>
   );
 };

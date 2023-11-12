@@ -5,16 +5,9 @@ import home from '../logos/home.png';
 import group from '../logos/group.png';
 import plus from '../logos/plus.png';
 import iconBiblioteca from '../logos/iconobilioteca.png';
-import Alerta from './alerta';
 import './menuLateral.css';
-import './alerta.css';
 
-function MenuLateral({ userType, isLogin }) {
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [redirectTo, setRedirectTo] = useState(null);
-
+function MenuLateral({ userType, isLogin, setIsModalOpen, setModalMessage, setRedirectTo }) {
   const OyenteOptions = [
     { to: '/', src: home, alt: 'Home', title: 'Inicio' },
     { separador: true },
@@ -43,33 +36,19 @@ function MenuLateral({ userType, isLogin }) {
         setMenuOptions(OyenteOptions);
         break;
     }
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userType]);
 
-
-  const handleItemClick = (menuOption) => {
-    // Verificar si el usuario está autenticado
-    const isUserAuthenticated = isLogin; // Debes actualizar esto con tu lógica real
-    
+  const handleItemClick = (e, menuOption) => {
     if(!isLogin){
-      // Verificar si la opción seleccionada requiere autenticación
       const requiresAuthentication = menuOption.to === '/crearListaReproduccion' || menuOption.to === '/biblioteca';
-      
-      if (requiresAuthentication && !isUserAuthenticated) {
+      if (requiresAuthentication) {
+        e.preventDefault();
         setModalMessage('Funcionalidad no permitida. Inicie sesión por favor.');
         setIsModalOpen(true);
         setRedirectTo("/");
       }
     }
   };
-
-  function handleCloseAndRedirect() {
-    setIsModalOpen(false);
-    if (redirectTo) {
-      window.location.replace(redirectTo);
-    }
-  }
 
   return (
     <div className="menu">
@@ -85,7 +64,7 @@ function MenuLateral({ userType, isLogin }) {
             <div key={'separador-' + index} className="item separador border-b-5 border-black"></div>
           ) : (
             <div key={'item-' + index} className="item">
-              <Link key={'link-' + index} to={menuOption.to} onClick={() => handleItemClick(menuOption)}>
+              <Link key={'link-' + index} to={menuOption.to} onClick={(e) => handleItemClick(e, menuOption)}>
                 <div key={'icon-' + index} className="icon">
                   <img key={'img-' + index} src={menuOption.src} alt={menuOption.alt} width="30" />
                 </div>
@@ -95,12 +74,6 @@ function MenuLateral({ userType, isLogin }) {
           )
         ))}
       </div>
-
-      <Alerta  className= "modal-alerta-user"
-        isOpen={isModalOpen}
-        mensaje={modalMessage}
-        onClose={handleCloseAndRedirect}
-      />
     </div>
   );
 }
