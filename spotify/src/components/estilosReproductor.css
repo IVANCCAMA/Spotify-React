@@ -5,13 +5,15 @@
   align-items: center;
   justify-content: space-between;
   padding: 5px;
-  height: 89px;
+  height: 90px;
   width: 100%;
   position: fixed;
   bottom: 0;
   left: 0;
   z-index: 1000;
-  border-top: 5px solid black;
+  border-top: 1px solid black;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
 }
 
 .detalles-musica {

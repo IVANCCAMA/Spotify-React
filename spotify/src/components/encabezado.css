@@ -1,29 +1,33 @@
-.header {
-    background-color: #66b2b2;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1%;
-    justify-content: flex-end; /* Alinea el botón a la derecha */
-  }
-
-  
+.header-Encabesado {
+  background-color: #006666;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid black;
+  border-radius: 10px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  height: 70px;
+  justify-content: flex-end;
+  position: fixed;
+  z-index: 2;
+}
 
 .menu-options {
   position: absolute;
-  top: 68px; /* Ajusta la posición vertical según tus necesidades */
-  right: 12px; /* Ajusta la posición horizontal según tus necesidades */
+  top: 70px;
+  right: 15px;
   background-color: #006666;
   border: 1px solid #ffffff;
   padding: 0px;
   display: flex;
   flex-direction: column;
   z-index: 1;
+  transition: scale .8s;
+  transform-origin: top;
 }
 
+.menu-options button,
 .menu-options a {
-  /* font-weight: bold; */
   font-family: 'roboto';
   border: 1px solid #ffffff;
   color: #ffffff;
@@ -31,6 +35,22 @@
   padding: 6px;
 }
 
+.menu-options button:hover,
 .menu-options a:hover {
   background-color: #dcdcdc71;
+}
+
+.btn-header {
+  background-color: #008080;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 20px;
+}
+
+.btn-header:hover {
+  background-color: #66b2b2;
 }

@@ -4,9 +4,8 @@ import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { Link } from "react-router-dom";
 import { alfanumerico, verificarString } from './form.js';
 import './form.css'
-import Alerta from './alerta';
 
-function Registro() {
+function Registro({ setIsModalOpen, setModalMessage, setRedirectTo }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const userTypes = ['Distribuidora musical', 'Oyente'];
   const requirements = [
@@ -18,18 +17,8 @@ function Registro() {
   ];
 
   const [botonHabilitado, setBotonHabilitado] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [redirectTo, setRedirectTo] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [passwordConfirmVisible, setPasswordConfirmVisible] = useState(false);
-
-  function handleCloseAndRedirect() {
-    setIsModalOpen(false);
-    if (redirectTo) {
-      window.location.replace(redirectTo);
-    }
-  }
 
   const ExisteArtista = async (nombreArtista) => {
     try {
@@ -140,9 +129,7 @@ function Registro() {
 
       const newUser = await validarCampos(campos);
       if (newUser === null) {
-        if (!modalMessage) {
           setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
-        }
         setIsModalOpen(true);
         return;
       }
@@ -150,14 +137,14 @@ function Registro() {
       try {
         const subidaExitosa = await subirBD(newUser);
         if (!subidaExitosa) {
-          setModalMessage(`Error al cargar la canción. Intente más tarde`);
+          setModalMessage(`Error al crear usuario. Intente más tarde`);
           setIsModalOpen(true);
           return;
         }
 
         setModalMessage(`Registro creado exitosamente`);
         setIsModalOpen(true);
-        setRedirectTo("/");
+        setRedirectTo("/iniciarsesion");
       } catch (error) {
         console.error('Error:', error);
         setModalMessage(`Error al procesar el nuevo usuario`);
@@ -289,7 +276,7 @@ function Registro() {
           </div>
 
           <div className="campo">
-            <div className="input-boxx">
+            <div className="input-box">
               <label className="elemento" htmlFor="userType">Tipo de usuario *</label>
               <select name="userType" id='userType' defaultValue={'default'} required>
                 <option disabled hidden value='default'>Seleccionar tipo de usuario</option>
@@ -308,11 +295,6 @@ function Registro() {
           </div>
         </div>
       </form>
-      <Alerta
-        isOpen={isModalOpen}
-        mensaje={modalMessage}
-        onClose={handleCloseAndRedirect}
-      />
     </div>
   );
 };

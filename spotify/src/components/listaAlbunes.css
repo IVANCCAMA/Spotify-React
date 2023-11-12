@@ -1,14 +1,12 @@
-
 .albumes-list {
   position: relative;
   border-radius: 10px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(320px, 1fr)); /* Ancho flexible */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2em;
-  grid-auto-rows: minmax(150px);
-  height: 100%;
-  width: 80%;
-  padding-top: 1%;
+  height: fit-content;
+  width: auto;
+  margin: 2em;
 }
 
 .albumes-details {
@@ -22,8 +20,11 @@
 .albumes-item {
   display: flex;
   flex-direction: row; 
-  align-items: center; 
-  padding-left: 20px;
+  align-items: center;
+  border: 2px solid #008080;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .albumes-logo {
@@ -31,7 +32,7 @@
 }
 
 .albumes-title {
-  padding: 10px;
+  padding: 0 10px;
   font-weight: bold;
   font-size: 25px;
   color: #FFFFFF;
@@ -73,23 +74,4 @@
   width: 120px;
   height: 120px;
   border: 5px solid white; 
-}
-
-@media screen and (max-width: 1280px) {
-  .albumes-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media screen and (max-width: 1000px) {
-  .albumes-list {
-    grid-template-columns: repeat(1, 1fr);
-  }
-
-  
-}
-@media screen and (max-width: 768px) {
-  .albumes-list {
-    grid-template-columns: repeat(1, 1fr);
-  }
 }

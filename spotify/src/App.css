@@ -1,10 +1,5 @@
-.contenedor-header-pincipal{
-  background-color: #66b2b2;
-  width: 100%;
-}
-
 body {
-  background: #66b2b2;
+  background-color: black;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,6 +19,9 @@ body {
 }
 
 .content {
-  align-items: center;
+  background: #66b2b2;
+  margin: 70px 0 90px;
+  width: 100%;
+  display: flex;
 }
 

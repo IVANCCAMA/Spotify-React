@@ -4,23 +4,19 @@ import { Link } from 'react-router-dom';
 import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
 import { alfanumerico } from './form.js';
 import './form.css';
-import Alerta from './alerta';
 
-function CrearLista() {
+function CrearLista({ setIsModalOpen, setModalMessage, setRedirectTo }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const [botonHabilitado, setBotonHabilitado] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
   const [isOnline, setIsOnline] = useState(window.navigator.onLine); // Verifica si hay conexión inicialmente
-
 
   const handleOnlineStatusChange = () => {
     setIsOnline(window.navigator.onLine);
   };
 
-  useEffect(() => { 
-    mostrarNombreArchivo(); 
-  }, [botonHabilitado, isModalOpen, modalMessage]);
+  useEffect(() => {
+    mostrarNombreArchivo();
+  }, [botonHabilitado]);
 
   useEffect(() => {
     window.addEventListener('online', handleOnlineStatusChange);
@@ -31,15 +27,7 @@ function CrearLista() {
       window.removeEventListener('offline', handleOnlineStatusChange);
     };
   }, []);
-  
-  const [redirectTo, setRedirectTo] = useState(null);
 
-  function handleCloseAndRedirect() {
-      setIsModalOpen(false);
-      if (redirectTo) {
-          window.location.replace(redirectTo);
-      }
-  }
   const getlistasbyid_user = async (id_usuario) => {
     try {
       const query = `/usuarios/getlistasbyid_user/${id_usuario}`;
@@ -49,7 +37,7 @@ function CrearLista() {
       console.error('Error al obtener la lista de canciones del usuario:', error);
       return null;
     }
-};
+  };
 
   const ExisteArtista = async (nombreArtista) => {
     try {
@@ -164,7 +152,7 @@ function CrearLista() {
   };
 
   const validarForm = async (e) => {
-    
+
     setBotonHabilitado(false);
     try {
       if (isOnline) {
@@ -213,7 +201,7 @@ function CrearLista() {
           setModalMessage(`Lista creada exitosamente`);
           setIsModalOpen(true);
           setRedirectTo("/");
-          
+
         } catch (error) {
           console.error('Error:', error);
           setModalMessage(`Error al subir o procesar el archivo`);
@@ -357,11 +345,6 @@ function CrearLista() {
           </div>
         </div>
       </form>
-      <Alerta
-        isOpen={isModalOpen}
-        mensaje={modalMessage}
-        onClose={handleCloseAndRedirect}
-      />   
     </div>
   );
 }

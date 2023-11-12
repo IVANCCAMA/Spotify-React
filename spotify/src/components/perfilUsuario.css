@@ -1,16 +1,16 @@
 .contendor-perfil-usuario {
+    position: relative;
     font-family: 'roboto';
     color: #f0f0f0;
+    width: 100%;
 }
 
 .user-profile-container {
     display: flex;
     align-items: center; 
     background-color: #008080;
-    position: relative; 
-    height: 100%;
-    top: 70%;
-    padding-left: 1%; 
+    position: relative;
+    padding: 3%; 
 }
 
 .user-profile-column {
@@ -34,7 +34,6 @@
 }
 
 .contenedor-editar {
-    
     align-items: center;
     height: fit-content;
     border: 3px solid #f0f0f0;
@@ -44,94 +43,13 @@
 }
 
 .contenedor-listas-user {
-    padding: 1%;
     align-items: center;
     width: 100%;
 }
 
 .contenedor-listas-user-1 {
+    padding: 1em 2em 0;
     font-weight: bold;
     display: flex;
-    align-items: center;
+    justify-content: space-between;
 }
-
-.mostrar-todo {
-    padding-left: 70%;
-    align-items: end;
-}
-
-.listas-usuer {
-    /* background-color: #008080; */
-    width: 100%;
-    height: 100%;
-    padding-top: 1%;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(320px, 1fr));
-}
-
-.lista-reproduccion {
-    /* background-color: #5d08cc; */
-    width: 100%;
-    align-items: center;
-    position: relative;
-    display: flex;
-    padding: 1%;
-}
-
-.lista-image {
-    width: 120px;
-    height: 120px;
-    border: 5px solid white; 
-}
-
-.lista-details {
-    width: 50%;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-.lista-item {
-display: flex;
-flex-direction: row; 
-align-items: center; 
-padding-left: 20px;
-}
-
-.lista-logo {
-display: block;
-}
-
-.lista-title {
-padding: 10px;
-font-weight: bold;
-font-size: 25px;
-display: block;
-align-items: center;
-text-align: justify;
-white-space: nowrap; /* Evita que el texto se divida en varias líneas */
-overflow: hidden; /* Oculta el contenido que desborda el contenedor */
-text-overflow: ellipsis; /* Muestra puntos suspensivos (...) cuando el texto desborda */
-word-wrap: break-word; /* Permite dividir palabras largas en varias líneas */
-max-width: 100%;
-}
-
-.user-name {
-padding: 7px;
-position: relative;
-top: 0px;
-font-weight: bold;
-font-size: 16px;
-display: block;
-align-items: center;
-text-align: justify;
-font-family: var(--fuente-1);
-}
-
-.lista-songs {
-padding: 7px;
-font-weight: bold;
-font-size: 16px;
-display: block;
-align-items: center;
-}
-

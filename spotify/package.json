@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "@iconify-icons/solar": "^1.2.3",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -50,6 +51,7 @@
     ]
   },
   "devDependencies": {
+    "@iconify/icons-solar": "^1.2.3",
     "@iconify/react": "^4.1.1"
   }
 }
