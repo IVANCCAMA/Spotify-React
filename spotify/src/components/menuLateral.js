@@ -5,9 +5,7 @@ import home from '../logos/home.png';
 import group from '../logos/group.png';
 import plus from '../logos/plus.png';
 import iconBiblioteca from '../logos/iconobilioteca.png';
-import Alerta from './alerta';
 import './menuLateral.css';
-import './alerta.css';
 
 function MenuLateral({ userType, isLogin, setIsModalOpen, setModalMessage, setRedirectTo }) {
   const OyenteOptions = [

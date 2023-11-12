@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './alerta.css'
 
-function Alerta({ alertParameters = { isOpen: false, mensaje: "", redirectTo: "" } }) {
+function Alerta({ isOpen, mensaje, redirectTo, setIsModalOpen }) {
+  const navigate = useNavigate();
 
-  const [btnClick, serBtnClick] = useState(false);
-
-  function handleCloseAndRedirect() {
-    alertParameters.isOpen = false;
-    if (alertParameters.redirectTo) {
-      window.location.replace(alertParameters.redirectTo);
+  const handleCloseAndRedirect = () => {
+    setIsModalOpen(false);
+    if (redirectTo) {
+      navigate(redirectTo);
     }
   }
 
   return (
     <div
       className="modal-alerta" id="alerta"
-      style={{ display: alertParameters.isOpen ? 'flex' : 'none' }}>
+      style={{ display: isOpen ? 'flex' : 'none' }}>
       <div className="modal-alert-content">
         <div className="contenedor-p">
-          <span id="modal-mensaje">{alertParameters.mensaje}</span>
+          <span id="modal-mensaje">{mensaje}</span>
         </div>
         <div className="separador"></div>
         <button

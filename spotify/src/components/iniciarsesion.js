@@ -3,26 +3,12 @@ import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { Link, useLocation } from "react-router-dom";
 import './form.css';
 import axios from 'axios';
-import Alerta from './alerta';
 import { alfanumerico } from './form.js';
-import { useNavigate } from 'react-router-dom';
 
-function IniciarSesion({ signOn }) {
+function IniciarSesion({ signOn, setIsModalOpen, setModalMessage, setRedirectTo }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const [botonHabilitado, setBotonHabilitado] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [redirectTo, setRedirectTo] = useState(null);
-  const [isOnline, setIsOnline] = useState(window.navigator.onLine);
-  const navigate = useNavigate();
-
-  function handleCloseAndRedirect() {
-    setIsModalOpen(false);
-    if (redirectTo) {
-      window.location.replace(redirectTo);
-    }
-  }
 
   const ExisteArtista = async (nombreArtista) => {
     try {
@@ -80,35 +66,29 @@ function IniciarSesion({ signOn }) {
   const validarForm = async (e) => {
     setBotonHabilitado(false);
     try {
-      if (isOnline) {
-        e.preventDefault();
+      e.preventDefault();
 
-        const campos = {
-          username: document.getElementById('username').value,
-          password: document.getElementById('password').value
-        };
+      const campos = {
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value
+      };
 
-        const user = await validarCampos(campos);
-        if (user === null) {
-          setModalMessage(` "Nombre o contraseña incorrecto" `);
-          setIsModalOpen(true);
-          return;
-        }
+      const user = await validarCampos(campos);
+      if (user === null) {
+        setModalMessage(`Nombre o contraseña incorrecto`);
+        setIsModalOpen(true);
+        return;
+      }
 
-        try {
-          // guardar user
-          signOn(user);
+      try {
+        // guardar user
+        signOn(user);
 
-          // redireccionar
-          navigate('/');
-        } catch (error) {
-          console.error('Error:', error);
-          setModalMessage(`Error al subir o procesar el archivo`);
-          setIsModalOpen(true);
-        }
-      } else {
-        e.preventDefault();
-        setModalMessage('Hubo un error al crear la carpeta, Intenta nuevamente');
+        // redireccionar
+        setRedirectTo('/');
+      } catch (error) {
+        console.error('Error:', error);
+        setModalMessage(`Error al establecer conexión`);
         setIsModalOpen(true);
       }
     } catch (error) {
@@ -169,11 +149,6 @@ function IniciarSesion({ signOn }) {
           </div>
         </div>
       </form>
-      <Alerta
-        isOpen={isModalOpen}
-        mensaje={modalMessage}
-        onClose={handleCloseAndRedirect}
-      />
     </div>
   );
 };

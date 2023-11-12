@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { RecuperarDuracion, RecuperarDuracionCorregido, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import { alfanumerico } from './form.js';
 import './form.css'
-import Alerta from './alerta';
 
 function AñadirCancion({ setIsModalOpen, setModalMessage, setRedirectTo }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';

@@ -32,14 +32,6 @@ function App() {
   }, [isModalOpen]);
   const [redirectTo, setRedirectTo] = useState(null);
 
-  // alerta default
-  const alertDefault = { isOpen: false, mensaje: '', redirectTo: null };
-  const [alertParameters, setAlertParameters] = useState(alertDefault);
-  useEffect(() => {
-    setAlertParameters(
-      { isOpen: isModalOpen, mensaje: modalMessage, redirectTo: redirectTo }
-    );
-  }, [isModalOpen, modalMessage, redirectTo]);
   // reasignar al default al reload
   const location = useLocation();
   useEffect(() => {
@@ -71,7 +63,12 @@ function App() {
             setRedirectTo={setRedirectTo}
           />
           <div className="content">
-            <Alerta alertParameters={alertParameters} />
+            <Alerta
+              isOpen={isModalOpen}
+              mensaje={modalMessage}
+              redirectTo={redirectTo}
+              setIsModalOpen={setIsModalOpen}
+            />
 
             <Routes>
               <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
@@ -108,8 +105,17 @@ function App() {
               ) : (
                 <>
                   <Route path="/" element={<Albumes />} />
-                  <Route path="/iniciarsesion" element={< IniciarSesion signOn={login} />} />
-                  <Route path="/registro" element={<Registro />} />
+                  <Route path="/iniciarsesion" element={< IniciarSesion
+                    signOn={login}
+                    setIsModalOpen={setIsModalOpen}
+                    setModalMessage={setModalMessage}
+                    setRedirectTo={setRedirectTo}
+                  />} />
+                  <Route path="/registro" element={<Registro
+                    setIsModalOpen={setIsModalOpen}
+                    setModalMessage={setModalMessage}
+                    setRedirectTo={setRedirectTo}
+                  />} />
                 </>
               )}
               <Route path="*" element={<Inicio to="/" />} />

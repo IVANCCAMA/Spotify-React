@@ -4,13 +4,10 @@ import { Link } from 'react-router-dom';
 import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
 import { alfanumerico } from './form.js';
 import './form.css';
-import Alerta from './alerta';
 
-function CrearListaReproduccion() {
+function CrearListaReproduccion({ setIsModalOpen, setModalMessage, setRedirectTo }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const [botonHabilitado, setBotonHabilitado] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
   const [isOnline, setIsOnline] = useState(window.navigator.onLine); // Verifica si hay conexión inicialmente
 
   const handleOnlineStatusChange = () => {
@@ -19,7 +16,7 @@ function CrearListaReproduccion() {
 
   useEffect(() => {
     mostrarNombreArchivo();
-  }, [botonHabilitado, isModalOpen, modalMessage]);
+  }, [botonHabilitado, setIsModalOpen, setModalMessage]);
 
   useEffect(() => {
     window.addEventListener('online', handleOnlineStatusChange);
@@ -30,15 +27,6 @@ function CrearListaReproduccion() {
       window.removeEventListener('offline', handleOnlineStatusChange);
     };
   }, []);
-
-  const [redirectTo, setRedirectTo] = useState(null);
-
-  function handleCloseAndRedirect() {
-    setIsModalOpen(false);
-    if (redirectTo) {
-      window.location.replace(redirectTo);
-    }
-  }
 
   const validarCampos = async (campos) => {
     if (campos.titulo.length > 20 || campos.titulo.length < 1 || !alfanumerico(campos.titulo)) {
@@ -236,11 +224,6 @@ function CrearListaReproduccion() {
           </div>
         </div>
       </form>
-      <Alerta
-        isOpen={isModalOpen}
-        mensaje={modalMessage}
-        onClose={handleCloseAndRedirect}
-      />
     </div>
   );
 }
