@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { alfanumerico, verificarString } from './form.js';
 import './form.css'
 
-function Registro({ setIsModalOpen, setModalMessage, setRedirectTo }) {
+function Registro({ showAlertModal }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const userTypes = ['Distribuidora musical', 'Oyente'];
   const requirements = [
@@ -58,8 +58,7 @@ function Registro({ setIsModalOpen, setModalMessage, setRedirectTo }) {
     // nombre
     const id_usuario = await ExisteArtista(campos.username);
     if (id_usuario != null) {
-      setModalMessage(`El nombre que deseas registrar ya está en uso, escoge otro`);
-      await setIsModalOpen(true);
+      showAlertModal(`El nombre que deseas registrar ya está en uso, escoge otro`);
       document.getElementById('username').classList.add('active');
       return null;
     }
@@ -68,8 +67,7 @@ function Registro({ setIsModalOpen, setModalMessage, setRedirectTo }) {
     for (const req of requirements) {
       if (!verificarString(campos.password, "", req.validOption)) {
         document.getElementById('password').classList.add('active');
-        setModalMessage(`La contraseña no cumple con las especificaciones`);
-        await setIsModalOpen(true);
+        showAlertModal(`La contraseña no cumple con las especificaciones`);
         return null;
       }
     }
@@ -77,8 +75,7 @@ function Registro({ setIsModalOpen, setModalMessage, setRedirectTo }) {
     // passwordConfirm
     if (campos.password !== campos.passwordConfirm) {
       document.getElementById('passwordConfirm').classList.add('active');
-      setModalMessage(`La confirmacion y la contraseña no coinciden`);
-      await setIsModalOpen(true);
+      showAlertModal(`La confirmacion y la contraseña no coinciden`);
       return null;
     }
 
@@ -94,8 +91,7 @@ function Registro({ setIsModalOpen, setModalMessage, setRedirectTo }) {
             fecha_nacimiento: "2020-08-03"
           };
         } catch (error) {
-          setModalMessage(`Error al encriptar la contraseña`);
-          await setIsModalOpen(true);
+          showAlertModal(`Error al encriptar la contraseña`);
           return null;
         }
       }
@@ -129,26 +125,21 @@ function Registro({ setIsModalOpen, setModalMessage, setRedirectTo }) {
 
       const newUser = await validarCampos(campos);
       if (newUser === null) {
-          setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
-        setIsModalOpen(true);
+          showAlertModal(`Asegúrese de que todos los campos estén llenados correctamente`);
         return;
       }
 
       try {
         const subidaExitosa = await subirBD(newUser);
         if (!subidaExitosa) {
-          setModalMessage(`Error al crear usuario. Intente más tarde`);
-          setIsModalOpen(true);
+          showAlertModal(`Error al crear usuario. Intente más tarde`);
           return;
         }
 
-        setModalMessage(`Registro creado exitosamente`);
-        setIsModalOpen(true);
-        setRedirectTo("/iniciarsesion");
+        showAlertModal(`Registro creado exitosamente`, "/iniciarsesion");
       } catch (error) {
         console.error('Error:', error);
-        setModalMessage(`Error al procesar el nuevo usuario`);
-        setIsModalOpen(true);
+        showAlertModal(`Error al procesar el nuevo usuario`);
       }
     } catch (error) {
       console.error('Error al enviar la solicitud:', error);

@@ -21,24 +21,27 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userConnected, setUserConnected] = useState(null);
 
-  // alerta modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  useEffect(() => {
-    if (!isModalOpen) {
-      setIsModalOpen(false);
-      setModalMessage("");
-    }
-  }, [isModalOpen]);
   const [redirectTo, setRedirectTo] = useState(null);
 
   // reasignar al default al reload
   const location = useLocation();
   useEffect(() => {
-    setIsModalOpen(false);
     setModalMessage("");
     setRedirectTo(null);
   }, [location.pathname]);
+
+  /**
+   * Modal Alerta para mostrar errores.
+   *
+   * @param {string} mensaje - Mensaje de error.
+   * @param {string} [redirectTo=null] - Route para redireccionar tras confirmar el error.
+   * @returns {} Abre el modal Alerta.
+   */
+  const showAlertModal = (mensaje, redirectTo = null) => {
+    setModalMessage(mensaje);
+    setRedirectTo(redirectTo);
+  }
 
   const login = (user) => {
     setLoggedIn(true);
@@ -58,16 +61,13 @@ function App() {
           <MenuLateral
             isLogin={loggedIn}
             userType={loggedIn ? userConnected.tipo_usuario : null}
-            setIsModalOpen={setIsModalOpen}
-            setModalMessage={setModalMessage}
-            setRedirectTo={setRedirectTo}
+            showAlertModal={showAlertModal}
           />
           <div className="content">
             <Alerta
-              isOpen={isModalOpen}
               mensaje={modalMessage}
               redirectTo={redirectTo}
-              setIsModalOpen={setIsModalOpen}
+              setModalMessage={setModalMessage}
             />
 
             <Routes>
@@ -78,25 +78,13 @@ function App() {
                     <>
                       <Route path="/" element={<Inicio />} />
                       <Route path="/Albumes" element={<Albumes />} />
-                      <Route path="/crearAlbum" element={<CrearLista
-                        setIsModalOpen={setIsModalOpen}
-                        setModalMessage={setModalMessage}
-                        setRedirectTo={setRedirectTo}
-                      />} />
-                      <Route path="/añadirCancion" element={<AñadirCancion
-                        setIsModalOpen={setIsModalOpen}
-                        setModalMessage={setModalMessage}
-                        setRedirectTo={setRedirectTo}
-                      />} />
+                      <Route path="/crearAlbum" element={<CrearLista showAlertModal={showAlertModal} />} />
+                      <Route path="/añadirCancion" element={<AñadirCancion showAlertModal={showAlertModal} />} />
                     </>
                   ) : (
                     <>
                       <Route path="/" element={<Albumes />} />
-                      {/* <Route path="/crearListaReproduccion" element={<CrearListaReproduccion
-                        setIsModalOpen={setIsModalOpen}
-                        setModalMessage={setModalMessage}
-                        setRedirectTo={setRedirectTo}
-                         />} /> */}
+                      {/* <Route path="/crearListaReproduccion" element={<CrearListaReproduccion showAlertModal={showAlertModal} />} /> */}
                       <Route path="/perfil" element={< PerfilUsuario userConnected={userConnected} />} />
                       <Route path="/lista-canciones-user/:id_lista" element={<ListaCancionesUser />} />
                     </>
@@ -105,21 +93,11 @@ function App() {
               ) : (
                 <>
                   <Route path="/" element={<Albumes />} />
-                  <Route path="/iniciarsesion" element={< IniciarSesion
-                    signOn={login}
-                    setIsModalOpen={setIsModalOpen}
-                    setModalMessage={setModalMessage}
-                    setRedirectTo={setRedirectTo}
-                  />} />
-                  <Route path="/registro" element={<Registro
-                    setIsModalOpen={setIsModalOpen}
-                    setModalMessage={setModalMessage}
-                    setRedirectTo={setRedirectTo}
-                  />} />
+                  <Route path="/iniciarsesion" element={< IniciarSesion signOn={login} showAlertModal={showAlertModal} />} />
+                  <Route path="/registro" element={<Registro showAlertModal={showAlertModal} />} />
                 </>
               )}
               <Route path="*" element={<Inicio to="/" />} />
-
             </Routes>
           </div>
         </div>

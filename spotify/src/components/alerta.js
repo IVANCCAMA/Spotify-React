@@ -2,11 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './alerta.css'
 
-function Alerta({ isOpen, mensaje, redirectTo, setIsModalOpen }) {
+function Alerta({ mensaje, redirectTo, setModalMessage }) {
   const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    if (mensaje.length > 0) {
+      setIsOpen(true);
+    }
+  }, [mensaje]);
 
-  const handleCloseAndRedirect = () => {
-    setIsModalOpen(false);
+  const handleClose = () => {
+    setIsOpen(false);
+    setModalMessage("");
     if (redirectTo) {
       navigate(redirectTo);
     }
@@ -24,7 +31,7 @@ function Alerta({ isOpen, mensaje, redirectTo, setIsModalOpen }) {
         <button
           className='boton-modal'
           autoFocus
-          onClick={handleCloseAndRedirect}>
+          onClick={handleClose}>
           Aceptar
         </button>
       </div>
