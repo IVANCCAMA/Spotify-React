@@ -5,7 +5,7 @@ import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/confi
 import { alfanumerico } from './form.js';
 import './form.css';
 
-function CrearListaReproduccion({ setIsModalOpen, setModalMessage, setRedirectTo }) {
+function CrearListaReproduccion({ showAlertModal }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isOnline, setIsOnline] = useState(window.navigator.onLine); // Verifica si hay conexión inicialmente
@@ -16,7 +16,7 @@ function CrearListaReproduccion({ setIsModalOpen, setModalMessage, setRedirectTo
 
   useEffect(() => {
     mostrarNombreArchivo();
-  }, [botonHabilitado, setIsModalOpen, setModalMessage]);
+  }, [botonHabilitado, showAlertModal]);
 
   useEffect(() => {
     window.addEventListener('online', handleOnlineStatusChange);
@@ -83,22 +83,19 @@ function CrearListaReproduccion({ setIsModalOpen, setModalMessage, setRedirectTo
 
         const nuevoAlbum = await validarCampos(campos);
         if (nuevoAlbum === null) {
-          setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
-          setIsModalOpen(true);
+          showAlertModal(`Asegúrese de que todos los campos estén llenados correctamente`);
           return;
         }
 
         const archivo = campos.archivo[0];
         if (!await validarFormatoArchivo(archivo)) {
-          setModalMessage(`Formato de archivo no válido`);
-          setIsModalOpen(true);
+          showAlertModal(`Formato de archivo no válido`);
           return;
         }
 
         const maxSize = 5 * 1024 * 1024; // 15 MB en bytes
         if (archivo.size > maxSize) {
-          setModalMessage(`Tamaño máximo de 5 MB excedido`);
-          setIsModalOpen(true);
+          showAlertModal(`Tamaño máximo de 5 MB excedido`);
           return;
         }
 
@@ -110,28 +107,21 @@ function CrearListaReproduccion({ setIsModalOpen, setModalMessage, setRedirectTo
           if (!subidaExitosa) {
             deleteFile(resultado.filePath);
             e.preventDefault();
-            setModalMessage(`Error al cargar la imágen. Intente más tarde`);
-            setIsModalOpen(true);
+            showAlertModal(`Error al cargar la imágen. Intente más tarde`);
             return;
           }
-          setModalMessage(`Lista creada exitosamente`);
-          setIsModalOpen(true);
-          setRedirectTo("/");
-
+          showAlertModal(`Lista creada exitosamente`, "/");
         } catch (error) {
           console.error('Error:', error);
-          setModalMessage(`Error al subir o procesar el archivo`);
-          setIsModalOpen(true);
+          showAlertModal(`Error al subir o procesar el archivo`);
         }
       } else {
         e.preventDefault();
-        setModalMessage('Hubo un error al crear la carpeta, Intenta nuevamente');
-        setIsModalOpen(true);
+        showAlertModal('Hubo un error al crear la carpeta, Intenta nuevamente');
       }
     } catch (error) {
       e.preventDefault();
-      setModalMessage('Hubo un error al crear la lista, Intenta nuevamente');
-      setIsModalOpen(true);
+      showAlertModal('Hubo un error al crear la lista, Intenta nuevamente');
     } finally {
       // Una vez que se complete, habilitar el botón nuevamente
       setBotonHabilitado(true);
