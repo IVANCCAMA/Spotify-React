@@ -73,7 +73,7 @@ function IniciarSesion({ signOn, showAlertModal }) {
 
       const user = await validarCampos(campos);
       if (user === null) {
-        showAlertModal(`Nombre o contraseña incorrecto`);
+        showAlertModal(`"Nombre de usuario o contraseña incorrectos"`);
         return;
       }
 
