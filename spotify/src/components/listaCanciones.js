@@ -5,7 +5,8 @@ import './listaCanciones.css';
 import songLogo from '../logos/play-logo.ico';
 import axios from "axios";
 import { ListProvider, useListContext } from './ListContext';
-
+import listAddIcon from '@iconify-icons/icon-park-outline/list-add';
+import { Icon } from '@iconify/react';
 
 function ListaCanciones() {
   const { id_lista } = useParams();
@@ -47,6 +48,12 @@ function ListaCanciones() {
     fetchAlbum();
   }, [id_lista]);
 
+  const handleListAdd = (cancionId) => {
+    // Lógica para agregar la canción a la lista
+    
+    console.log('Agregar canción a la lista:', cancionId);
+  };
+
   return (
     
   <ListProvider>
@@ -87,7 +94,9 @@ function ListaCanciones() {
                     {cancion.nombre_usuario + " - " + cancion.nombre_cancion}
                     <div className="duracion-logo">{cancion.duracion}</div>
                     </div>
-                    <img src={songLogo} onClick={() => actualizarCancionSelecionada(cancion.id_cancion)} alt="Álbum" className="play-logo" />          
+                    <img src={songLogo} onClick={() => actualizarCancionSelecionada(cancion.id_cancion)} alt="Álbum" className="play-logo" /> 
+                    <Icon icon={listAddIcon} onClick={() => handleListAdd(cancion.id_cancion)} className="list-add-icon" />
+         
                     </div>
                   </div>
                   
