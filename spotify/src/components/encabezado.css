@@ -10,6 +10,8 @@
   justify-content: flex-end;
   position: fixed;
   z-index: 2;
+  left: 250px; /*ediTeo */
+  width: calc(100% - 250px); /* ediTeo*/
 }
 
 .menu-options {
