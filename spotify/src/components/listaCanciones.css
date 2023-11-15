@@ -173,3 +173,20 @@
   align-items: center;
   text-align: justify;
 }
+
+.list-add-icon {
+  cursor: pointer;
+  padding: 3px;
+  border: none;
+  margin-left: 10px; 
+  font-size: 50px; 
+  color: #fff; 
+  margin-right: 10px;
+  position: absolute;
+  left: 677px;
+  border-radius:50%;
+}
+
+.list-add-icon:hover {
+  background-color: #008080;
+}
