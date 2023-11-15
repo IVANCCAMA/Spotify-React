@@ -54,7 +54,8 @@
     font-weight: bold;
     color: red;
     background-color: white;
-    font-size: x-large;
+    /* font-size: x-large; */
+    font-size: 16px;
     border: none;
     width: 100%; 
     padding: 10px 0;
