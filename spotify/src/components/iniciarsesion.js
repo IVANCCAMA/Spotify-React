@@ -4,8 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import './form.css';
 import axios from 'axios';
 import { alfanumerico } from './form.js';
+import { useAuth } from '../auth/AuthContext.js';
 
 function IniciarSesion({ signOn, showAlertModal }) {
+  const { dispatch } = useAuth();
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -80,7 +82,8 @@ function IniciarSesion({ signOn, showAlertModal }) {
       try {
         // guardar user
         signOn(user);
-
+        /* dispatch({ type: 'LOGIN', payload: user });
+        console.log("User LOGEADO", user); */
         // redireccionar
         navigate('/');
       } catch (error) {
