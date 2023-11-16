@@ -71,6 +71,9 @@ function App() {
             />
 
             <Routes>
+
+              <Route path="/lista-canciones/:id_lista" element={<ListaCanciones isLogin={loggedIn} showAlertModal={showAlertModal} />} />
+
               <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
               {loggedIn ? (
                 <>

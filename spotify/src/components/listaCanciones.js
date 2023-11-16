@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import './listaCanciones.css';
 import songLogo from '../logos/play-logo.ico';
@@ -8,7 +8,7 @@ import { ListProvider, useListContext } from './ListContext';
 import listAddIcon from '@iconify-icons/icon-park-outline/list-add';
 import { Icon } from '@iconify/react';
 
-function ListaCanciones() {
+const ListaCanciones = ({ userType, isLogin, showAlertModal }) => {
   const { id_lista } = useParams();
   const { listaCancionesReproduccion, actualizarListaCanciones, cancionSeleccionada, actualizarCancionSelecionada } = useListContext();
 
@@ -16,7 +16,11 @@ function ListaCanciones() {
   const [infoAlbum, setinfoAlbum] = useState([]); // Nuevo estado para lista de álbumes
   const [cancionesCargadas, setCancionesCargadas] = useState(false); 
   const [cancionSelect, setCancionSeleccionada] = useState(null); // Nuevo estado para el índice de la canción seleccionada
-  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isListMenuOpen, setIsListMenuOpen] = useState(false);
+  const listMenuRef = useRef(null);
+  const [songMenuStates, setSongMenuStates] = useState({}); // Estado para manejar el menú de cada canción
+
   // Lista de canciones de un Álbum
   useEffect(() => {
     const fetchData = async () => {
@@ -49,10 +53,37 @@ function ListaCanciones() {
   }, [id_lista]);
 
   const handleListAdd = (cancionId) => {
-    // Lógica para agregar la canción a la lista
-    
-    console.log('Agregar canción a la lista:', cancionId);
+    if (!isLogin) {
+      showAlertModal('Funcionalidad no permitida. Inicie sesión por favor.');
+    } else {
+      setSongMenuStates((prevStates) => ({
+        ...Object.fromEntries(Object.keys(prevStates).map(key => [key, false])),
+        [cancionId]: !prevStates[cancionId],
+      }));
+    }
   };
+  
+    // Event listener para cerrar el menú cuando se hace clic fuera
+  useEffect(() => {
+    const handleDocumentClick = (e) => {
+      if (!listMenuRef.current?.contains(e.target)) {
+        setSongMenuStates({});
+      }
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, [listMenuRef, setSongMenuStates]);
+
+  const handleIconClick = (e, cancionId) => {
+    e.stopPropagation();
+    handleListAdd(cancionId);
+  };
+
+  
+  
 
   return (
     
@@ -80,10 +111,10 @@ function ListaCanciones() {
 
       {/* Listado de canciones */}
       <div className="song-config">
-        {cancionesCargadas && listaCanciones.length > 0 ? (
-          listaCanciones.map((cancion, index) => (
-            <div key={cancion.id_cancion} className="album-item">
-              <div className="song-container">
+          {cancionesCargadas && listaCanciones.length > 0 ? (
+            listaCanciones.map((cancion, index) => (
+              <div key={cancion.id_cancion} className="album-item">
+                <div className="song-container">
                 <div className="song-details">
                   <img
                     src={cancion.path_image}
@@ -95,9 +126,19 @@ function ListaCanciones() {
                     <div className="duracion-logo">{cancion.duracion}</div>
                     </div>
                     <img src={songLogo} onClick={() => actualizarCancionSelecionada(cancion.id_cancion)} alt="Álbum" className="play-logo" /> 
-                    <Icon icon={listAddIcon} onClick={() => handleListAdd(cancion.id_cancion)} className="list-add-icon" />
-         
-                    </div>
+                    <Icon
+                      icon={listAddIcon}
+                      onClick={(e) => handleIconClick(e, cancion.id_cancion)}
+                     className="list-add-icon"
+                    />
+                    {songMenuStates[cancion.id_cancion] && (
+                  <div className='list-menu'>
+                    <button onClick={() => console.log('Agregar a lista de reproducción')}>
+                      Agregar a lista
+                    </button>
+                  </div>
+              )}
+            </div>
                   </div>
                   
             </div>
@@ -112,4 +153,3 @@ function ListaCanciones() {
   
 }
 export default ListaCanciones;
-
