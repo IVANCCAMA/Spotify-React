@@ -14,13 +14,9 @@ function PerfilUsuario({ userConnected }) {
     // Recuperar información del usuario por su ID
     const fetchUserInfo = async () => {
       try {
-        // primero verificar que esta logeado el user
-        /* userConnected && userConnected.id */
-        console.log("userLogeado;", userConnected);
         if (true) {          
           const response = await axios.get(`https://spfisbackend-production.up.railway.app/api/usuarios/${userConnected.id_usuario}`);
           const userData = response.data;
-          console.log("Usuario logeado:", userData);
           setUserInfo(userData);
         }
       } catch (error) {
