@@ -16,7 +16,9 @@ import CrearListaReproduccion from './components/listaReproduccion';
 import IniciarSesion from "./components/iniciarsesion";
 import ListaCancionesUser from './components/listaCancionesUser';
 import Alerta from './components/alerta';
+import Biblioteca from './components/biblioteca';
 import { useAuth } from './auth/AuthContext';
+
 
 
 function App() {
@@ -69,7 +71,7 @@ function App() {
                 redirectTo={redirectTo}
                 setModalMessage={setModalMessage}
               />
-
+                  
               <Routes>
                 <Route path="/lista-canciones/:id_lista" element={<ListaCanciones isLogin={authState.isAuthenticated} showAlertModal={showAlertModal} />} />
                 
@@ -88,6 +90,7 @@ function App() {
                         <Route path="/" element={<Albumes />} />
                         <Route path="/crearListaReproduccion" element={<CrearListaReproduccion showAlertModal={showAlertModal} />} />
                         <Route path="/perfil" element={< PerfilUsuario userConnected={authState.user} />} />
+                        <Route path="/biblioteca" element={< Biblioteca userConnected={authState.user} />} />
                         <Route path="/lista-canciones-user/:id_lista" element={<ListaCancionesUser />} />
                       </>
                     )}
@@ -102,7 +105,6 @@ function App() {
                 <Route path="*" element={<Inicio to="/" />} />
               </Routes>
             </div>
-
           </div>
           <ReproducirCancion />
         </div>
