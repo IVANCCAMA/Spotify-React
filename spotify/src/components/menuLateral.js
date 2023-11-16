@@ -7,7 +7,7 @@ import plus from '../logos/plus.png';
 import iconBiblioteca from '../logos/iconobilioteca.png';
 import './menuLateral.css';
 
-function MenuLateral({ userType, isLogin, setIsModalOpen, setModalMessage, setRedirectTo }) {
+function MenuLateral({ userType, isLogin, showAlertModal }) {
   const OyenteOptions = [
     { to: '/', src: home, alt: 'Home', title: 'Inicio' },
     { separador: true },
@@ -43,9 +43,7 @@ function MenuLateral({ userType, isLogin, setIsModalOpen, setModalMessage, setRe
       const requiresAuthentication = menuOption.to === '/crearListaReproduccion' || menuOption.to === '/biblioteca';
       if (requiresAuthentication) {
         e.preventDefault();
-        setModalMessage('Funcionalidad no permitida. Inicie sesión por favor.');
-        setIsModalOpen(true);
-        setRedirectTo("/");
+        showAlertModal('Funcionalidad no permitida. Inicie sesión por favor.', "/");
       }
     }
   };

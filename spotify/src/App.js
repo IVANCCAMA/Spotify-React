@@ -17,120 +17,98 @@ import IniciarSesion from "./components/iniciarsesion";
 import ListaCancionesUser from './components/listaCancionesUser';
 import Alerta from './components/alerta';
 import Biblioteca from './components/biblioteca';
+import { useAuth } from './auth/AuthContext';
+
 
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [userConnected, setUserConnected] = useState(null);
+  const { authState, dispatch } = useAuth();
 
-  // alerta modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
-  useEffect(() => {
-    if (!isModalOpen) {
-      setIsModalOpen(false);
-      setModalMessage("");
-    }
-  }, [isModalOpen]);
   const [redirectTo, setRedirectTo] = useState(null);
 
   // reasignar al default al reload
   const location = useLocation();
   useEffect(() => {
-    setIsModalOpen(false);
     setModalMessage("");
     setRedirectTo(null);
   }, [location.pathname]);
 
+  /**
+   * Modal Alerta para mostrar errores.
+   *
+   * @param {string} mensaje - Mensaje de error.
+   * @param {string} [redirectTo=null] - Route para redireccionar tras confirmar el error.
+   * @returns {} Abre el modal Alerta.
+   */
+  const showAlertModal = (mensaje, redirectTo = null) => {
+    setModalMessage(mensaje);
+    setRedirectTo(redirectTo);
+  }
+
   const login = (user) => {
-    setLoggedIn(true);
-    setUserConnected(user);
+    dispatch({ type: 'LOGIN', payload: user });
+    console.log("USER LOGEADO", user);
   };
 
   const logout = () => {
-    setLoggedIn(false);
-    setUserConnected(null);
+    dispatch({ type: 'LOGOUT' });
   };
 
   return (
-    <ListProvider>
-      <div className="app-container">
-        <Encabeazado loggedIn={loggedIn} signOff={logout} />
-        <div className='container-super'>
-
-          <MenuLateral
-            isLogin={loggedIn}
-            userType={loggedIn ? userConnected.tipo_usuario : null}
-            setIsModalOpen={setIsModalOpen}
-            setModalMessage={setModalMessage}
-            setRedirectTo={setRedirectTo}
-          />
-          <div className="content">
-            <Alerta
-              isOpen={isModalOpen}
-              mensaje={modalMessage}
-              redirectTo={redirectTo}
-              setIsModalOpen={setIsModalOpen}
+      <ListProvider>
+        <div className="app-container">
+          <Encabeazado loggedIn={authState.isAuthenticated} signOff={logout} />
+          <div className='container-super'>
+            <MenuLateral
+              isLogin={authState.isAuthenticated}
+              userType={authState.isAuthenticated ? authState.user.tipo_usuario : null}
+              showAlertModal={showAlertModal}
             />
-
-            <Routes>
-              <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
-              {loggedIn ? (
-                <>
-                  {userConnected.tipo_usuario === "Distribuidora musical" ? (
-                    <>
-                      <Route path="/" element={<Inicio />} />
-                      <Route path="/Albumes" element={<Albumes />} />
-                      <Route path="/crearAlbum" element={<CrearLista
-                        setIsModalOpen={setIsModalOpen}
-                        setModalMessage={setModalMessage}
-                        setRedirectTo={setRedirectTo}
-                      />} />
-                      <Route path="/añadirCancion" element={<AñadirCancion
-                        setIsModalOpen={setIsModalOpen}
-                        setModalMessage={setModalMessage}
-                        setRedirectTo={setRedirectTo}
-                      />} />
-                    </>
-                  ) : (
-                    <>
-                      <Route path="/" element={<Albumes />} />
-                      {/* <Route path="/crearListaReproduccion" element={<CrearListaReproduccion
-                        setIsModalOpen={setIsModalOpen}
-                        setModalMessage={setModalMessage}
-                        setRedirectTo={setRedirectTo}
-                         />} /> */}
-                      <Route path="/perfil" element={< PerfilUsuario userConnected={userConnected} />} />
-                      <Route path="/biblioteca" element={< Biblioteca userConnected={userConnected} />} />  q
-                     
-                      <Route path="/lista-canciones-user/:id_lista" element={<ListaCancionesUser />} />
-                    </>
-                  )}
-                </>
-              ) : (
-                <>
-                  <Route path="/" element={<Albumes />} />
-                  <Route path="/iniciarsesion" element={< IniciarSesion
-                    signOn={login}
-                    setIsModalOpen={setIsModalOpen}
-                    setModalMessage={setModalMessage}
-                    setRedirectTo={setRedirectTo}
-                  />} />
-                  <Route path="/registro" element={<Registro
-                    setIsModalOpen={setIsModalOpen}
-                    setModalMessage={setModalMessage}
-                    setRedirectTo={setRedirectTo}
-                  />} />
-                </>
-              )}
-              <Route path="*" element={<Inicio to="/" />} />
-
-            </Routes>
+            <div className="content">
+              <Alerta
+                mensaje={modalMessage}
+                redirectTo={redirectTo}
+                setModalMessage={setModalMessage}
+              />
+                  
+              <Routes>
+                <Route path="/lista-canciones/:id_lista" element={<ListaCanciones isLogin={authState.isAuthenticated} showAlertModal={showAlertModal} />} />
+                
+                <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
+                {authState.isAuthenticated ? (
+                  <>
+                    {authState.user.tipo_usuario === "Distribuidora musical" ? (
+                      <>
+                        <Route path="/" element={<Inicio />} />
+                        <Route path="/Albumes" element={<Albumes />} />
+                        <Route path="/crearAlbum" element={<CrearLista showAlertModal={showAlertModal} />} />
+                        <Route path="/añadirCancion" element={<AñadirCancion showAlertModal={showAlertModal} />} />
+                      </>
+                    ) : (
+                      <>
+                        <Route path="/" element={<Albumes />} />
+                        <Route path="/crearListaReproduccion" element={<CrearListaReproduccion showAlertModal={showAlertModal} />} />
+                        <Route path="/perfil" element={< PerfilUsuario userConnected={authState.user} />} />
+                        <Route path="/biblioteca" element={< Biblioteca userConnected={authState.user} />} />
+                        <Route path="/lista-canciones-user/:id_lista" element={<ListaCancionesUser />} />
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Route path="/" element={<Albumes />} />
+                    <Route path="/iniciarsesion" element={< IniciarSesion signOn={login} showAlertModal={showAlertModal} />} />
+                    <Route path="/registro" element={<Registro showAlertModal={showAlertModal} />} />
+                  </>
+                )}
+                <Route path="*" element={<Inicio to="/" />} />
+              </Routes>
+            </div>
           </div>
+          <ReproducirCancion />
         </div>
-        <ReproducirCancion />
-      </div>
-    </ListProvider>
+      </ListProvider>
   );
 }
 

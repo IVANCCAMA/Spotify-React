@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import './form.css';
 import axios from 'axios';
 import { alfanumerico } from './form.js';
+import { useAuth } from '../auth/AuthContext.js';
 
-function IniciarSesion({ signOn, setIsModalOpen, setModalMessage, setRedirectTo }) {
+function IniciarSesion({ signOn, showAlertModal }) {
+  const { dispatch } = useAuth();
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const navigate = useNavigate();
 
   const ExisteArtista = async (nombreArtista) => {
     try {
@@ -42,21 +45,18 @@ function IniciarSesion({ signOn, setIsModalOpen, setModalMessage, setRedirectTo 
     const id_usuario = await ExisteArtista(campos.username);
     if (id_usuario === null) {
       document.getElementById('username').classList.add('active');
-      setModalMessage('El usuario no existe, intente con otro');
-      setIsModalOpen(true);
+      showAlertModal('El usuario no existe, intente con otro');
       return null;
     } else if (id_usuario.tipo_usuario === "artista") {
       document.getElementById('username').classList.add('active');
-      setModalMessage('El tipo de usuario no es valido');
-      setIsModalOpen(true);
+      showAlertModal('El tipo de usuario no es valido');
       return null;
     }
 
     // password
     if (id_usuario.contrasenia_usuario !== campos.password) {
       document.getElementById('password').classList.add('active');
-      setModalMessage('Contraseña incorrecta');
-      setIsModalOpen(true);
+      showAlertModal('Contraseña incorrecta');
       return null;
     }
 
@@ -75,26 +75,24 @@ function IniciarSesion({ signOn, setIsModalOpen, setModalMessage, setRedirectTo 
 
       const user = await validarCampos(campos);
       if (user === null) {
-        setModalMessage(`Nombre o contraseña incorrecto`);
-        setIsModalOpen(true);
+        showAlertModal(`"Nombre de usuario o contraseña incorrectos"`);
         return;
       }
 
       try {
         // guardar user
         signOn(user);
-
+        /* dispatch({ type: 'LOGIN', payload: user });
+        console.log("User LOGEADO", user); */
         // redireccionar
-        setRedirectTo('/');
+        navigate('/');
       } catch (error) {
         console.error('Error:', error);
-        setModalMessage(`Error al establecer conexión`);
-        setIsModalOpen(true);
+        showAlertModal(`Error al establecer conexión`);
       }
     } catch (error) {
       e.preventDefault();
-      setModalMessage('Hubo un error al crear la carpeta, Intenta nuevamente');
-      setIsModalOpen(true);
+      showAlertModal('Hubo un error al crear la carpeta, Intenta nuevamente');
     } finally {
       // Una vez que se complete, habilitar el botón nuevamente
       setBotonHabilitado(true);

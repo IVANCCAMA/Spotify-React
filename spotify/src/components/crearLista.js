@@ -5,7 +5,7 @@ import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/confi
 import { alfanumerico } from './form.js';
 import './form.css';
 
-function CrearLista({ setIsModalOpen, setModalMessage, setRedirectTo }) {
+function CrearLista({ showAlertModal }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isOnline, setIsOnline] = useState(window.navigator.onLine); // Verifica si hay conexión inicialmente
@@ -79,8 +79,7 @@ function CrearLista({ setIsModalOpen, setModalMessage, setRedirectTo }) {
     const id_usuario = await ExisteArtista(campos.artista);
     if (id_usuario == null) {
       document.getElementById('artista').classList.add('active');
-      setModalMessage('El artista no existe, intente con otro');
-      setIsModalOpen(true);
+      showAlertModal('El artista no existe, intente con otro');
       return null;
     }
 
@@ -89,8 +88,7 @@ function CrearLista({ setIsModalOpen, setModalMessage, setRedirectTo }) {
     const albumExistente = albumes.find((album) => album.titulo_lista === campos.titulo);
     if (albumExistente) {
       document.getElementById('titulo_lista').classList.add('active');
-      setModalMessage('El nombre de la carpeta ya está en uso, intente otro');
-      setIsModalOpen(true);
+      showAlertModal('El nombre de la carpeta ya está en uso, intente otro');
       return null;
     }
 
@@ -99,13 +97,11 @@ function CrearLista({ setIsModalOpen, setModalMessage, setRedirectTo }) {
       const id_colaborador = await ExisteArtista(campos.colaborador);
       if (id_colaborador == null) {
         document.getElementById('colaborador').classList.add('active');
-        setModalMessage('El artista colaborador no existe, intente con otro');
-        setIsModalOpen(true);
+        showAlertModal('El artista colaborador no existe, intente con otro');
         return null;
       } else if (id_colaborador === id_usuario) {
         document.getElementById('colaborador').classList.add('active');
-        setModalMessage('El artista y el colaborador no pueden ser el mismo');
-        setIsModalOpen(true);
+        showAlertModal('El artista y el colaborador no pueden ser el mismo');
         return null;
       }
     }
@@ -167,22 +163,19 @@ function CrearLista({ setIsModalOpen, setModalMessage, setRedirectTo }) {
 
         const nuevoAlbum = await validarCampos(campos);
         if (nuevoAlbum === null) {
-          setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
-          setIsModalOpen(true);
+          showAlertModal(`Asegúrese de que todos los campos estén llenados correctamente`);
           return;
         }
 
         const archivo = campos.archivo[0];
         if (!await validarFormatoArchivo(archivo)) {
-          setModalMessage(`Formato de archivo no válido`);
-          setIsModalOpen(true);
+          showAlertModal(`Formato de archivo no válido`);
           return;
         }
 
         const maxSize = 5 * 1024 * 1024; // 15 MB en bytes
         if (archivo.size > maxSize) {
-          setModalMessage(`Tamaño máximo de 5 MB excedido`);
-          setIsModalOpen(true);
+          showAlertModal(`Tamaño máximo de 5 MB excedido`);
           return;
         }
 
@@ -194,28 +187,21 @@ function CrearLista({ setIsModalOpen, setModalMessage, setRedirectTo }) {
           if (!subidaExitosa) {
             deleteFile(resultado.filePath);
             e.preventDefault();
-            setModalMessage(`Error al cargar la canción. Intente más tarde`);
-            setIsModalOpen(true);
+            showAlertModal(`Error al cargar la canción. Intente más tarde`);
             return;
           }
-          setModalMessage(`Lista creada exitosamente`);
-          setIsModalOpen(true);
-          setRedirectTo("/");
-
+          showAlertModal(`Lista creada exitosamente`, "/");
         } catch (error) {
           console.error('Error:', error);
-          setModalMessage(`Error al subir o procesar el archivo`);
-          setIsModalOpen(true);
+          showAlertModal(`Error al subir o procesar el archivo`);
         }
       } else {
         e.preventDefault();
-        setModalMessage('Hubo un error al crear la carpeta, Intenta nuevamente');
-        setIsModalOpen(true);
+        showAlertModal('Hubo un error al crear la carpeta, Intenta nuevamente');
       }
     } catch (error) {
       e.preventDefault();
-      setModalMessage('Hubo un error al crear la carpeta, Intenta nuevamente');
-      setIsModalOpen(true);
+      showAlertModal('Hubo un error al crear la carpeta, Intenta nuevamente');
     } finally {
       // Una vez que se complete, habilitar el botón nuevamente
       setBotonHabilitado(true);

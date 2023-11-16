@@ -6,14 +6,14 @@ import { RecuperarDuracion, RecuperarDuracionCorregido, SubirCancion, deleteFile
 import { alfanumerico } from './form.js';
 import './form.css'
 
-function AñadirCancion({ setIsModalOpen, setModalMessage, setRedirectTo }) {
+function AñadirCancion({ showAlertModal }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const generos = ['Pop', 'Rock and Roll', 'Disco', 'Country', 'Techno',
     'Reggae', 'Salsa', 'Flamenco', 'Ranchera', 'Hip hop/Rap',
     'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica'];
   const [listas, setListas] = useState([]);
   const [botonHabilitado, setBotonHabilitado] = useState(true);
-  useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, setIsModalOpen, setModalMessage]);
+  useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, showAlertModal]);
 
   const getlistasbyid_user = async (id_usuario) => {
     try {
@@ -99,9 +99,7 @@ function AñadirCancion({ setIsModalOpen, setModalMessage, setRedirectTo }) {
     const canciones = await getcancionesbyid_user(id_usuario);
     const cancionExistente = canciones.find((cancion) => cancion.nombre_cancion === campos.titulo);
     if (cancionExistente) {
-      //console.log('el artista ya tiene una cancion con el mismo nombre');
-      setModalMessage(`La canción existe en el álbum`);
-      //setIsModalOpen(true);
+      showAlertModal(`La canción existe en el álbum`);
       return null;
     }
 
@@ -167,22 +165,19 @@ function AñadirCancion({ setIsModalOpen, setModalMessage, setRedirectTo }) {
 
       const nuevaCancion = await validarCampos(campos);
       if (nuevaCancion === null) {
-        setModalMessage(`Asegúrese de que todos los campos estén llenados correctamente`);
-        setIsModalOpen(true);
+        showAlertModal(`Asegúrese de que todos los campos estén llenados correctamente`);
         return;
       }
 
       const archivo = campos.archivo[0];
       if (!await validarFormatoArchivo(archivo)) {
-        setModalMessage(`Formato de archivo no válido`);
-        setIsModalOpen(true);
+        showAlertModal(`Formato de archivo no válido`);
         return;
       }
 
       const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
       if (archivo.size > maxSize) {
-        setModalMessage(`Tamaño máximo de 15 MB excedido`);
-        setIsModalOpen(true);
+        showAlertModal(`Tamaño máximo de 15 MB excedido`);
         return;
       }
 
@@ -196,18 +191,14 @@ function AñadirCancion({ setIsModalOpen, setModalMessage, setRedirectTo }) {
         const subidaExitosa = await subirBD(nuevaCancion);
         if (!subidaExitosa) {
           deleteFile(resultado.filePath);
-          setModalMessage(`Error al cargar la canción. Intente más tarde`);
-          setIsModalOpen(true);
+          showAlertModal(`Error al cargar la canción. Intente más tarde`);
           return;
         }
 
-        setModalMessage(`Canción añadida exitosamente`);
-        setIsModalOpen(true);
-        setRedirectTo("/");
+        showAlertModal(`Canción añadida exitosamente`, "/");
       } catch (error) {
         console.error('Error:', error);
-        setModalMessage(`Error al subir o procesar el archivo`);
-        setIsModalOpen(true);
+        showAlertModal(`Error al subir o procesar el archivo`);
       }
     } catch (error) {
       console.error('Error al enviar la solicitud:', error);
