@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { Link, useNavigate } from "react-router-dom";
 import './form.css';
