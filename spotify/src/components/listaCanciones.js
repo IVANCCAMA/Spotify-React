@@ -7,6 +7,7 @@ import axios from "axios";
 import { ListProvider, useListContext } from './ListContext';
 import listAddIcon from '@iconify-icons/icon-park-outline/list-add';
 import { Icon } from '@iconify/react';
+import './form.css'
 
 const ListaCanciones = ({ userType, isLogin, showAlertModal }) => {
   const { id_lista } = useParams();
@@ -82,7 +83,7 @@ const ListaCanciones = ({ userType, isLogin, showAlertModal }) => {
     handleListAdd(cancionId);
   };
 
-  
+  const generos = ['Pop', 'Rock and Roll', 'Disco'];
   
 
   return (
@@ -134,7 +135,11 @@ const ListaCanciones = ({ userType, isLogin, showAlertModal }) => {
                     {songMenuStates[cancion.id_cancion] && (
                   <div className='list-menu'>
                     <button onClick={() => console.log('Agregar a lista de reproducción')}>
-                      Agregar a lista
+                        <div className="recoverUserList">
+                            {generos.map((genero) => (
+                            <option key={genero} value={genero}>{genero}</option>
+                            ))}
+                      </div>
                     </button>
                   </div>
               )}
