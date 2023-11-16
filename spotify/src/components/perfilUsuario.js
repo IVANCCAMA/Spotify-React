@@ -66,7 +66,7 @@ return (
     <div className="contenedor-listas-user">
       <div className="contenedor-listas-user-1">
         <span>Listas de reproducciones</span>
-        <Link to="/" className="mostrar-todo" >Mostrar todo</Link>
+        <Link to="/biblioteca" className="mostrar-todo" >Mostrar todo</Link>
       </div>
       <ListaAlbumesUser albumes={albumes} style={{gridTemplateColumns: 'repeat(3, minmax(300px, 1fr))'}} />
     </div>
