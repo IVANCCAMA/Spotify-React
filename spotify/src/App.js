@@ -71,6 +71,8 @@ function App() {
               />
 
               <Routes>
+                <Route path="/lista-canciones/:id_lista" element={<ListaCanciones isLogin={authState.isAuthenticated} showAlertModal={showAlertModal} />} />
+                
                 <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
                 {authState.isAuthenticated ? (
                   <>
@@ -100,6 +102,7 @@ function App() {
                 <Route path="*" element={<Inicio to="/" />} />
               </Routes>
             </div>
+
           </div>
           <ReproducirCancion />
         </div>
