@@ -4,11 +4,12 @@
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; 
 }
 
 .contenedor-imagen {
   display: flex;
   justify-content: center;
   align-items: center;
+
 }
