@@ -68,7 +68,7 @@ return (
         <span>Listas de reproducciones</span>
         <Link to="/biblioteca" className="mostrar-todo" >Mostrar todo</Link>
       </div>
-      <ListaAlbumesUser albumes={albumes} style={{gridTemplateColumns: 'repeat(3, minmax(300px, 1fr))'}} />
+      <ListaAlbumesUser albumes={albumes} style={{gridTemplateColumns: 'repeat(3, minmax(300px, 1fr))',width:"85%",margin:"0 auto 0 auto"}} />
     </div>
   </div>
 );
