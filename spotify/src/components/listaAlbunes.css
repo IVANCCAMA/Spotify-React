@@ -10,6 +10,14 @@
   margin-right: 4em;
 }
 
+.albun-content {
+  background: #66b2b2;
+  margin: 70px 0 90px;
+  width: 100%;
+  border-radius: 10px;
+}
+
+
 .albumes-details {
   position: relative;
   display: block;
