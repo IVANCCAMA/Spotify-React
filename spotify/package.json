@@ -53,6 +53,7 @@
     ]
   },
   "devDependencies": {
+    "@iconify/icons-icon-park-outline": "^1.2.11",
     "@iconify/icons-solar": "^1.2.3",
     "@iconify/react": "^4.1.1"
   }
