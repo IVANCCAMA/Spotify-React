@@ -46,7 +46,7 @@ function PerfilUsuario({ userConnected }) {
           <Link to="/biblioteca" className="mostrar-todo" >Mostrar todo</Link>
         </div>
         <div style={{margin: "0 2em"}}> {/* xd */}
-          <ListaAlbumes albumes={albumes} />
+          <ListaAlbumes albumes={albumes} userList={true} />
         </div>
       </div>
     </div>

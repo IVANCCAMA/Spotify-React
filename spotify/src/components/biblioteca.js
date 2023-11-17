@@ -27,7 +27,7 @@ function Biblioteca({ userConnected }) {
   return (
     <div className='album-content'>
       <span className='albums-title'>Listas de reproducción</span>
-      <ListaAlbumes albumes={albumes} />
+      <ListaAlbumes albumes={albumes} userList={true} />
     </div>
   );
 }
