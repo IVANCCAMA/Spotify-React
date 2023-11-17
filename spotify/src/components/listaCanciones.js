@@ -83,7 +83,7 @@ const ListaCanciones = ({ userType, isLogin, showAlertModal }) => {
     handleListAdd(cancionId);
   };
 
-  const generos = ['Pop', 'Rock and Roll', 'Disco'];
+  const LRUs = ['A de ave', 'B de burro', 'C de qalidad'];
   
 
   return (
@@ -136,8 +136,8 @@ const ListaCanciones = ({ userType, isLogin, showAlertModal }) => {
                   <div className='list-menu'>
                     <button onClick={() => console.log('Agregar a lista de reproducción')}>
                         <div className="recoverUserList">
-                            {generos.map((genero) => (
-                            <option key={genero} value={genero}>{genero}</option>
+                            {LRUs.map((LRU) => (
+                            <option key={LRU} value={LRU}>{LRU}</option>
                             ))}
                       </div>
                     </button>
