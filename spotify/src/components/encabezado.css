@@ -3,13 +3,14 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-bottom: 1px solid black;
   border-radius: 10px;
-  width: 100%;
+  width: calc(100% - 250px);
   display: flex;
   align-items: center;
   height: 70px;
   justify-content: flex-end;
   position: fixed;
   z-index: 2;
+  margin-left: 250px;
 }
 
 .menu-options {
@@ -58,8 +59,8 @@
   cursor: pointer;
   transition: background-color 0.3s;
   margin-right: 20px;
-  width: 150px; /* Ancho fijo */
-  height: 45px; /* Altura fija */
+  width: 150px;
+  height: 45px;
   text-align: center;
 }
 
@@ -72,8 +73,8 @@
   cursor: pointer;
   transition: background-color 0.3s;
   margin-right: 20px;
-  width: 150px; /* Ancho fijo */
-  height: 45px; /* Altura fija */
+  width: 150px;
+  height: 45px;
   text-align: center;
 }
 
