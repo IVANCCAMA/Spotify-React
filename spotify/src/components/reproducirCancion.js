@@ -201,7 +201,7 @@ function ReproducirCancion () {
       if (audioRef.current) {
       const audio = audioRef.current;
       audio.volume = nuevoVolumen / 100;
-      const estaEnSilencio = nuevoVolumen === 0;
+      const estaEnSilencio = nuevoVolumen === "0";
   
       if (estaEnSilencio !== muted) {
         setMuted(estaEnSilencio); // Actualiza el estado de mute
