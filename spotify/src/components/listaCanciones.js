@@ -83,7 +83,7 @@ const ListaCanciones = ({ userType, isLogin, showAlertModal }) => {
     handleListAdd(cancionId);
   };
 
-  const LRUs = ['A de ave', 'B de burro', 'C de qalidad'];
+  const LRUs = ['Lista1', 'Lista2', 'Lista3'];
   
 
   return (
