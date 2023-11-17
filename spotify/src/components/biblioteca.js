@@ -23,7 +23,7 @@ function Biblioteca({ userConnected }) {
   }, [userConnected]);
 
   return (
-    <div className='albun-content'style={{gridTemplateColumns: 'repeat(3, minmax(300px, 1fr))'}}>
+    <div className='albun-content'/* style={{gridTemplateColumns: 'repeat(3, minmax(300px, 1fr))'}} */>
     <div className="albumes-list" >
       {albumes.map((album, index) => (
         <Link to={`/lista-canciones-user/${album.id_lista}`} key={album.id_lista} className="albumes-item">
