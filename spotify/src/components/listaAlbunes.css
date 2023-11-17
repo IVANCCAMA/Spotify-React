@@ -2,11 +2,12 @@
   position: relative;
   border-radius: 10px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(300px, 1fr));
+  grid-template-columns: repeat(3, minmax(100px, 1fr));
   gap: 2em;
   height: fit-content;
-  width: auto;
-  margin: 2em;
+  margin-top: 1em;
+  margin-left: 4em;
+  margin-right: 4em;
 }
 
 .albumes-details {
