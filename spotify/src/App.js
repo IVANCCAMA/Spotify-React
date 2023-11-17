@@ -88,7 +88,7 @@ function App() {
                   ) : (
                     <>
                       <Route path="/" element={<Albumes />} />
-                      <Route path="/crearListaReproduccion" element={<CrearListaReproduccion showAlertModal={showAlertModal} />} />
+                      <Route path="/crearListaReproduccion" element={<CrearListaReproduccion showAlertModal={showAlertModal} userConnected={authState.user} />} />
                       <Route path="/perfil" element={< PerfilUsuario userConnected={authState.user} />} />
                       <Route path="/biblioteca" element={< Biblioteca userConnected={authState.user} />} />
                       <Route path="/lista-canciones-user/:id_lista" element={<ListaCancionesUser />} />
