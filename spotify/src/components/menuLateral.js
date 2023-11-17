@@ -43,7 +43,7 @@ function MenuLateral({ userType, isLogin, showAlertModal }) {
       const requiresAuthentication = menuOption.to === '/crearListaReproduccion' || menuOption.to === '/biblioteca';
       if (requiresAuthentication) {
         e.preventDefault();
-        showAlertModal('Funcionalidad no permitida. Por favor, inicie sesión', "/");
+        showAlertModal('Funcionalidad no permitida. Por favor, inicie sesión');
       }
     }
   };
