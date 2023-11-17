@@ -5,7 +5,7 @@ import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/confi
 import { alfanumerico } from './form.js';
 import './form.css';
 
-function CrearListaReproduccion({ showAlertModal }) {
+function CrearListaReproduccion({ showAlertModal, userConnected }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [isOnline, setIsOnline] = useState(window.navigator.onLine); // Verifica si hay conexión inicialmente
@@ -28,6 +28,17 @@ function CrearListaReproduccion({ showAlertModal }) {
     };
   }, []);
 
+  const getlistasbyid_user = async (id_usuario) => {
+    try {
+      const query = `/usuarios/getlistasbyid_user/${id_usuario}`;
+      const response = await axios.get(`${database}${query}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error al obtener la lista de canciones del usuario:', error);
+      return null;
+    }
+  };
+
   const validarCampos = async (campos) => {
     if (campos.titulo.length > 20 || campos.titulo.length < 1 || !alfanumerico(campos.titulo)) {
       document.getElementById('titulo_lista').classList.add('active');
@@ -37,6 +48,20 @@ function CrearListaReproduccion({ showAlertModal }) {
       console.log("No se selecciono archivo");
       return null;
     }
+
+    const albumes = await getlistasbyid_user(userConnected.id_usuario);
+    const albumExistente = albumes.find((album) => album.titulo_lista === campos.titulo);
+    if (albumExistente) {
+      document.getElementById('titulo_lista').classList.add('active');
+      showAlertModal('El nombre de la carpeta ya está en uso, intente otro');
+      return null;
+    }
+
+    return {
+      id_usuario: userConnected.id_usuario,
+      titulo_lista: campos.titulo,
+      path_image: ""
+    };
   };
 
   const validarFormatoArchivo = async (archivo) => {
@@ -166,7 +191,7 @@ function CrearListaReproduccion({ showAlertModal }) {
           <div className="form-title">
             <span>Crear lista</span>
           </div>
-          
+
           <div className="campo">
             <div className="input-box">
               <label htmlFor="titulo_lista">Nombre de la lista *</label>
