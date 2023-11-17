@@ -32,6 +32,7 @@ function App() {
   useEffect(() => {
     setModalMessage("");
     setRedirectTo(null);
+    /* console.log("USER LOGEADO:", authState.user); */
   }, [location.pathname]);
 
   /**

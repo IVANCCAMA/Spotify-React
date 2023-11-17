@@ -129,7 +129,7 @@ const ListaCanciones = ({ userType, isLogin, showAlertModal }) => {
                     <Icon
                       icon={listAddIcon}
                       onClick={(e) => handleIconClick(e, cancion.id_cancion)}
-                     className="list-add-icon"
+                      className="list-add-icon"
                     />
                     {songMenuStates[cancion.id_cancion] && (
                   <div className='list-menu'>

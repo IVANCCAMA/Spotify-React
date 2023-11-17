@@ -31,8 +31,8 @@ function Encabezado({ loggedIn, signOff }) {
         </>
       ) : (
         <>
-          <Link to="/iniciarsesion" className='btn-header'><strong>Iniciar Sesión</strong></Link>
           <Link to="/registro" className='btn-header'><strong>Regístrate</strong></Link>
+          <Link to="/iniciarsesion" className='btn-header'><strong>Iniciar sesión</strong></Link>
         </>
       )}
     </div>
