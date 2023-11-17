@@ -41,6 +41,15 @@
 }
 
 .btn-header {
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: center;
+}
+
+.btn-registro {
   background-color: #008080;
   color: #fff;
   border: none;
@@ -49,7 +58,21 @@
   cursor: pointer;
   transition: background-color 0.3s;
   margin-right: 20px;
-  width: 139.9px; /* Ancho fijo */
+  width: 150px; /* Ancho fijo */
+  height: 45px; /* Altura fija */
+  text-align: center;
+}
+
+.btn-inicioSesion {
+  background-color: #008080;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 20px;
+  width: 150px; /* Ancho fijo */
   height: 45px; /* Altura fija */
   text-align: center;
 }
