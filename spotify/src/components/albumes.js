@@ -26,7 +26,7 @@ function Albumes() {
 
   return (
     <div className='album-content'>
-      <span className='albums-title'>Albunes</span>
+      <span className='albums-title'>Álbumes</span>
       <ListaAlbumes albumes={albumes} />
     </div>
   );

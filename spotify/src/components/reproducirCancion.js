@@ -197,6 +197,7 @@ function ReproducirCancion () {
     }
   }, [indiceCancionActual, listaCancionesReproduccion]);
   const cambiarVolumen = (e) => {
+    console.log("Valor de volumen",e.target.value);
     const nuevoVolumen = e.target.value;
       if (audioRef.current) {
       const audio = audioRef.current;
@@ -208,6 +209,11 @@ function ReproducirCancion () {
         audio.muted = estaEnSilencio; // Cambia el estado de mute en el audio
       }
       setVolumen(nuevoVolumen);
+
+      if(e.target.value === '0'){
+        setMuted(true); // Actualiza el estado de mute
+        audio.muted = true; // Cambia el estado de mute en el audio
+      }
     }
   };
   
