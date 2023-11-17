@@ -37,6 +37,16 @@ function CrearListaReproduccion({ showAlertModal }) {
       console.log("No se selecciono archivo");
       return null;
     }
+
+    
+
+    return {
+   
+      titulo_lista: campos.titulo,
+      path_image: "",
+      // colaborador: colaborador
+      
+    };
   };
 
   const validarFormatoArchivo = async (archivo) => {
