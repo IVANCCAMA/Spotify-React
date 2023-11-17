@@ -60,12 +60,12 @@ return (
         <div className="user-profile-alias">
           <div className="contenedor-alias">{userInfo?.nombre_usuario}</div>
         </div>
-        <div>{userInfo?.cantidad_listas} listas de reproducion</div>
+        <div>{userInfo?.cantidad_listas} listas de reprodución</div>
       </div>
     </div>
     <div className="contenedor-listas-user">
       <div className="contenedor-listas-user-1">
-        <span>Listas de reproduccion</span>
+        <span>Listas de reproducción</span>
         <Link to="/biblioteca" className="mostrar-todo" >Mostrar todo</Link>
       </div>
       <ListaAlbumesUser albumes={albumes} style={{gridTemplateColumns: 'repeat(3, minmax(300px, 1fr))',width:"85%",margin:"0 auto 0 auto"}} />
