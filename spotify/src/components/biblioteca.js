@@ -11,6 +11,7 @@ function Biblioteca({ userConnected }) {
     try {
       const query = `/lista_canciones/oyente/${userConnected.id_usuario}`;
       const response = await axios.get(`${database}${query}`);
+      console.log(response.data);
       const listaCanciones = response.data;
       listaCanciones.sort((a, b) => {
         return a.titulo_lista.localeCompare(b.titulo_lista);
@@ -22,8 +23,13 @@ function Biblioteca({ userConnected }) {
     }
   };
 
-  fetchData();
+  // Control para que solo se ejecute 1 o 2 veces
+  useEffect(() => {
+    fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userConnected])
 
+  
   return (
     <div className='album-content'>
       <span className='albums-title'>Listas de reproducción</span>
