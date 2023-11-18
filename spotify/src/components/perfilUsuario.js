@@ -8,11 +8,15 @@ import ListaAlbumes from './listaAlbunes';
 function PerfilUsuario({ userConnected }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const [albumes, setAlbumes] = useState([]);
+  const [datosUser, setDatosUser] = useState([]);
 
   const fetchData = async () => {
     try {
       const query = `/lista_canciones/oyente/${userConnected.id_usuario}`;
       const response = await axios.get(`${database}${query}`);
+      const datosUser = await axios.get(`https://spfisbackend-production.up.railway.app/api/usuarios/${userConnected.id_usuario}`);
+      setDatosUser(datosUser.data);
+      console.log("USER INFO ACTUALIZADOS", datosUser.data);
       const listaCanciones = response.data;
       listaCanciones.sort((a, b) => {
         return a.titulo_lista.localeCompare(b.titulo_lista);
@@ -24,7 +28,11 @@ function PerfilUsuario({ userConnected }) {
     }
   };
 
-  fetchData();
+  // Control para que solo se ejecute 1 o 2 veces
+  useEffect(() => {
+    fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userConnected]);
 
   return (
     <div className="contendor-perfil-usuario">
@@ -35,9 +43,9 @@ function PerfilUsuario({ userConnected }) {
         <div className="user-info-row">
           <div>PERFIL</div>
           <div className="user-profile-alias">
-            <div className="contenedor-alias">{userConnected?.nombre_usuario}</div>
+            <div className="contenedor-alias">{datosUser?.nombre_usuario}</div>
           </div>
-          <div>{userConnected?.cantidad_listas} listas de reprodución</div>
+          <div>{datosUser?.cantidad_listas} listas de reprodución</div>
         </div>
       </div>
       <div className="contenedor-listas-user">
