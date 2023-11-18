@@ -36,7 +36,7 @@ function IniciarSesion({ signOn, showAlertModal }) {
       document.getElementById('username').classList.add('active');
       return null;
     }
-    if (campos.password.length > 40 || campos.password.length < 8) {
+    if (campos.password.length > 20 || campos.password.length < 8) {
       document.getElementById('password').classList.add('active');
       return null;
     }
@@ -114,6 +114,7 @@ function IniciarSesion({ signOn, showAlertModal }) {
                 type="text"
                 id="username"
                 name="username"
+                maxLength={20}
                 placeholder="Escriba su nombre de usuario"
               />
             </div>
@@ -126,6 +127,8 @@ function IniciarSesion({ signOn, showAlertModal }) {
                 type={passwordVisible ? "text" : "password"}
                 id="password"
                 name="password"
+                maxLength={20}
+                minLength={8}
                 placeholder="Escriba su contraseña"
               />
 
