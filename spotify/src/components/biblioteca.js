@@ -16,7 +16,7 @@ function Biblioteca({ userConnected }) {
         return a.titulo_lista.localeCompare(b.titulo_lista);
       });
 
-      setAlbumes(listaCanciones.slice(0, 6));
+      setAlbumes(listaCanciones);
     } catch (error) {
       console.error('Error al obtener la lista de canciones:', error);
     }

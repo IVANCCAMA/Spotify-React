@@ -16,7 +16,8 @@ function PerfilUsuario({ userConnected }) {
       const response = await axios.get(`${database}${query}`);
       const datosUser = await axios.get(`https://spfisbackend-production.up.railway.app/api/usuarios/${userConnected.id_usuario}`);
       setDatosUser(datosUser.data);
-      console.log("USER INFO ACTUALIZADOS", datosUser.data);
+      //console.log("USER INFO ACTUALIZADOS", datosUser.data);
+      console.log("LISTAS DE USER", response.data);
       const listaCanciones = response.data;
       listaCanciones.sort((a, b) => {
         return a.titulo_lista.localeCompare(b.titulo_lista);
