@@ -8,7 +8,7 @@ import { ListProvider, useListContext } from './ListContext';
 import listAddIcon from '@iconify-icons/icon-park-outline/list-add';
 import { Icon } from '@iconify/react';
 
-const ListaCanciones = ({ userType, isLogin, showAlertModal }) => {
+const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
   const { id_lista } = useParams();
   const { listaCancionesReproduccion, actualizarListaCanciones, cancionSeleccionada, actualizarCancionSelecionada } = useListContext();
 
@@ -16,13 +16,31 @@ const ListaCanciones = ({ userType, isLogin, showAlertModal }) => {
   const [infoAlbum, setinfoAlbum] = useState([]); // Nuevo estado para lista de álbumes
   const [cancionesCargadas, setCancionesCargadas] = useState(false); 
   const [cancionSelect, setCancionSeleccionada] = useState(null); // Nuevo estado para el índice de la canción seleccionada
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isListMenuOpen, setIsListMenuOpen] = useState(false);
   const listMenuRef = useRef(null);
   const [songMenuStates, setSongMenuStates] = useState({}); // Estado para manejar el menú de cada canción
+  const [listasReproduccion, setListasReproduccion] = useState([]);
+  const [selectedPlaylist, setSelectedPlaylist] = useState('');
+
+
+  // Listas de reproduccion de usuario
+  useEffect(() => {
+    cargarListasDeUser();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  } , [userConnected]);
+
+  const cargarListasDeUser = async () => {
+    try {
+      const listasUser = await axios.get(`https://spfisbackend-production.up.railway.app/api/lista_canciones/oyente/108`);
+      //console.log('Listas de usuario>>>>>', listasUser.data);
+      setListasReproduccion(listasUser.data)
+    } catch (error) {
+      console.error('Error al obtener las listas de reproduccion:', error);
+    }
+  }
 
   // Lista de canciones de un Álbum
   useEffect(() => {
+    //console.log("USUARIO CONECTADO",userConnected);
     const fetchData = async () => {
       try {
         const responseCanciones = await axios.get(`https://spfisbackend-production.up.railway.app/api/canciones/completo_lista/${id_lista}`);
@@ -63,10 +81,10 @@ const ListaCanciones = ({ userType, isLogin, showAlertModal }) => {
     }
   };
   
-    // Event listener para cerrar el menú cuando se hace clic fuera
+  // Event listener para cerrar el menú cuando se hace clic fuera
   useEffect(() => {
     const handleDocumentClick = (e) => {
-      if (!listMenuRef.current?.contains(e.target)) {
+      if (!listMenuRef.current?.contains(e.target) && !Object.values(songMenuStates).some(value => value)) {
         setSongMenuStates({});
       }
     };
@@ -75,15 +93,40 @@ const ListaCanciones = ({ userType, isLogin, showAlertModal }) => {
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };
-  }, [listMenuRef, setSongMenuStates]);
+  }, [listMenuRef, setSongMenuStates, songMenuStates]);
 
   const handleIconClick = (e, cancionId) => {
     e.stopPropagation();
     handleListAdd(cancionId);
   };
 
-  
-  
+  const handleAddToPlaylist = async (cancionId, listaReproduccionId) => {
+    console.log("ID cancion>>", cancionId, "Lista de repro>", listaReproduccionId);
+    try {
+      const responseListaReproduccion = await axios.get(`https://spfisbackend-production.up.railway.app/api/canciones/completo_lista_oyente/${listaReproduccionId}`);
+      const listaReproduccionActual = responseListaReproduccion.data;
+      console.log("Lista de canciones de Lista", responseListaReproduccion.data);
+
+      // Verificar si la canción ya está en la lista de reproducción
+      const cancionRepetida = listaReproduccionActual.some(cancion => cancion.id_cancion === cancionId);
+
+      if (!cancionRepetida) {
+        // Si la canción no está repetida, proceder con la solicitud de agregarla
+        await axios.post('https://spfisbackend-production.up.railway.app/api/extra_playlist/', {
+          id_lista: listaReproduccionId,
+          id_cancion: cancionId,
+        });
+        console.log("Cancion agregada a Lista exitosamente");
+      } else {
+        console.log("La canción ya está en la lista de reproducción.");
+      }
+
+      // Lógica adicional si es necesario, por ejemplo, cerrar el menú después de agregar
+      setSongMenuStates({});
+    } catch (error) {
+      console.error('Error al agregar la canción a la lista de reproducción:', error);
+    }
+  };
 
   return (
     
@@ -111,38 +154,58 @@ const ListaCanciones = ({ userType, isLogin, showAlertModal }) => {
 
       {/* Listado de canciones */}
       <div className="song-config">
-          {cancionesCargadas && listaCanciones.length > 0 ? (
-            listaCanciones.map((cancion, index) => (
-              <div key={cancion.id_cancion} className="album-item">
-                <div className="song-container">
-                <div className="song-details">
-                  <img
-                    src={cancion.path_image}
-                    alt="Álbum"
-                    className="album-image2"
-                  />
-                  <div className="titulo-cancion-logo">
-                    {cancion.nombre_usuario + " - " + cancion.nombre_cancion}
-                    <div className="duracion-logo">{cancion.duracion}</div>
-                    </div>
-                    <img src={songLogo} onClick={() => actualizarCancionSelecionada(cancion.id_cancion)} alt="Álbum" className="play-logo" /> 
-                    <Icon
-                      icon={listAddIcon}
-                      onClick={(e) => handleIconClick(e, cancion.id_cancion)}
-                      className="list-add-icon"
-                    />
-                    {songMenuStates[cancion.id_cancion] && (
+        {cancionesCargadas && listaCanciones.length > 0 ? (
+          listaCanciones.map((cancion, index) => (
+          <div key={cancion.id_cancion} className="album-item">
+            <div className="song-container">
+              <div className="song-details">
+                <img
+                  src={cancion.path_image}
+                  alt="Álbum"
+                  className="album-image2"
+                />
+                <div className="titulo-cancion-logo">
+                  {cancion.nombre_usuario + " - " + cancion.nombre_cancion}
+                  <div className="duracion-logo">{cancion.duracion}</div>
+                </div>
+
+                <img src={songLogo} onClick={() => actualizarCancionSelecionada(cancion.id_cancion)} alt="Álbum" className="play-logo" /> 
+                <Icon
+                  icon={listAddIcon}
+                  onClick={ (e) => handleIconClick(e, cancion.id_cancion) }
+                  className="list-add-icon"
+                />
+                {songMenuStates[cancion.id_cancion] && (
                   <div className='list-menu'>
-                    <button onClick={() => console.log('Agregar a lista de reproducción')}>
-                      Agregar a lista
-                    </button>
+                    <select 
+                      className='listas-repro'
+                      value={selectedPlaylist}
+                      onChange={(e) => {
+                        const selectedValue = e.target.value;
+                        setSelectedPlaylist(selectedValue);
+                        // Verifica que la opción seleccionada no sea "Seleccionar Lista" antes de enviar la solicitud
+                        if (selectedValue !== " ") {
+                          handleAddToPlaylist(cancion.id_cancion, selectedValue);
+                        }
+                      }}
+                    >
+                      <option key={-1} value={-1}>Agregar a lista</option>
+                      {listasReproduccion.map((listasRepro) => (
+                        <option 
+                          className='listas-repro' 
+                          key={listasRepro.titulo_lista} 
+                          value={listasRepro.id_lista}
+                          >
+                          {listasRepro.titulo_lista}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-              )}
+                )}
+              </div>
             </div>
-                  </div>
-                  
-            </div>
-          ))
+          </div>
+        ))
         ) : (
           <p></p>
         )}
