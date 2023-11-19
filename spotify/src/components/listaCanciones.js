@@ -14,19 +14,20 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
 
   const [listaCanciones, setListaCanciones] = useState([]);
   const [infoAlbum, setinfoAlbum] = useState([]); // Nuevo estado para lista de álbumes
-  const [cancionesCargadas, setCancionesCargadas] = useState(false); 
+  const [cancionesCargadas, setCancionesCargadas] = useState(false);
   const [cancionSelect, setCancionSeleccionada] = useState(null); // Nuevo estado para el índice de la canción seleccionada
   const listMenuRef = useRef(null);
   const [songMenuStates, setSongMenuStates] = useState({}); // Estado para manejar el menú de cada canción
   const [listasReproduccion, setListasReproduccion] = useState([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 
   // Listas de reproduccion de usuario
   useEffect(() => {
     cargarListasDeUser();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  } , [userConnected]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userConnected]);
 
   const cargarListasDeUser = async () => {
     try {
@@ -53,9 +54,9 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
       }
     };
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Arreglo de dependencias vacío
-  
+
   // Infor de album
   useEffect(() => {
     const fetchAlbum = async () => {
@@ -80,7 +81,7 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
       }));
     }
   };
-  
+
   // Event listener para cerrar el menú cuando se hace clic fuera
   useEffect(() => {
     const handleDocumentClick = (e) => {
@@ -129,90 +130,92 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
   };
 
   return (
-    
-  <ListProvider>
-    <div className='general-config'>
-      {/* Info de álbum */}
-      <div className='album-config'>
-        {/* Columna 1: Imagen del álbum */}
-        <div key={infoAlbum.id_lista} className="album-portada">
-          <img
-            src={infoAlbum.path_image}
-            /* className='album-image' */
-            alt="Álbum"
-            style={{ width: '111px', height: '111px', objectFit: 'cover' }}  // Ajustamos el estilo de la imagen
-          />
-        </div>
 
-        {/* Columna 2: Datos del álbum */}
-        <div className="album-details">  {/* Añadimos un margen izquierdo */}
-          <div className="album-title2">{infoAlbum.titulo_lista}</div>
-          <div className="artist-name">{infoAlbum.nombre_usuario}</div> {/* ARREGLAR */}
-          <div className="album-songs">{infoAlbum.cantidad_canciones} canciones</div>
-        </div>
-      </div>
-
-      {/* Listado de canciones */}
-      <div className="song-config">
-        {cancionesCargadas && listaCanciones.length > 0 ? (
-          listaCanciones.map((cancion, index) => (
-          <div key={cancion.id_cancion} className="album-item">
-            <div className="song-container">
-              <div className="song-details">
-                <img
-                  src={cancion.path_image}
-                  alt="Álbum"
-                  className="album-image2"
-                />
-                <div className="titulo-cancion-logo">
-                  {cancion.nombre_usuario + " - " + cancion.nombre_cancion}
-                  <div className="duracion-logo">{cancion.duracion}</div>
-                </div>
-
-                <img src={songLogo} onClick={() => actualizarCancionSelecionada(cancion.id_cancion)} alt="Álbum" className="play-logo" /> 
-                <Icon
-                  icon={listAddIcon}
-                  onClick={ (e) => handleIconClick(e, cancion.id_cancion) }
-                  className="list-add-icon"
-                />
-                {songMenuStates[cancion.id_cancion] && (
-                  <div className='list-menu'>
-                    <select 
-                      className='listas-repro'
-                      value={selectedPlaylist}
-                      onChange={(e) => {
-                        const selectedValue = e.target.value;
-                        setSelectedPlaylist(selectedValue);
-                        // Verifica que la opción seleccionada no sea "Seleccionar Lista" antes de enviar la solicitud
-                        if (selectedValue !== " ") {
-                          handleAddToPlaylist(cancion.id_cancion, selectedValue);
-                        }
-                      }}
-                    >
-                      <option key={-1} value={-1}>Agregar a lista</option>
-                      {listasReproduccion.map((listasRepro) => (
-                        <option 
-                          className='listas-repro' 
-                          key={listasRepro.titulo_lista} 
-                          value={listasRepro.id_lista}
-                          >
-                          {listasRepro.titulo_lista}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-              </div>
-            </div>
+    <ListProvider>
+      <div className='general-config'>
+        {/* Info de álbum */}
+        <div className='album-config'>
+          {/* Columna 1: Imagen del álbum */}
+          <div key={infoAlbum.id_lista} className="album-portada">
+            <img
+              src={infoAlbum.path_image}
+              /* className='album-image' */
+              alt="Álbum"
+              style={{ width: '111px', height: '111px', objectFit: 'cover' }}  // Ajustamos el estilo de la imagen
+            />
           </div>
-        ))
-        ) : (
-          <p></p>
-        )}
+
+          {/* Columna 2: Datos del álbum */}
+          <div className="album-details">  {/* Añadimos un margen izquierdo */}
+            <div className="album-title2">{infoAlbum.titulo_lista}</div>
+            <div className="artist-name">{infoAlbum.nombre_usuario}</div> {/* ARREGLAR */}
+            <div className="album-songs">{infoAlbum.cantidad_canciones} canciones</div>
+          </div>
+        </div>
+
+        {/* Listado de canciones */}
+        <div className="song-config">
+          {cancionesCargadas && listaCanciones.length > 0 ? (
+            listaCanciones.map((cancion, index) => (
+              <div key={cancion.id_cancion} className="album-item">
+                <div className="song-container">
+                  <div className="song-details">
+                    <img
+                      src={cancion.path_image}
+                      alt="Álbum"
+                      className="album-image2"
+                    />
+                    <div className="titulo-cancion-logo">
+                      {cancion.nombre_usuario + " - " + cancion.nombre_cancion}
+                      <div className="duracion-logo">{cancion.duracion}</div>
+                    </div>
+
+                    <img src={songLogo} onClick={() => actualizarCancionSelecionada(cancion.id_cancion)} alt="Álbum" className="play-logo" />
+                    <Icon
+                      icon={listAddIcon}
+                      onClick={(e) => handleIconClick(e, cancion.id_cancion)}
+                      className="list-add-icon"
+                    />
+                    {songMenuStates[cancion.id_cancion] && (
+                      <div className='list-menu'>
+                        <select
+                        autoFocus
+                          className='listas-repro'
+                          value={selectedPlaylist}
+                          onChange={(e) => {
+                            const selectedValue = e.target.value;
+                            setSelectedPlaylist(selectedValue);
+                            // Verifica que la opción seleccionada no sea "Seleccionar Lista" antes de enviar la solicitud
+                            if (selectedValue !== " ") {
+                              handleAddToPlaylist(cancion.id_cancion, selectedValue);
+                            }
+                          }}
+                          onBlur={(e) => { handleIconClick(e, cancion.id_cancion) }}
+                        >
+                          <option key={-1} value={-1}>Agregar a lista</option>
+                          {listasReproduccion.map((listasRepro) => (
+                            <option
+                              className='listas-repro'
+                              key={listasRepro.titulo_lista}
+                              value={listasRepro.id_lista}
+                            >
+                              {listasRepro.titulo_lista}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p></p>
+          )}
+        </div>
       </div>
-    </div>
-  </ListProvider>
+    </ListProvider>
   );
-  
+
 }
 export default ListaCanciones;
