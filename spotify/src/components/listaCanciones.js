@@ -30,8 +30,8 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
 
   const cargarListasDeUser = async () => {
     try {
-      const listasUser = await axios.get(`https://spfisbackend-production.up.railway.app/api/lista_canciones/oyente/108`);
-      //console.log('Listas de usuario>>>>>', listasUser.data);
+      const listasUser = await axios.get(`https://spfisbackend-production.up.railway.app/api/lista_canciones/oyente/${userConnected.id_usuario}`);
+      console.log('Listas de usuario>>>>>', listasUser.data);
       setListasReproduccion(listasUser.data)
     } catch (error) {
       console.error('Error al obtener las listas de reproduccion:', error);
