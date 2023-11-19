@@ -7,6 +7,8 @@
 
 .listas-repro {
   background-color: #008080;
+  color: var(--color-texto-principal);
+  outline: none;
 }
 
 .general-config {
@@ -221,7 +223,7 @@
   flex-direction: column;
   z-index: 1;
   transition: scale 0.8s;
-  transform-origin: top;
+  transform-origin: right
 }
 
 .list-menu button {
