@@ -102,7 +102,7 @@ function ReproducirCancion () {
   
 //Agredado por EdiTeo
   useEffect(() => {
-    console.log("Cancion seleccionada",cancionSeleccionada);
+    //console.log("Cancion seleccionada",cancionSeleccionada);
     const audio = audioRef.current;
   
     const handleTimeUpdate = () => {

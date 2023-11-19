@@ -74,6 +74,7 @@ function App() {
               <Route path="/lista-canciones/:id_lista" element={
                 <ListaCanciones
                   isLogin={authState.isAuthenticated}
+                  userConnected={authState.user}
                   showAlertModal={showAlertModal} />} />
 
               {authState.isAuthenticated ? (

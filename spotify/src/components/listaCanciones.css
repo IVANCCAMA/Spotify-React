@@ -5,6 +5,10 @@
   --borde-album: 5px solid white;
 }
 
+.listas-repro {
+  background-color: #008080;
+}
+
 .general-config {
   width: 100%;
   display: flex;
@@ -191,6 +195,7 @@
 
 
 .list-menu-container {
+  background-color: #008080;
   position: relative;
   display: inline-block;
 }
