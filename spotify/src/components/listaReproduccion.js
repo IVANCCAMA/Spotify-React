@@ -3,7 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
 import { alfanumerico } from './form.js';
-import './form.css';
+// import './form.css';
+import Form from './Form/Form.tsx';
+import TextInput from './Form/TextInput.tsx';
+import FileInput from './Form/FileInput.tsx';
 
 function CrearListaReproduccion({ showAlertModal, userConnected }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
@@ -41,7 +44,7 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
 
   const validarCampos = async (campos) => {
     if (campos.titulo.length > 20 || campos.titulo.length < 1 || !alfanumerico(campos.titulo)) {
-      document.getElementById('titulo_lista').classList.add('active');
+      setIsValidTitle(false);
       return null;
     }
     if (campos.archivo.length < 1) {
@@ -52,7 +55,7 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
     const albumes = await getlistasbyid_user(userConnected.id_usuario);
     const albumExistente = albumes.find((album) => album.titulo_lista === campos.titulo);
     if (albumExistente) {
-      document.getElementById('titulo_lista').classList.add('active');
+      setIsValidTitle(false);
       showAlertModal('El nombre de la carpeta ya está en uso, intente otro');
       return null;
     }
@@ -102,7 +105,7 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
         e.preventDefault();
 
         const campos = {
-          titulo: eliminarEspacios(document.getElementById('titulo_lista').value).trim(),
+          titulo: title,
           archivo: document.getElementById('archivo').files
         };
 
@@ -171,75 +174,53 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
     return value.replace(/\s+/g, ' ');
   };
 
-  const handle = (e, alfanumericoFunc) => {
-    let newValue = eliminarEspacios(e.target.value);
-    if (alfanumericoFunc(newValue)) {
-      e.target.classList.remove('active');
-    } else {
-      e.target.classList.add('active');
-    }
-    if (newValue.length > 20) {
-      newValue = newValue.slice(0, 20);
-    }
-    e.target.value = newValue;
+  const [title, setTitle] = useState('');
+  const [isValidTitle, setIsValidTitle] = useState(false);
+
+  const handle = (value) => {
+    const newValue = eliminarEspacios(value);
+    setIsValidTitle(alfanumerico(newValue));
+    setTitle(newValue);
   };
 
   return (
-    <div className="modal-form">
-      <form className="modal-box" id="form" onSubmit={validarForm}>
-        <div className="inter-modal">
-          <div className="form-title">
-            <span>Crear lista</span>
-          </div>
+    <Form
+      title="Crear lista"
+      onSubmit={validarForm}>
 
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="titulo_lista">Nombre de la lista *</label>
-              <input autoFocus required
-                type="text"
-                className="validar"
-                id="titulo_lista"
-                name="titulo_lista"
-                placeholder="Escriba el nombre de la lista"
-                onChange={(e) => { handle(e, alfanumerico); }}
-                onBlur={(e) => { e.target.value = e.target.value.trim(); }}
-              />
-            </div>
-          </div>
+      <TextInput
+        name='titulo_lista'
+        label='Nombre de la lista *'
+        value={title}
+        onChange={handle}
+        isValid={isValidTitle}
+        placeholder='Escriba el nombre de la lista' />
 
-          {/* SELECCIONAR ARCHIVO */}
-          <div className="campo campo-cargar-cancion">
-            <div className="input-box">
-              <label>Portada de la lista</label>
-              <div className="seleccionarArchivo">
-                <span className="nombreArchivo" id="nombreArchivo"></span> {/* Mostrar nombre del archivo */}
-                <input
-                  type="file"
-                  name="archivo"
-                  id="archivo"
-                  accept=".png, .jpg, .jpeg"
-                  style={{ display: 'none' }}
-                  onChange={mostrarNombreArchivo}
-                />
-                <input
-                  type="button"
-                  className="btn-subir bg-white"
-                  onClick={() => { document.getElementById('archivo').click(); }}
-                  value="Seleccionar imagen"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="campo">
-            <div className="btn-box">
-              <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
-              <Link to="/"><button to="/" className="custom-link">Cancelar</button></Link>
-            </div>
+      {/* SELECCIONAR ARCHIVO */}
+      <div className="campo campo-cargar-cancion">
+        <div className="input-box">
+          <label>Portada de la lista</label>
+          <div className="seleccionarArchivo">
+            <span className="nombreArchivo" id="nombreArchivo"></span> {/* Mostrar nombre del archivo */}
+            <input
+              type="file"
+              name="archivo"
+              id="archivo"
+              accept=""
+              style={{ display: 'none' }}
+              onChange={mostrarNombreArchivo}
+            />
+            <input
+              type="button"
+              className="btn-subir bg-white"
+              onClick={() => { document.getElementById('archivo').click(); }}
+              value="Seleccionar imagen"
+            />
           </div>
         </div>
-      </form>
-    </div>
+      </div>
+
+    </Form>
   );
 }
 
