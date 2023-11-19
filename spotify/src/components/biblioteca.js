@@ -11,7 +11,7 @@ function Biblioteca({ userConnected }) {
     try {
       const query = `/lista_canciones/oyente/${userConnected.id_usuario}`;
       const response = await axios.get(`${database}${query}`);
-      console.log(response.data);
+      //console.log(response.data);
       const listaCanciones = response.data;
       listaCanciones.sort((a, b) => {
         return a.titulo_lista.localeCompare(b.titulo_lista);

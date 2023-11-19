@@ -74,10 +74,22 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
     if (!isLogin) {
       showAlertModal('Funcionalidad no permitida. Inicie sesión por favor.');
     } else {
-      setSongMenuStates((prevStates) => ({
-        ...Object.fromEntries(Object.keys(prevStates).map(key => [key, false])),
-        [cancionId]: !prevStates[cancionId],
-      }));
+      setSongMenuStates((prevStates) => {
+        // Verifica si el menú para la canción actual está abierto
+        const isMenuOpen = prevStates[cancionId];
+  
+        // Cierra todos los menús
+        const updatedStates = Object.fromEntries(Object.keys(prevStates).map(key => [key, false]));
+  
+        // Abre el menú solo si estaba cerrado previamente
+        if (!isMenuOpen) {
+          updatedStates[cancionId] = true;
+          // Restablece la opción seleccionada a "Agregar a lista" cuando se abre el menú
+          setSelectedPlaylist(-1);
+        }
+  
+        return updatedStates;
+      });
     }
   };
   
@@ -105,7 +117,7 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
     try {
       const responseListaReproduccion = await axios.get(`https://spfisbackend-production.up.railway.app/api/canciones/completo_lista_oyente/${listaReproduccionId}`);
       const listaReproduccionActual = responseListaReproduccion.data;
-      console.log("Lista de canciones de Lista", responseListaReproduccion.data);
+      //console.log("Lista de canciones de Lista", responseListaReproduccion.data);
 
       // Verificar si la canción ya está en la lista de reproducción
       const cancionRepetida = listaReproduccionActual.some(cancion => cancion.id_cancion === cancionId);
@@ -119,6 +131,7 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
         console.log("Cancion agregada a Lista exitosamente");
       } else {
         console.log("La canción ya está en la lista de reproducción.");
+        setSongMenuStates({});
       }
 
       // Lógica adicional si es necesario, por ejemplo, cerrar el menú después de agregar
@@ -184,7 +197,7 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
                         const selectedValue = e.target.value;
                         setSelectedPlaylist(selectedValue);
                         // Verifica que la opción seleccionada no sea "Seleccionar Lista" antes de enviar la solicitud
-                        if (selectedValue !== " ") {
+                        if (selectedValue !== -1) {
                           handleAddToPlaylist(cancion.id_cancion, selectedValue);
                         }
                       }}
