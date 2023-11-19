@@ -20,7 +20,6 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
   const [songMenuStates, setSongMenuStates] = useState({}); // Estado para manejar el menú de cada canción
   const [listasReproduccion, setListasReproduccion] = useState([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 
   // Listas de reproduccion de usuario
