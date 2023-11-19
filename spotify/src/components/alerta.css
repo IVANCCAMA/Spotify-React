@@ -39,8 +39,9 @@
     align-items: center; /* Centra verticalmente el contenido */
     justify-content: center; /* Centra horizontalmente el contenido */
     font-family: 'roboto', sans-serif;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: bold;
+    padding: 0px 40px;
 }
 
 .separador {

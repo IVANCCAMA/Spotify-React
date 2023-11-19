@@ -130,7 +130,9 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
         });
         console.log("Cancion agregada a Lista exitosamente");
       } else {
-        console.log("La canción ya está en la lista de reproducción.");
+        // eslint-disable-next-line no-useless-concat
+        let esp = "     ";
+        showAlertModal("La canción ya está en la lista." + esp  + "No se permiten duplicados.");
         setSongMenuStates({});
       }
 
@@ -138,6 +140,7 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
       setSongMenuStates({});
     } catch (error) {
       console.error('Error al agregar la canción a la lista de reproducción:', error);
+      setSongMenuStates({});
     }
   };
 
