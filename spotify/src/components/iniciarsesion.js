@@ -75,7 +75,7 @@ function IniciarSesion({ signOn, showAlertModal }) {
 
       const user = await validarCampos(campos);
       if (user === null) {
-        showAlertModal(`"Nombre de usuario o contraseña incorrectos"`);
+        showAlertModal(`Nombre de usuario o contraseña incorrectos`);
         return;
       }
 
@@ -109,7 +109,7 @@ function IniciarSesion({ signOn, showAlertModal }) {
 
           <div className="campo">
             <div className="input-box">
-              <label htmlFor="username">Nombre de usuario *</label>
+              <label htmlFor="username">Nombre de usuario</label>
               <input autoFocus required
                 type="text"
                 id="username"
@@ -122,7 +122,7 @@ function IniciarSesion({ signOn, showAlertModal }) {
 
           <div className="campo">
             <div className="input-box">
-              <label htmlFor="password">Contraseña *</label>
+              <label htmlFor="password">Contraseña</label>
               <input required
                 type={passwordVisible ? "text" : "password"}
                 id="password"
