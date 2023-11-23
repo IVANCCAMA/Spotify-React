@@ -25,6 +25,10 @@
   padding: 10px;
   border-radius: 5px;
 }
+.albumes-item:hover {
+  background-color: #006666; 
+  cursor: pointer;
+}
 
 .albumes-title {
   padding: 0 10px;
