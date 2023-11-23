@@ -72,7 +72,7 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
 
   const handleListAdd = (cancionId) => {
     if (!isLogin) {
-      showAlertModal('Funcionalidad no permitida. Inicie sesión por favor.');
+      showAlertModal('Funcionalidad no permitida. Por favor, inicie sesión.');
     } else {
       setSongMenuStates((prevStates) => {
         // Verifica si el menú para la canción actual está abierto
