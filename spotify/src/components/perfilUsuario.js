@@ -46,7 +46,7 @@ function PerfilUsuario({ userConnected }) {
           <div className="user-profile-alias">
             <div className="contenedor-alias">{datosUser?.nombre_usuario}</div>
           </div>
-          <div>{datosUser?.cantidad_listas} listas de reprodución</div>
+          <div>{datosUser?.cantidad_listas} listas de reproducción</div>
         </div>
       </div>
       <div className="contenedor-listas-user">
