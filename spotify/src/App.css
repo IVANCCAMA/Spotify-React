@@ -23,5 +23,7 @@ body {
   margin: 70px 0 90px;
   width: 100%;
   display: flex;
+  border-radius: 10px;
+  min-height: calc(100vh - 160px);
 }
 

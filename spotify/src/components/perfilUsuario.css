@@ -10,7 +10,7 @@
     align-items: center; 
     background-color: #008080;
     position: relative;
-    padding: 3%; 
+    border-radius: 10px 10px 0 0;
 }
 
 .user-profile-column {

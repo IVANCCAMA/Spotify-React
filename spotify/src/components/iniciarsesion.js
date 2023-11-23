@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { Link, useNavigate } from "react-router-dom";
 import './form.css';
 import axios from 'axios';
 import { alfanumerico } from './form.js';
+import { useAuth } from '../auth/AuthContext.js';
 
 function IniciarSesion({ signOn, showAlertModal }) {
+  const { dispatch } = useAuth();
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const [botonHabilitado, setBotonHabilitado] = useState(true);
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -34,7 +36,7 @@ function IniciarSesion({ signOn, showAlertModal }) {
       document.getElementById('username').classList.add('active');
       return null;
     }
-    if (campos.password.length > 40 || campos.password.length < 8) {
+    if (campos.password.length > 20 || campos.password.length < 8) {
       document.getElementById('password').classList.add('active');
       return null;
     }
@@ -80,7 +82,8 @@ function IniciarSesion({ signOn, showAlertModal }) {
       try {
         // guardar user
         signOn(user);
-
+        /* dispatch({ type: 'LOGIN', payload: user });
+        console.log("User LOGEADO", user); */
         // redireccionar
         navigate('/');
       } catch (error) {
@@ -111,6 +114,7 @@ function IniciarSesion({ signOn, showAlertModal }) {
                 type="text"
                 id="username"
                 name="username"
+                maxLength={20}
                 placeholder="Escriba su nombre de usuario"
               />
             </div>
@@ -123,6 +127,8 @@ function IniciarSesion({ signOn, showAlertModal }) {
                 type={passwordVisible ? "text" : "password"}
                 id="password"
                 name="password"
+                maxLength={20}
+                minLength={8}
                 placeholder="Escriba su contraseña"
               />
 

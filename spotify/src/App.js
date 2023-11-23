@@ -16,10 +16,11 @@ import CrearListaReproduccion from './components/listaReproduccion';
 import IniciarSesion from "./components/iniciarsesion";
 import ListaCancionesUser from './components/listaCancionesUser';
 import Alerta from './components/alerta';
+import Biblioteca from './components/biblioteca';
+import { useAuth } from './auth/AuthContext';
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [userConnected, setUserConnected] = useState(null);
+  const { authState, dispatch } = useAuth();
 
   const [modalMessage, setModalMessage] = useState("");
   const [redirectTo, setRedirectTo] = useState(null);
@@ -29,6 +30,7 @@ function App() {
   useEffect(() => {
     setModalMessage("");
     setRedirectTo(null);
+    /* console.log("USER LOGEADO:", authState.user); */
   }, [location.pathname]);
 
   /**
@@ -44,23 +46,21 @@ function App() {
   }
 
   const login = (user) => {
-    setLoggedIn(true);
-    setUserConnected(user);
+    dispatch({ type: 'LOGIN', payload: user });
   };
 
   const logout = () => {
-    setLoggedIn(false);
-    setUserConnected(null);
+    dispatch({ type: 'LOGOUT' });
   };
 
   return (
     <ListProvider>
       <div className="app-container">
-        <Encabeazado loggedIn={loggedIn} signOff={logout} />
+        <Encabeazado loggedIn={authState.isAuthenticated} signOff={logout} />
         <div className='container-super'>
           <MenuLateral
-            isLogin={loggedIn}
-            userType={loggedIn ? userConnected.tipo_usuario : null}
+            isLogin={authState.isAuthenticated}
+            userType={authState.isAuthenticated ? authState.user.tipo_usuario : null}
             showAlertModal={showAlertModal}
           />
           <div className="content">
@@ -71,10 +71,15 @@ function App() {
             />
 
             <Routes>
-              <Route path="/lista-canciones/:id_lista" element={<ListaCanciones />} />
-              {loggedIn ? (
+              <Route path="/lista-canciones/:id_lista" element={
+                <ListaCanciones
+                  isLogin={authState.isAuthenticated}
+                  userConnected={authState.user}
+                  showAlertModal={showAlertModal} />} />
+
+              {authState.isAuthenticated ? (
                 <>
-                  {userConnected.tipo_usuario === "Distribuidora musical" ? (
+                  {authState.user.tipo_usuario === "Distribuidora musical" ? (
                     <>
                       <Route path="/" element={<Inicio />} />
                       <Route path="/Albumes" element={<Albumes />} />
@@ -84,8 +89,9 @@ function App() {
                   ) : (
                     <>
                       <Route path="/" element={<Albumes />} />
-                      <Route path="/crearListaReproduccion" element={<CrearListaReproduccion showAlertModal={showAlertModal} />} />
-                      <Route path="/perfil" element={< PerfilUsuario userConnected={userConnected} />} />
+                      <Route path="/crearListaReproduccion" element={<CrearListaReproduccion showAlertModal={showAlertModal} userConnected={authState.user} />} />
+                      <Route path="/perfil" element={< PerfilUsuario userConnected={authState.user} />} />
+                      <Route path="/biblioteca" element={< Biblioteca userConnected={authState.user} />} />
                       <Route path="/lista-canciones-user/:id_lista" element={<ListaCancionesUser />} />
                     </>
                   )}

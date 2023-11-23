@@ -3,15 +3,14 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border-bottom: 1px solid black;
   border-radius: 10px;
-  width: 100%;
+  width: calc(100% - 250px);
   display: flex;
   align-items: center;
   height: 70px;
   justify-content: flex-end;
   position: fixed;
   z-index: 2;
-  left: 250px; /*ediTeo */
-  width: calc(100% - 250px); /* ediTeo*/
+  margin-left: 250px;
 }
 
 .menu-options {
@@ -43,6 +42,15 @@
 }
 
 .btn-header {
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: center;
+}
+
+.btn-registro {
   background-color: #008080;
   color: #fff;
   border: none;
@@ -51,8 +59,22 @@
   cursor: pointer;
   transition: background-color 0.3s;
   margin-right: 20px;
-  width: 139.9px; /* Ancho fijo */
-  height: 40px; /* Altura fija */
+  width: 150px;
+  height: 45px;
+  text-align: center;
+}
+
+.btn-inicioSesion {
+  background-color: #008080;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 20px;
+  width: 150px;
+  height: 45px;
   text-align: center;
 }
 

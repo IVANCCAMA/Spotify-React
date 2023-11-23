@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Icon } from '@iconify/react';
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./encabezado.css"
 
 function Encabezado({ loggedIn, signOff }) {
@@ -31,8 +31,8 @@ function Encabezado({ loggedIn, signOff }) {
         </>
       ) : (
         <>
-          <Link to="/iniciarsesion" className='btn-header'><strong>Iniciar Sesión</strong></Link>
-          <Link to="/registro" className='btn-header'><strong>Regístrate</strong></Link>
+          <Link to="/registro" className='btn-registro'><strong>Regístrate</strong></Link>
+          <Link to="/iniciarsesion" className='btn-inicioSesion'><strong>Iniciar sesión</strong></Link>
         </>
       )}
     </div>

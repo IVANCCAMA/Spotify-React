@@ -102,7 +102,7 @@ function ReproducirCancion () {
   
 //Agredado por EdiTeo
   useEffect(() => {
-    console.log("Cancion seleccionada",cancionSeleccionada);
+    //console.log("Cancion seleccionada",cancionSeleccionada);
     const audio = audioRef.current;
   
     const handleTimeUpdate = () => {
@@ -197,17 +197,23 @@ function ReproducirCancion () {
     }
   }, [indiceCancionActual, listaCancionesReproduccion]);
   const cambiarVolumen = (e) => {
+    console.log("Valor de volumen",e.target.value);
     const nuevoVolumen = e.target.value;
       if (audioRef.current) {
       const audio = audioRef.current;
       audio.volume = nuevoVolumen / 100;
-      const estaEnSilencio = nuevoVolumen === 0;
+      const estaEnSilencio = nuevoVolumen === "0";
   
       if (estaEnSilencio !== muted) {
         setMuted(estaEnSilencio); // Actualiza el estado de mute
         audio.muted = estaEnSilencio; // Cambia el estado de mute en el audio
       }
       setVolumen(nuevoVolumen);
+
+      if(e.target.value === '0'){
+        setMuted(true); // Actualiza el estado de mute
+        audio.muted = true; // Cambia el estado de mute en el audio
+      }
     }
   };
   
