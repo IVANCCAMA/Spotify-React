@@ -1,12 +1,10 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
 import { alfanumerico } from './form.js';
 // import './form.css';
 import Form from './Form/Form.tsx';
 import TextInput from './Form/TextInput.tsx';
-import FileInput from './Form/FileInput.tsx';
 
 function CrearListaReproduccion({ showAlertModal, userConnected }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
@@ -186,8 +184,10 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
   return (
     <Form
       title="Crear lista"
-      onSubmit={validarForm}>
-
+      onSubmit={validarForm}
+      botonHabilitado={botonHabilitado} 
+      >
+      
       <TextInput
         name='titulo_lista'
         label='Nombre de la lista *'

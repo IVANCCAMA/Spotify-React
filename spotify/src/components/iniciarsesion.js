@@ -82,9 +82,6 @@ function IniciarSesion({ signOn, showAlertModal }) {
       try {
         // guardar user
         signOn(user);
-        /* dispatch({ type: 'LOGIN', payload: user });
-        console.log("User LOGEADO", user); */
-        // redireccionar
         navigate('/');
       } catch (error) {
         console.error('Error:', error);
