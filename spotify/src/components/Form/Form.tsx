@@ -7,9 +7,10 @@ interface FormProps {
   onSubmit: () => void;
   onClickAcceptButton?: () => void;
   onClickCancelButton?: () => void;
+  botonHabilitado?: boolean; 
 }
 
-const Form: React.FC<FormProps> = ({ children, title = "", onSubmit, onClickAcceptButton, onClickCancelButton }) => {
+const Form: React.FC<FormProps> = ({ children, title = "", onSubmit, onClickAcceptButton, onClickCancelButton, botonHabilitado = true}) => {
   return (
     <div className="modal-form">
       <form className="modal-box" id="form" onSubmit={onSubmit}>
@@ -24,7 +25,7 @@ const Form: React.FC<FormProps> = ({ children, title = "", onSubmit, onClickAcce
 
           <div className="campo">
             <div className="btn-box">
-              <button type="submit" className="btn-next" onClick={onClickAcceptButton || undefined}>
+              <button type="submit" className="btn-next" onClick={onClickAcceptButton || undefined} disabled={!botonHabilitado}>
                 Aceptar
               </button>
               <button type="button" className="btn-next" onClick={onClickCancelButton || undefined}>
