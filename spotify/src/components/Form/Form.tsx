@@ -76,6 +76,7 @@ const Form: React.FC<FormProps> = ({
               <button type="submit" className="btn-next" disabled={isAcceptButtonDisabled}>
                 Aceptar
               </button>
+              
               <button type="button" className="btn-next" onClick={handleOnClickCancel}>
                 Cancelar
               </button>
