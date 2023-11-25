@@ -131,8 +131,7 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
         console.log("Cancion agregada a Lista exitosamente");
       } else {
         // eslint-disable-next-line no-useless-concat
-        let esp = "     ";
-        showAlertModal("La canción ya está en la lista." + esp  + "No se permiten duplicados.");
+        showAlertModal("La canción ya se encuentra en la lista de reproducción. No se permiten duplicados.");
         setSongMenuStates({});
       }
 
