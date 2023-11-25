@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { ReactNode, useState } from 'react';
+import { VscEye, VscEyeClosed } from "react-icons/vsc";
 
-interface TextInputProps {
+interface PasswordInputProps {
+  children: ReactNode;
   name: string;
   label: string;
   value: string;
@@ -15,7 +17,8 @@ interface TextInputProps {
   autoComplete?: string;
 }
 
-const TextInput: React.FC<TextInputProps> = ({
+const PasswordInput: React.FC<PasswordInputProps> = ({
+  children,
   name,
   label,
   value,
@@ -29,16 +32,18 @@ const TextInput: React.FC<TextInputProps> = ({
   placeholder = '',
   autoComplete = '',
 }) => {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
   return (
     <div className="campo">
       <div className="input-box">
         <label htmlFor={name}>{label}</label>
-        
+
         <input
           autoFocus
           required={required}
           autoComplete={autoComplete}
-          type="text"
+          type={isPasswordVisible ? "text" : "password"}
           className={`validarNoRequiered${isValid ? (value?.length > 0 ? ' valid' : '') : ' active'}`}
           id={name}
           name={name}
@@ -50,9 +55,19 @@ const TextInput: React.FC<TextInputProps> = ({
           maxLength={maxLength}
           placeholder={placeholder || undefined}
         />
+
+        {children}
+
+        <button
+          type='button'
+          className='ojito'
+          onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+        >
+          {isPasswordVisible ? (<VscEye />) : (<VscEyeClosed />)}
+        </button>
       </div>
     </div>
   );
 };
 
-export default TextInput;
+export default PasswordInput;

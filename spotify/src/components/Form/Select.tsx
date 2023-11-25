@@ -1,58 +1,54 @@
 import React from 'react';
 
-interface TextInputProps {
+interface SelectProps {
   name: string;
   label: string;
-  value: string;
+  options: string[];
   onChange?: (newValue: string) => void;
   onFocus?: (newValue: string) => void;
   onBlur?: (newValue: string) => void;
   required?: boolean;
-  isValid?: boolean;
-  minLength?: number;
-  maxLength?: number;
+  defaultValue?: string;
   placeholder?: string;
-  autoComplete?: string;
 }
 
-const TextInput: React.FC<TextInputProps> = ({
+const Select: React.FC<SelectProps> = ({
   name,
   label,
-  value,
+  options,
   onChange = () => { },
   onFocus = () => { },
   onBlur = () => { },
   required = false,
-  isValid = true,
-  minLength = 0,
-  maxLength = 20,
+  defaultValue = 'default',
   placeholder = '',
-  autoComplete = '',
 }) => {
   return (
     <div className="campo">
       <div className="input-box">
         <label htmlFor={name}>{label}</label>
-        
-        <input
+
+        <select
           autoFocus
           required={required}
-          autoComplete={autoComplete}
-          type="text"
-          className={`validarNoRequiered${isValid ? (value?.length > 0 ? ' valid' : '') : ' active'}`}
-          id={name}
           name={name}
-          value={value}
+          id={name}
+          defaultValue={defaultValue || ''}
           onChange={(e) => onChange(e.target.value)}
           onFocus={(e) => onFocus(e.target.value)}
           onBlur={(e) => onBlur(e.target.value)}
-          minLength={minLength}
-          maxLength={maxLength}
-          placeholder={placeholder || undefined}
-        />
+        >
+          {placeholder && (
+            <option disabled hidden value='default'>{placeholder}</option>
+          )}
+
+          {options.map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
       </div>
     </div>
   );
 };
 
-export default TextInput;
+export default Select;

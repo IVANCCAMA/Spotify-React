@@ -121,6 +121,7 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
         label='Nombre de la lista *'
         value={title}
         onChange={handleTextInput}
+        onBlur={(newValue) => setTitle(title.trim())}
         isValid={isTitleVaild}
         placeholder='Escriba el nombre de la lista' />
 

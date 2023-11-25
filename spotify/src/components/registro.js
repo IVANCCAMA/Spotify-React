@@ -1,9 +1,10 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { VscEye, VscEyeClosed } from "react-icons/vsc";
-import { Link } from "react-router-dom";
 import { alfanumerico, verificarString } from './form.js';
-import './form.css'
+import Form from './Form/Form.tsx';
+import TextInput from './Form/TextInput.tsx';
+import PasswordInput from './Form/PasswordInput.tsx';
+import Select from './Form/Select.tsx';
 
 function Registro({ showAlertModal }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
@@ -16,9 +17,14 @@ function Registro({ showAlertModal }) {
     { validOption: "specialChars", p: "La contraseña debe tener al menos un carácter especial" }
   ];
 
-  const [botonHabilitado, setBotonHabilitado] = useState(true);
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [passwordConfirmVisible, setPasswordConfirmVisible] = useState(false);
+  const [username, setUsername] = useState('');
+  const [isUsernameValid, setIsUsernameValid] = useState(true);
+  const [password, setPassword] = useState('');
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
+  const [showInformation, setShowInformation] = useState(false);
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
+  const [isPasswordConfirmed, setIsPasswordConfirmed] = useState(true);
+  const [userType, setUserType] = useState('');
 
   const ExisteArtista = async (nombreArtista) => {
     try {
@@ -38,65 +44,57 @@ function Registro({ showAlertModal }) {
     }
   };
 
-  const validarCampos = async (campos) => {
-    if (campos.username.length > 20 || campos.username.length < 1 || !alfanumerico(campos.username)) {
-      document.getElementById('username').classList.add('active');
-      return null;
+  const validarCampos = async () => {
+    if (username.length > 20 || username.length < 1 || !alfanumerico(username)) {
+      setIsUsernameValid(false);
+      throw new Error(`Asegúrese de que todos los campos estén llenados correctamente`);
     }
-    if (campos.password.length < 8) {
-      document.getElementById('password').classList.add('active');
-      return null;
+    if (password.length > 20 || password.length < 1) {
+      setIsPasswordValid(false);
+      throw new Error(`Asegúrese de que todos los campos estén llenados correctamente`);
     }
-    if (campos.passwordConfirm.length < 8) {
-      document.getElementById('passwordConfirm').classList.add('active');
-      return null;
+    if (passwordConfirmation.length > 20 || passwordConfirmation.length < 1) {
+      setIsPasswordConfirmed(false);
+      throw new Error(`Asegúrese de que todos los campos estén llenados correctamente`);
     }
-    if (campos.userType === 'default' || campos.userType.length < 1) {
-      return null;
+    if (userType === 'default' || userType.length < 1) {
+      throw new Error(`No se seleccionó ningún tipo de usuario`);
     }
 
     // nombre
-    const id_usuario = await ExisteArtista(campos.username);
+    const id_usuario = await ExisteArtista(username);
     if (id_usuario != null) {
-      showAlertModal(`El nombre que deseas registrar ya está en uso, escoge otro`);
-      document.getElementById('username').classList.add('active');
-      return null;
+      setIsUsernameValid(false);
+      throw new Error(`El nombre que deseas registrar ya está en uso, escoge otro`);
     }
 
     // passwprd
     for (const req of requirements) {
-      if (!verificarString(campos.password, "", req.validOption)) {
-        document.getElementById('password').classList.add('active');
-        showAlertModal(`La contraseña no cumple con las especificaciones`);
-        return null;
+      if (!verificarString(password, "", req.validOption)) {
+        setIsPasswordValid(false);
+        throw new Error(`La contraseña no cumple con las especificaciones`);
       }
     }
 
     // passwordConfirm
-    if (campos.password !== campos.passwordConfirm) {
-      document.getElementById('passwordConfirm').classList.add('active');
-      showAlertModal(`La confirmacion y la contraseña no coinciden`);
-      return null;
+    if (password !== passwordConfirmation) {
+      setIsPasswordConfirmed(false);
+      throw new Error(`La confirmacion y la contraseña no coinciden`);
     }
 
     // userTypes
-    for (const userType of userTypes) {
-      if (campos.userType === userType) {
-        try {
-          return {
-            nombre_usuario: campos.username,
-            correo_usuario: `${campos.username.replace(/ /g, '_')}@localhost`,
-            contrasenia_usuario: campos.password,
-            tipo_usuario: campos.userType,
-            fecha_nacimiento: "2020-08-03"
-          };
-        } catch (error) {
-          showAlertModal(`Error al encriptar la contraseña`);
-          return null;
-        }
+    for (const type of userTypes) {
+      if (userType === type) {
+        return {
+          nombre_usuario: username,
+          correo_usuario: `${username.replace(/ /g, '_')}@localhost`,
+          contrasenia_usuario: password,
+          tipo_usuario: userType,
+          fecha_nacimiento: '2020-08-03'
+        };
       }
     }
-    return null;
+    throw new Error(`No se reconoce el tipo de usuario. Intente más tarde`);
   }
 
   const subirBD = async (newUser) => {
@@ -110,183 +108,98 @@ function Registro({ showAlertModal }) {
     }
   }
 
-  const validarForm = async (e) => {
-    // Deshabilitar el botón
-    setBotonHabilitado(false);
+  const validarForm = async () => {
     try {
-      e.preventDefault();
+      const newUser = await validarCampos();
 
-      const campos = {
-        username: document.getElementById('username').value,
-        password: document.getElementById('password').value,
-        passwordConfirm: document.getElementById('passwordConfirm').value,
-        userType: document.getElementById('userType').value
-      };
-
-      const newUser = await validarCampos(campos);
-      if (newUser === null) {
-          showAlertModal(`Asegúrese de que todos los campos estén llenados correctamente`);
-        return;
+      const subidaExitosa = await subirBD(newUser);
+      if (!subidaExitosa) {
+        throw new Error(`Error al crear usuario. Intente más tarde`);
       }
 
-      try {
-        const subidaExitosa = await subirBD(newUser);
-        if (!subidaExitosa) {
-          showAlertModal(`Error al crear usuario. Intente más tarde`);
-          return;
-        }
-
-        showAlertModal(`Registro creado exitosamente`, "/iniciarsesion");
-      } catch (error) {
-        console.error('Error:', error);
-        showAlertModal(`Error al procesar el nuevo usuario`);
-      }
+      showAlertModal(`Registro creado exitosamente`, "/iniciarsesion");
     } catch (error) {
       console.error('Error al enviar la solicitud:', error);
-    } finally {
-      // Una vez que se complete, habilitar el botón nuevamente
-      setBotonHabilitado(true);
+      showAlertModal(error.message);
     }
   };
 
-  const eliminarEspacios = (value) => {
-    if (value === " ") {
-      return "";
+  const handleTextInput = (newValue) => {
+    if (newValue !== ' ') {
+      const value = newValue.replace(/\s+/g, ' ');
+      setIsUsernameValid(alfanumerico(value));
+      setUsername(value);
     }
-    return value.replace(/\s+/g, ' ');
   };
 
-  const handle = (e) => {
-    let newValue = eliminarEspacios(e.target.value);
-    if (alfanumerico(newValue)) {
-      e.target.classList.remove('active');
-    } else {
-      e.target.classList.add('active');
-    }
-    if (newValue.length > 20) {
-      newValue = newValue.slice(0, 20);
-    }
-    e.target.value = newValue;
-  };
+  const handlePassword = (newValue) => {
+    const validRequirements = requirements.every(req =>
+      verificarString(newValue, "", req.validOption));
 
-  const handlePassword = (e) => {
-    const password = e.target.value;
-    const hasInput = password.length > 0;
-    //Editeo
-    const isPasswordValid = requirements.every(req => verificarString(password, "", req.validOption));
-    //
-    requirements.forEach(req => {
-      const element = document.getElementById(`requerimiento-${req.validOption}`);
-      const isValid = hasInput && verificarString(password, "", req.validOption);
-  
-      element.classList.toggle('active', isValid);
-    });
-  
-    e.target.classList.toggle('active', hasInput && !isPasswordValid);
-    //Editeo
-    //  Confirmar Contraseña
-    const confirmPasswordInput = document.getElementById('passwordConfirm');
-    confirmPasswordInput.classList.toggle('active', confirmPasswordInput.value !== password || !isPasswordValid);
+    setPassword(newValue);
+    setIsPasswordValid(validRequirements);
+    setIsPasswordConfirmed(passwordConfirmation === newValue);
   }
-  
+
+  const handlePasswordConfirmation = (newValue) => {
+    setPasswordConfirmation(newValue);
+    setIsPasswordConfirmed(password === newValue);
+  };
 
   return (
-    <div className="modal-form">
-      <form className="modal-box" id="form" onSubmit={validarForm}>
-        <div className="inter-modal">
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="username">Nombre *</label>
-              <input autoFocus required
-                autoComplete="new-username"
-                type="text"
-                className="validar"
-                id="username"
-                name="username"
-                placeholder="Escriba su nombre"
-                onChange={handle}
-                onBlur={(e) => { e.target.value = e.target.value.trim(); }}
-              />
-            </div>
-          </div>
+    <Form
+      onSubmit={validarForm}
+      requiredConnection
+      showAlertModal={showAlertModal}
+      onclickCancelRedirectTo='/'
+    >
+      <TextInput
+        name='username'
+        label='Nombre *'
+        autoComplete='new-username'
+        value={username}
+        onChange={handleTextInput}
+        onBlur={(newValue) => setUsername(username.trim())}
+        isValid={isUsernameValid}
+        placeholder='Escriba su nombre'
+      />
 
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="password">Contraseña *</label>
-              <input required
-                autoComplete="new-password"
-                type={passwordVisible ? "text" : "password"}
-                className="validar"
-                id="password"
-                name="password"
-                placeholder="Escriba su contraseña"
-                onChange={handlePassword}
-                onFocus={(e) => { e.target.nextElementSibling.style.display = 'block'; }}
-                onBlur={(e) => { e.target.nextElementSibling.style.display = 'none'; }}
-              />
-              <div className="ventana-informacion">
-                {requirements.map((req) => (
-                  <p id={`requerimiento-${req.validOption}`} key={req.validOption}>{req.p}</p>
-                ))}
-              </div>
-              <button
-                type='button'
-                className='ojito'
-                onClick={() => { setPasswordVisible(!passwordVisible); }}
-              >
-                {passwordVisible ? (<VscEye />) : (<VscEyeClosed />)}
-              </button>
-            </div>
-          </div>
-
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="passwordConfirm">Confirmar contraseña *</label>
-              <input required
-                autoComplete="new-password"
-                type={passwordConfirmVisible ? "text" : "password"}
-                className="validar"
-                id="passwordConfirm"
-                name="passwordConfirm"
-                placeholder="Confirme su contraseña"
-                onChange={(e) => {
-                  const passwordInput = document.getElementById('password');
-                  //Editeo
-                  const isPasswordValid = requirements.every(req => verificarString(passwordInput.value, "", req.validOption));
-                  e.target.classList.toggle('active', e.target.value !== passwordInput.value || !isPasswordValid);
-                }}
-              />
-              <button
-                type='button'
-                className='ojito'
-                onClick={() => { setPasswordConfirmVisible(!passwordConfirmVisible); }}
-              >
-                {passwordConfirmVisible ? (< VscEye />) : (<VscEyeClosed />)}
-              </button>
-            </div>
-          </div>
-
-          <div className="campo">
-            <div className="input-box">
-              <label className="elemento" htmlFor="userType">Tipo de usuario *</label>
-              <select name="userType" id='userType' defaultValue={'default'} required>
-                <option disabled hidden value='default'>Seleccionar tipo de usuario</option>
-                {userTypes.map((userType) => (
-                  <option key={userType} value={userType}>{userType}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="campo">
-            <div className="btn-box">
-              <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
-              <Link to="/" className="custom-link">Cancelar</Link>
-            </div>
-          </div>
+      <PasswordInput
+        name='password'
+        label='Contraseña *'
+        autoComplete='new-password'
+        value={password}
+        onChange={handlePassword}
+        onFocus={() => setShowInformation(true)}
+        onBlur={() => setShowInformation(false)}
+        isValid={isPasswordValid}
+        placeholder='Escriba su contraseña'
+      >
+        <div className="ventana-informacion" style={{ display: showInformation ? 'block' : 'none' }}>
+          {requirements.map((req) => (
+            <p key={req.validOption} className={verificarString(password, "", req.validOption) ? 'active' : ''}>{req.p}</p>
+          ))}
         </div>
-      </form>
-    </div>
+      </PasswordInput>
+
+      <PasswordInput
+        name='passwordConfirm'
+        label='Confirmar contraseña *'
+        autoComplete='new-password'
+        value={passwordConfirmation}
+        onChange={handlePasswordConfirmation}
+        isValid={isPasswordConfirmed}
+        placeholder='Confirme su contraseña'
+      />
+
+      <Select
+        name='userType'
+        label='Tipo de usuario *'
+        placeholder='Seleccionar tipo de usuario'
+        options={userTypes}
+        onChange={setUserType}
+      />
+    </Form>
   );
 };
 

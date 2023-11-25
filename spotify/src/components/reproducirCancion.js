@@ -363,10 +363,8 @@ function ReproducirCancion() {
 
       if (estaEnSilencio) {
         audio.volume = 0;
-        // setVolumen(0);
       } else {
         audio.volume = volumen / 100;
-        // setVolumen(50);
       }
 
       setMuted(estaEnSilencio);
