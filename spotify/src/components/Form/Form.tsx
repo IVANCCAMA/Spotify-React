@@ -1,19 +1,67 @@
 import '../form.css';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface FormProps {
   children: ReactNode;
+  showAlertModal: (mensaje: string, redirectTo?: string) => void;
   title?: string;
+  requiredConnection?: boolean;
   onSubmit: () => void;
-  onClickAcceptButton?: () => void;
-  onClickCancelButton?: () => void;
-  botonHabilitado?: boolean; 
+  onclickCancelRedirectTo?: string;
+  onClickCancel?: () => void;
 }
 
-const Form: React.FC<FormProps> = ({ children, title = "", onSubmit, onClickAcceptButton, onClickCancelButton, botonHabilitado = true}) => {
+const Form: React.FC<FormProps> = ({
+  children,
+  showAlertModal,
+  title = '',
+  requiredConnection = false,
+  onSubmit,
+  onclickCancelRedirectTo = '',
+  onClickCancel
+}) => {
+  const navigate = useNavigate();
+  const [isOnline, setIsOnline] = useState(window.navigator.onLine);
+  const [isAcceptButtonDisabled, setIsAcceptButtonDisabled] = useState(false);
+
+  const handleOnlineStatusChange = () => {
+    setIsOnline(window.navigator.onLine);
+  };
+
+  useEffect(() => {
+    window.addEventListener('online', handleOnlineStatusChange);
+    window.addEventListener('offline', handleOnlineStatusChange);
+
+    return () => {
+      window.removeEventListener('online', handleOnlineStatusChange);
+      window.removeEventListener('offline', handleOnlineStatusChange);
+    };
+  }, []);
+
+  const handleOnSubmit = (e: any) => {
+    e.preventDefault();
+    setIsAcceptButtonDisabled(true);
+    if (!requiredConnection || isOnline) {
+      onSubmit();
+    } else {
+      showAlertModal(`Hubo un error al crear la carpeta, Intenta nuevamente`);
+    }
+    setIsAcceptButtonDisabled(false);
+  };
+
+  const handleOnClickCancel = () => {
+    if (onClickCancel) {
+      onClickCancel();
+    }
+    if (onclickCancelRedirectTo) {
+      navigate(onclickCancelRedirectTo);
+    }
+  }
+
   return (
     <div className="modal-form">
-      <form className="modal-box" id="form" onSubmit={onSubmit}>
+      <form className="modal-box" id="form" onSubmit={handleOnSubmit}>
         <div className="inter-modal">
           {title && (
             <div className="form-title">
@@ -25,10 +73,10 @@ const Form: React.FC<FormProps> = ({ children, title = "", onSubmit, onClickAcce
 
           <div className="campo">
             <div className="btn-box">
-              <button type="submit" className="btn-next" onClick={onClickAcceptButton || undefined} disabled={!botonHabilitado}>
+              <button type="submit" className="btn-next" disabled={isAcceptButtonDisabled}>
                 Aceptar
               </button>
-              <button type="button" className="btn-next" onClick={onClickCancelButton || undefined}>
+              <button type="button" className="btn-next" onClick={handleOnClickCancel}>
                 Cancelar
               </button>
             </div>

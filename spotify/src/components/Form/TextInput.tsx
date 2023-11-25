@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 interface TextInputProps {
   name: string;
   label: string;
   value: string;
   onChange: (newValue: string) => void;
-  isRequired?: boolean;
+  required?: boolean;
   isValid?: boolean;
   minLength?: number;
   maxLength?: number;
@@ -17,26 +17,21 @@ const TextInput: React.FC<TextInputProps> = ({
   label,
   value,
   onChange,
-  isRequired = true,
+  required = false,
   isValid = true,
   minLength = 0,
   maxLength = 20,
   placeholder = '',
 }) => {
-  useEffect(() => {
-    const inputElement = document.getElementById(name);
-    inputElement?.classList.toggle('active', !isValid && value.length > 0);
-  }, [isValid]);
-
   return (
     <div className="campo">
       <div className="input-box">
         <label htmlFor={name}>{label}</label>
         <input
           autoFocus
-          required={isRequired}
+          required={required}
           type="text"
-          className="validar"
+          className={`validarNoRequiered${isValid ? (value?.length > 0 ? ' valid' : '') : ' active'}`}
           id={name}
           name={name}
           value={value}
