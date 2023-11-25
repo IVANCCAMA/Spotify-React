@@ -11,6 +11,12 @@
   outline: none;
 }
 
+.no-listas {
+  color: #000000; /* Color de texto personalizado para una apariencia deshabilitada */
+  background-color: #ffffff; /* Fondo blanco para que se vea igual que otras opciones */
+  cursor: not-allowed; /* Cambia el cursor para indicar que la opción no es seleccionable */
+}
+
 .general-config {
   width: 100%;
   display: flex;

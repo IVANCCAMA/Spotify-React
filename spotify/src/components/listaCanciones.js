@@ -79,7 +79,8 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
         const isMenuOpen = prevStates[cancionId];
   
         // Cierra todos los menús
-        const updatedStates = Object.fromEntries(Object.keys(prevStates).map(key => [key, false]));
+        const updatedStates = { ...prevStates };
+        Object.keys(updatedStates).forEach(key => updatedStates[key] = false);
   
         // Abre el menú solo si estaba cerrado previamente
         if (!isMenuOpen) {
@@ -200,23 +201,27 @@ const ListaCanciones = ({ userConnected, isLogin, showAlertModal }) => {
                           onChange={(e) => {
                             const selectedValue = e.target.value;
                             setSelectedPlaylist(selectedValue);
-                            // Verifica que la opción seleccionada no sea "Seleccionar Lista" antes de enviar la solicitud
+                            console.log(selectedValue);
                             if (selectedValue !== -1) {
                               handleAddToPlaylist(cancion.id_cancion, selectedValue);
                             }
                           }}
                           onBlur={(e) => { handleIconClick(e, cancion.id_cancion) }}
                         >
-                          <option key={-1} value={-1}>Agregar a lista</option>
-                          {listasReproduccion.map((listasRepro) => (
-                            <option
-                              className='listas-repro'
-                              key={listasRepro.titulo_lista}
-                              value={listasRepro.id_lista}
-                            >
-                              {listasRepro.titulo_lista}
-                            </option>
-                          ))}
+                          <option key={-1} value={-1} selected>Agregar a lista</option>
+                            {listasReproduccion.length > 0 ? (
+                              listasReproduccion.map((listasRepro) => (
+                                <option 
+                                  className='listas-repro'
+                                  key={listasRepro.titulo_lista}
+                                  value={listasRepro.id_lista}
+                                >
+                                  {listasRepro.titulo_lista}
+                                </option>
+                              ))
+                            ) : (
+                              <option key={-2} value={-2} disabled className='no-listas'>No hay listas creadas</option>
+                              )}
                         </select>
                       </div>
                     )}
