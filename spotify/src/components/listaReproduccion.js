@@ -114,7 +114,7 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
       onSubmit={validarForm}
       requiredConnection
       showAlertModal={showAlertModal}
-      onclickCancelRedirectTo='/'
+      onclickCancelRedirectTo='/biblioteca'
     >
       <TextInput
         name='titulo_lista'
