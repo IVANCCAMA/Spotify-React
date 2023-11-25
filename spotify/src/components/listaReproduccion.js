@@ -126,7 +126,7 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
 
       <FileInput
         name='archivo'
-        label='Portada de la lista'
+        label='Portada de la lista *'
         fileName={file?.name}
         onChange={setFile}
         accept={'.' + formatsAllowed.join(', .')} />
