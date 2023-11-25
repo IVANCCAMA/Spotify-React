@@ -1,5 +1,6 @@
 import '../form.css';
 import React, { ReactNode } from 'react';
+import { Link } from "react-router-dom";
 
 interface FormProps {
   children: ReactNode;
@@ -29,7 +30,7 @@ const Form: React.FC<FormProps> = ({ children, title = "", onSubmit, onClickAcce
                 Aceptar
               </button>
               <button type="button" className="btn-next" onClick={onClickCancelButton || undefined}>
-                Cancelar
+                <Link to="/biblioteca" className="btn-next"><strong>Cancelar</strong></Link>
               </button>
             </div>
           </div>
