@@ -25,12 +25,10 @@ function App() {
   const [modalMessage, setModalMessage] = useState("");
   const [redirectTo, setRedirectTo] = useState(null);
 
-  // reasignar al default al reload
   const location = useLocation();
   useEffect(() => {
     setModalMessage("");
     setRedirectTo(null);
-    /* console.log("USER LOGEADO:", authState.user); */
   }, [location.pathname]);
 
   /**

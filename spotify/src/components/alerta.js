@@ -6,9 +6,7 @@ function Alerta({ mensaje, redirectTo, setModalMessage }) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
-    if (mensaje.length > 0) {
-      setIsOpen(true);
-    }
+    setIsOpen(mensaje.length > 0);
   }, [mensaje]);
 
   const handleClose = () => {
