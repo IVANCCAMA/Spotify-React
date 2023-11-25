@@ -96,7 +96,7 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    margin-top: 0px;
+    align-items: center;
 }
 
 /* Estilo de validación */
@@ -183,17 +183,26 @@
 }
 
 .btn-subir {
-    height: 100px;
-    width: 50px;
+    width: auto;
+    height: 100%;
     font-weight: bold;
     background: #fff;
     color: #000000;
-    justify-content: center;
+    font-size: 12px;
+    padding: 0 10px;
+}
+
+.btn-subir.active {
+    height: fit-content;
+    margin-left: 5%;
 }
 
 .nombreArchivo {
     font-size: 16px;
     color: #000000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .btn-box {

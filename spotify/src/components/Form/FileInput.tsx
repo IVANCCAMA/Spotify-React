@@ -3,63 +3,58 @@ import React, { useEffect, useState } from 'react';
 interface FileInputProps {
   name: string;
   label: string;
-  isValid: boolean;
-  isRequired?: boolean;
+  fileName: string;
+  onChange: (newFile: File) => void;
+  required?: boolean;
   accept?: string;
 }
 
 const FileInput: React.FC<FileInputProps> = ({
   name,
   label,
-  isRequired = true,
+  fileName,
+  onChange,
+  required = false,
   accept = '',
 }) => {
-  const [showFileName, setShowFileName] = useState(false);
-
-
   const handleFileChange = (e: any) => {
-    const file = e.target.files && e.target.files[0];
-    console.log(file);
-    return;
+    const file = e.target.files?.[0];
     if (file) {
-      e.target.previousElementSibling.innerText = file.name;
-      e.target.previousElementSibling.style.display = 'block';
-      e.target.nextElementSibling.value = "X";
-      e.target.nextElementSibling.classList.add('active');
+      onChange(file);
     }
   };
 
   const handleButtonClick = (e: any) => {
-    e.target.previousElementSibling.click();
+    e.target.previousElementSibling?.click();
   };
 
   return (
     <div className="campo campo-cargar-cancion">
-      {/* <div className="campo"> */}
       <div className="input-box">
         <label htmlFor={name}>{label}</label>
         <div className="seleccionarArchivo">
           <span
             className="nombreArchivo"
             id="nombreArchivo"
-            style={{
-              display: showFileName ? 'block' : 'none'
-            }}>
-
+            title={fileName || 'File name'}
+            style={{ display: fileName ? 'block' : 'none' }}>
+            {fileName}
           </span>
+
           <input
             type="file"
             id={name}
             name={name}
-            required={isRequired}
+            required={required}
             accept={accept}
             style={{ display: 'none' }}
             onChange={handleFileChange} />
+
           <button
             type="button"
-            className="btn-subir"
+            className={`btn-subir${fileName ? ' active' : ''}`}
             onClick={handleButtonClick}>
-            Seleccionar imagen
+            {fileName ? 'X' : 'Seleccionar imagen'}
           </button>
         </div>
       </div>
