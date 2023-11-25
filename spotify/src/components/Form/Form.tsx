@@ -39,13 +39,13 @@ const Form: React.FC<FormProps> = ({
     };
   }, []);
 
-  const handleOnSubmit = (e: any) => {
+  const handleOnSubmit = async (e: any) => {
     e.preventDefault();
     setIsAcceptButtonDisabled(true);
     if (!requiredConnection || isOnline) {
-      onSubmit();
+      await onSubmit();
     } else {
-      showAlertModal(`Hubo un error al crear la carpeta, Intenta nuevamente`);
+      showAlertModal(`Error de connceción. Intente de nuevo más tarde`);
     }
     setIsAcceptButtonDisabled(false);
   };
