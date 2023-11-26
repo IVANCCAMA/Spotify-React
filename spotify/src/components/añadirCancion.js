@@ -4,16 +4,27 @@ import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { RecuperarDuracion, RecuperarDuracionCorregido, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import { alfanumerico } from './form.js';
-import './form.css'
+import Form from './Form/Form.tsx';
+import TextInput from './Form/TextInput.tsx';
+import FileInput from './Form/FileInput.tsx';
+import Select from './Form/Select.tsx';
 
 function AñadirCancion({ showAlertModal }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
+  const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
+  const formatsAllowed = ['mp3', 'mpeg', 'wav'];
   const generos = ['Pop', 'Rock and Roll', 'Disco', 'Country', 'Techno',
     'Reggae', 'Salsa', 'Flamenco', 'Ranchera', 'Hip hop/Rap',
     'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica'];
-  const [listas, setListas] = useState([]);
-  const [botonHabilitado, setBotonHabilitado] = useState(true);
-  useEffect(() => { mostrarNombreArchivo(); }, [listas, botonHabilitado, showAlertModal]);
+
+  const [songTitle, setSongTitle] = useState('');
+  const [isSongTitleValid, setIsSongTitleValid] = useState(true);
+  const [artistName, setArtistName] = useState('');
+  const [isArtistValid, setIsArtistNameValid] = useState(true);
+  const [artistAlbums, setArtistAlbums] = useState([]);
+  const [artistAlbum, setArtistAlbum] = useState('');
+  const [songGenre, setSongGenre] = useState('');
+  const [file, setFile] = useState(null);
 
   const getlistasbyid_user = async (id_usuario) => {
     try {
@@ -56,85 +67,78 @@ function AñadirCancion({ showAlertModal }) {
   };
 
   const validarCampos = async (campos) => {
-    if (campos.titulo.length > 20 || campos.titulo.length < 1 || !alfanumerico(campos.titulo)) {
-      document.getElementById('titulo_Cancion').classList.add('active');
-      return null;
+    if (songTitle.length > 20 || songTitle.length < 1 || !alfanumerico(songTitle)) {
+      setIsSongTitleValid(false);
+      throw new Error(`Asegúrese de que todos los campos estén llenados correctamente`);
     }
-    if (campos.artista.length > 20 || campos.artista.length < 1 || !alfanumerico(campos.artista)) {
-      document.getElementById('artista').classList.add('active');
-      return null;
+    if (artistName.length > 20 || artistName.length < 1 || !alfanumerico(artistName)) {
+      setIsArtistNameValid(false);
+      throw new Error(`Asegúrese de que todos los campos estén llenados correctamente`);
     }
-    if (campos.album === 'default' || campos.album.length < 1) {
-      console.log("No se selecciono album");
-      return null;
+    if (artistAlbum === 'default' || artistAlbum.length < 1) {
+      throw new Error(`No se seleccionó ningún álbum`);
     }
-    if (campos.genero === 'default' || campos.genero.length < 1) {
-      console.log("No se selecciono genero");
-      return null;
+    if (songGenre === 'default' || songGenre.length < 1) {
+      throw new Error(`No se seleccionó ningún tipo de género`);
     }
-    if (campos.archivo.length < 1) {
-      console.log("No se selecciono archivo");
-      return null;
+    if (file === null) {
+      throw new Error(`No se seleccionó ningún archivo`);
     }
 
     // artista
-    const id_usuario = await ExisteArtista(campos.artista);
+    const id_usuario = await ExisteArtista(artistName);
     if (id_usuario == null) {
-      console.log('artista no encontrado');
-      document.getElementById('artista').classList.add('active');
-      return null;
+      setIsArtistNameValid(false);
+      throw new Error(`No se pudo encontrar el artista con ese nombre`);
     }
 
     // album
     const albumes = await getlistasbyid_user(id_usuario);
-    const albumesUsuario = albumes.find((album) => album.titulo_lista === campos.album);
+    const albumesUsuario = albumes.find((album) => album.titulo_lista === artistAlbum);
     const id_lista = albumesUsuario?.id_lista;
     if (!id_lista) {
-      console.log('Álbum no encontrado');
-      document.getElementById('album').classList.add('active');
-      return null;
+      throw new Error(`No se pudo encontrar el álbum del artista`);
     }
 
     // titulo   (verificamos si existe)
     const canciones = await getcancionesbyid_user(id_usuario);
-    const cancionExistente = canciones.find((cancion) => cancion.nombre_cancion === campos.titulo);
+    const cancionExistente = canciones.find((cancion) => cancion.nombre_cancion === songTitle);
     if (cancionExistente) {
-      showAlertModal(`La canción existe en el álbum`);
-      return null;
+      throw new Error(`La canción existe en el álbum`);
+    }
+
+    // archivo
+    const isFileFormatAllowed = formatsAllowed.some((format) => file.type.includes(format))
+    if (!isFileFormatAllowed) {
+      throw new Error(`Formato de archivo no válido`);
+    }
+    if (file.size > maxSize) {
+      throw new Error(`Tamaño máximo de 15 MB excedido`);
     }
 
     // genero
     for (const genero of generos) {
-      if (campos.genero === genero) {
+      if (songGenre === genero) {
         return {
           id_lista: id_lista,
-          nombre_cancion: campos.titulo,
+          nombre_cancion: songTitle,
           path_cancion: "",
           duracion: "",
-          genero: campos.genero
+          genero: songGenre
         };
       }
     }
-    return null;
+    throw new Error(`No se reconoce el género de la canción. Intente más tarde`);
   }
 
-  const validarFormatoArchivo = async (archivo) => {
-    const formatosPermitidos = ["mpeg", "wav"];
-    for (const formato of formatosPermitidos) {
-      if (archivo.type.includes(formato)) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const subirFirebase = async (archivo) => {
+  const subirFirebase = async () => {
     try {
-      const cancionInfo = await SubirCancion(archivo);
+      const cancionInfo = await SubirCancion(file);
       const cancionUrl = await recuperarUrlCancion(cancionInfo);
       return { url: cancionUrl, filePath: cancionInfo };
     } catch (error) {
       console.error('Error:', error);
+      throw new Error(`Error al cargar la imágen. Intente más tarde`);
     }
   }
 
@@ -149,207 +153,114 @@ function AñadirCancion({ showAlertModal }) {
     }
   }
 
-  const validarForm = async (e) => {
-    // Deshabilitar el botón
-    setBotonHabilitado(false);
+  const validarForm = async () => {
     try {
-      e.preventDefault();
+      const nuevaCancion = await validarCampos();
 
-      const campos = {
-        titulo: eliminarEspacios(document.getElementById('titulo_Cancion').value).trim(),
-        artista: eliminarEspacios(document.getElementById('artista').value).trim(),
-        album: eliminarEspacios(document.getElementById('album').value).trim(),
-        genero: eliminarEspacios(document.getElementById('genero').value).trim(),
-        archivo: document.getElementById('archivo').files
-      };
+      const resultado = await subirFirebase();
+      nuevaCancion.path_cancion = resultado.url;
 
-      const nuevaCancion = await validarCampos(campos);
-      if (nuevaCancion === null) {
-        showAlertModal(`Asegúrese de que todos los campos estén llenados correctamente`);
+      const recuperarDuracionAudio = await RecuperarDuracionCorregido(file);
+      nuevaCancion.duracion = recuperarDuracionAudio
+
+      const subidaExitosa = await subirBD(nuevaCancion);
+      if (!subidaExitosa) {
+        deleteFile(resultado.filePath);
+        throw new Error(`Error al subir o procesar el archivo`);
         return;
       }
 
-      const archivo = campos.archivo[0];
-      if (!await validarFormatoArchivo(archivo)) {
-        showAlertModal(`Formato de archivo no válido`);
-        return;
-      }
-
-      const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
-      if (archivo.size > maxSize) {
-        showAlertModal(`Tamaño máximo de 15 MB excedido`);
-        return;
-      }
-
-      try {
-        const resultado = await subirFirebase(archivo);
-        nuevaCancion.path_cancion = resultado.url;
-
-        const recuperarDuracionAudio = await RecuperarDuracionCorregido(archivo);
-        nuevaCancion.duracion = recuperarDuracionAudio
-
-        const subidaExitosa = await subirBD(nuevaCancion);
-        if (!subidaExitosa) {
-          deleteFile(resultado.filePath);
-          showAlertModal(`Error al cargar la canción. Intente más tarde`);
-          return;
-        }
-
-        showAlertModal(`Canción añadida exitosamente`, "/");
-      } catch (error) {
-        console.error('Error:', error);
-        showAlertModal(`Error al subir o procesar el archivo`);
-      }
+      showAlertModal(`Canción añadida exitosamente`, "/");
     } catch (error) {
-      console.error('Error al enviar la solicitud:', error);
-    } finally {
-      // Una vez que se complete, habilitar el botón nuevamente
-      setBotonHabilitado(true);
+      showAlertModal(error.message);
     }
   };
 
-  const mostrarNombreArchivo = () => {
-    const file = document.getElementById('archivo');
-
-    if (file.files && file.files.length > 0) {
-      file.previousElementSibling.innerText = file.files[0].name;
-      file.previousElementSibling.style.display = 'block';
-      file.nextElementSibling.value = "X";
-      file.nextElementSibling.classList.add('active');
+  const handleSongTitleInput = (newValue) => {
+    if (newValue !== ' ') {
+      const value = newValue.replace(/\s+/g, ' ');
+      setIsSongTitleValid(alfanumerico(value));
+      setSongTitle(value);
     }
   };
 
-  const cargarListas = async () => {
-    const nombreArtista = document.getElementById('artista').value;
-    if (nombreArtista.length > 0) {
-      try {
-        const idArtistaEncontrado = await ExisteArtista(nombreArtista);
-        if (idArtistaEncontrado === null) {
-          setListas([]);
-        } else {
-          const listaAlbumes = await getlistasbyid_user(idArtistaEncontrado);
-          setListas(listaAlbumes);
-        }
-      } catch (error) {
-        console.error('Error al verificar el artista:', error);
+  const handleArtistNameInput = (newValue) => {
+    if (newValue !== ' ') {
+      const value = newValue.replace(/\s+/g, ' ');
+      setIsArtistNameValid(alfanumerico(value));
+      setArtistName(value);
+    }
+  };
+
+  const fetchAlbumsByArtistName = async (newValue) => {
+    const value = newValue.trim();
+    if (value) {
+      const idArtistaEncontrado = await ExisteArtista(value);
+      if (idArtistaEncontrado) {
+        const listaAlbumes = await getlistasbyid_user(idArtistaEncontrado);
+        const arrayTransformado = listaAlbumes.map((objeto) => ({
+          value: objeto.titulo_lista,
+          title: objeto.titulo_lista,
+        }));
+        setArtistAlbums(arrayTransformado);
+      } else {
+        setArtistAlbums([]);
       }
-    } else {
-      setListas([]);
+      setArtistName(value);
     }
-    document.getElementById('album').selectedIndex = 0;
-  };
-
-  const eliminarEspacios = (value) => {
-    if (value === " ") {
-      return "";
-    }
-    return value.replace(/\s+/g, ' ');
-  };
-
-  const handle = (e) => {
-    let newValue = eliminarEspacios(e.target.value);
-    if (alfanumerico(newValue)) {
-      e.target.classList.remove('active');
-    } else {
-      e.target.classList.add('active');
-    }
-    if (newValue.length > 20) {
-      newValue = newValue.slice(0, 20);
-    }
-    e.target.value = newValue;
   };
 
   return (
-    <div className="modal-form">
-      <form className="modal-box" id="form" onSubmit={validarForm}>
-        <div className="inter-modal">
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="titulo">Título de la canción *</label>
-              <input autoFocus required
-                type="text"
-                className="validar"
-                id="titulo_Cancion"
-                name="titulo_Cancion"
-                placeholder="Escriba el título de la canción"
-                onChange={handle}
-                onBlur={(e) => { e.target.value = e.target.value.trim(); }}
-              />
-            </div>
-          </div>
+    <Form
+      onSubmit={validarForm}
+      requiredConnection
+      showAlertModal={showAlertModal}
+      onclickCancelRedirectTo='/'
+    >
+      <TextInput
+        name='titulo'
+        label='Título de la canción *'
+        value={songTitle}
+        onChange={handleSongTitleInput}
+        onBlur={(newValue) => setSongTitle(newValue.trim())}
+        isValid={isSongTitleValid}
+        placeholder='Escriba el título de la canción'
+      />
 
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="artista">Nombre de artista *</label>
-              <input required
-                type="text"
-                className="validar"
-                id="artista"
-                name="artista"
-                placeholder="Escriba el nombre del artista"
-                onChange={(e) => { handle(e); cargarListas(); }}
-                onBlur={(e) => { e.target.value = e.target.value.trim(); }}
-              />
-            </div>
-          </div>
+      <TextInput
+        name='artista'
+        label='Nombre de artista *'
+        value={artistName}
+        onChange={handleArtistNameInput}
+        onBlur={fetchAlbumsByArtistName}
+        isValid={isArtistValid}
+        placeholder='Escriba el nombre del artista'
+      />
 
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="album">Álbum *</label>
-              <select name="album" id='album' defaultValue={'default'} required>
-                <option disabled hidden value='default'>Seleccionar lista</option>
-                {listas.map((lista, index) => (
-                  <option key={index} value={lista.id}>{lista.titulo_lista}</option>
-                ))}
-              </select>
-            </div>
-          </div>
+      <Select
+        name='album'
+        label='Álbum *'
+        placeholder='Seleccionar lista'
+        options={artistAlbums}
+        onChange={setArtistAlbum}
+      />
 
-          <div className="campo">
-            <div className="input-box">
-              <label className="album" htmlFor="genero">Género musical *</label>
-              <select name="genero" id='genero' defaultValue={'default'} required>
-                <option disabled hidden value='default'>Seleccionar género</option>
-                {generos.map((genero) => (
-                  <option key={genero} value={genero}>{genero}</option>
-                ))}
-              </select>
-            </div>
-          </div>
+      <Select
+        name='genero'
+        label='Género musical *'
+        placeholder='Seleccionar género'
+        options={generos}
+        onChange={setSongGenre}
+      />
 
-          {/* SELECCIONAR ARCHIVO */}
-          <div className="campo campo-cargar-cancion">
-            <div className="input-box">
-              <label>Seleccionar canción *</label>
-              <div className="seleccionarArchivo">
-                <span className="nombreArchivo" id="nombreArchivo"></span>
-                <input
-                  type="file"
-                  name="archivo"
-                  id="archivo"
-                  accept=".mp3, audio/wav"
-                  style={{ display: 'none' }}
-                  onChange={mostrarNombreArchivo}
-                />
-                <input required
-                  type="button"
-                  className="btn-subir bg-white"
-                  onClick={() => { document.getElementById('archivo').click(); }}
-                  value="Seleccionar canción"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="campo">
-            <div className="btn-box">
-              <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
-              <Link to="/" className="custom-link">Cancelar</Link>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
+      <FileInput
+        name='archivo'
+        label='Seleccionar canción *'
+        fileName={file?.name}
+        onChange={setFile}
+        accept={'.' + formatsAllowed.join(', .')}
+      />
+    </Form>
   );
 };
 

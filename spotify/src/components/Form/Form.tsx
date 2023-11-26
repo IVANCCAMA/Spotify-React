@@ -8,7 +8,7 @@ interface FormProps {
   title?: string;
   requiredConnection?: boolean;
   onSubmit: () => void;
-  onclickCancelRedirectTo?: string;
+  onClickCancelRedirectTo?: string;
   onClickCancel?: () => void;
 }
 
@@ -18,7 +18,7 @@ const Form: React.FC<FormProps> = ({
   title = '',
   requiredConnection = false,
   onSubmit,
-  onclickCancelRedirectTo = '',
+  onClickCancelRedirectTo = '',
   onClickCancel
 }) => {
   const navigate = useNavigate();
@@ -54,8 +54,8 @@ const Form: React.FC<FormProps> = ({
     if (onClickCancel) {
       onClickCancel();
     }
-    if (onclickCancelRedirectTo) {
-      navigate(onclickCancelRedirectTo);
+    if (onClickCancelRedirectTo) {
+      navigate(onClickCancelRedirectTo);
     }
   }
 
@@ -76,7 +76,7 @@ const Form: React.FC<FormProps> = ({
               <button type="submit" className="btn-next" disabled={isAcceptButtonDisabled}>
                 Aceptar
               </button>
-              
+
               <button type="button" className="btn-next" onClick={handleOnClickCancel}>
                 Cancelar
               </button>

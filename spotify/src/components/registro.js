@@ -151,7 +151,7 @@ function Registro({ showAlertModal }) {
       onSubmit={validarForm}
       requiredConnection
       showAlertModal={showAlertModal}
-      onclickCancelRedirectTo='/'
+      onClickCancelRedirectTo='/'
     >
       <TextInput
         name='username'
@@ -159,7 +159,7 @@ function Registro({ showAlertModal }) {
         autoComplete='new-username'
         value={username}
         onChange={handleTextInput}
-        onBlur={(newValue) => setUsername(username.trim())}
+        onBlur={(newValue) => setUsername(newValue.trim())}
         isValid={isUsernameValid}
         placeholder='Escriba su nombre'
       />

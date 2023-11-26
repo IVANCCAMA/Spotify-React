@@ -9,7 +9,7 @@ import FileInput from './Form/FileInput.tsx';
 function CrearListaReproduccion({ showAlertModal, userConnected }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
 
-  const maxSize = 5 * 1024 * 1024; // 15 MB en bytes
+  const maxSize = 5 * 1024 * 1024; // 5 MB en bytes
   const formatsAllowed = ['png', 'jpg', 'jpeg'];
 
   const [title, setTitle] = useState('');
@@ -33,7 +33,7 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
       throw new Error(`Asegúrese de que todos los campos estén llenados correctamente`);
     }
     if (file === null) {
-      throw new Error(`Asegúrese de que todos los campos estén llenados correctamente`);
+      throw new Error(`No se seleccionó ningún archivo`);
     }
 
     const albumes = await getlistasbyid_user(userConnected.id_usuario);
@@ -47,7 +47,6 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
     if (!isFileFormatAllowed) {
       throw new Error(`Formato de archivo no válido`);
     }
-
     if (file.size > maxSize) {
       throw new Error(`Tamaño máximo de 5 MB excedido`);
     }
@@ -76,7 +75,7 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
       await axios.post(`${database}${query}`, nuevoAlbum);
       return true;
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error al subir a la base de datos:', error);
       return false;
     }
   };
@@ -114,7 +113,7 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
       onSubmit={validarForm}
       requiredConnection
       showAlertModal={showAlertModal}
-      onclickCancelRedirectTo='/biblioteca'
+      onClickCancelRedirectTo='/biblioteca'
     >
       <TextInput
         name='titulo_lista'
@@ -123,14 +122,16 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
         onChange={handleTextInput}
         onBlur={(newValue) => setTitle(title.trim())}
         isValid={isTitleVaild}
-        placeholder='Escriba el nombre de la lista' />
+        placeholder='Escriba el nombre de la lista'
+      />
 
       <FileInput
         name='archivo'
         label='Portada de la lista *'
         fileName={file?.name}
         onChange={setFile}
-        accept={'.' + formatsAllowed.join(', .')} />
+        accept={'.' + formatsAllowed.join(', .')}
+      />
     </Form>
   );
 }
