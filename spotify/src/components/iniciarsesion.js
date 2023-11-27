@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { VscEye, VscEyeClosed } from "react-icons/vsc";
-import { Link, useNavigate } from "react-router-dom";
-import './form.css';
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { alfanumerico } from './form.js';
-import { useAuth } from '../auth/AuthContext.js';
+import Form from './Form/Form.tsx';
+import TextInput from './Form/TextInput.tsx';
+import PasswordInput from './Form/PasswordInput.tsx';
 
 function IniciarSesion({ signOn, showAlertModal }) {
-  const { dispatch } = useAuth();
   const database = 'https://spfisbackend-production.up.railway.app/api';
-  const [botonHabilitado, setBotonHabilitado] = useState(true);
-  const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
+
+  const [username, setUsername] = useState('');
+  const [isUsernameValid, setIsUsernameValid] = useState(true);
+  const [password, setPassword] = useState('');
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
 
   const ExisteArtista = async (nombreArtista) => {
     try {
@@ -32,124 +34,83 @@ function IniciarSesion({ signOn, showAlertModal }) {
   };
 
   const validarCampos = async (campos) => {
-    if (campos.username.length > 20 || campos.username.length < 1 || !alfanumerico(campos.username)) {
-      document.getElementById('username').classList.add('active');
-      return null;
+    if (username.length > 20 || username.length < 1 || !alfanumerico(username)) {
+      setIsUsernameValid(false);
+      throw new Error(`Nombre de usuario o contraseña incorrectos`);
     }
-    if (campos.password.length > 20 || campos.password.length < 8) {
-      document.getElementById('password').classList.add('active');
-      return null;
+    if (password.length > 20 || password.length < 8) {
+      setIsPasswordValid(false);
+      throw new Error(`Nombre de usuario o contraseña incorrectos`);
     }
 
     // username
-    const id_usuario = await ExisteArtista(campos.username);
+    const id_usuario = await ExisteArtista(username);
     if (id_usuario === null) {
-      document.getElementById('username').classList.add('active');
-      showAlertModal('El usuario no existe, intente con otro');
-      return null;
+      setIsUsernameValid(false);
+      throw new Error(`El usuario no existe, intente con otro`);
     } else if (id_usuario.tipo_usuario === "artista") {
-      document.getElementById('username').classList.add('active');
-      showAlertModal('El tipo de usuario no es valido');
-      return null;
+      setIsUsernameValid(false);
+      throw new Error(`El tipo de usuario no es valido`);
     }
 
     // password
-    if (id_usuario.contrasenia_usuario !== campos.password) {
-      document.getElementById('password').classList.add('active');
-      showAlertModal('Contraseña incorrecta');
-      return null;
+    if (id_usuario.contrasenia_usuario !== password) {
+      setIsPasswordValid(false);
+      throw new Error(`Contraseña incorrecta`);
     }
 
     return id_usuario;
   };
 
-  const validarForm = async (e) => {
-    setBotonHabilitado(false);
+  const validarForm = async () => {
     try {
-      e.preventDefault();
+      const user = await validarCampos();
 
-      const campos = {
-        username: document.getElementById('username').value,
-        password: document.getElementById('password').value
-      };
-
-      const user = await validarCampos(campos);
-      if (user === null) {
-        showAlertModal(`Nombre de usuario o contraseña incorrectos`);
-        return;
-      }
-
-      try {
-        // guardar user
-        signOn(user);
-        navigate('/');
-      } catch (error) {
-        console.error('Error:', error);
-        showAlertModal(`Error al establecer conexión`);
-      }
+      signOn(user);
+      navigate('/');
     } catch (error) {
-      e.preventDefault();
-      showAlertModal('Hubo un error al crear la carpeta, Intenta nuevamente');
-    } finally {
-      // Una vez que se complete, habilitar el botón nuevamente
-      setBotonHabilitado(true);
+      console.error('Error al enviar la solicitud:', error);
+      showAlertModal(error.message);
+    }
+  };
+
+  const handleUsernameInput = (newValue) => {
+    if (newValue !== ' ') {
+      const value = newValue.replace(/\s+/g, ' ');
+      setIsUsernameValid(alfanumerico(value));
+      setUsername(value);
     }
   };
 
   return (
-    <div className="modal-form">
-      <form className="modal-box" id="form" onSubmit={validarForm}>
-        <div className="inter-modal">
-          <div className="form-title">
-            <span>Inicia sesión en React Music</span>
-          </div>
+    <Form
+      title='Inicia sesión en React Music'
+      onSubmit={validarForm}
+      requiredConnection
+      showAlertModal={showAlertModal}
+      onClickCancelRedirectTo='/'
+    >
+      <TextInput
+        name='username'
+        label='Nombre de usuario'
+        autoComplete='username'
+        value={username}
+        onChange={handleUsernameInput}
+        onBlur={(newValue) => setUsername(newValue.trim())}
+        isValid={isUsernameValid}
+        placeholder='Escriba su nombre de usuario'
+      /><br />
 
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="username">Nombre de usuario</label>
-              <input autoFocus required
-                type="text"
-                id="username"
-                name="username"
-                autoComplete="username"
-                maxLength={20}
-                placeholder="Escriba su nombre de usuario"
-              />
-            </div>
-          </div><br />
-
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="password">Contraseña</label>
-              <input required
-                type={passwordVisible ? "text" : "password"}
-                id="password"
-                name="password"
-                autoComplete="current-password"
-                maxLength={20}
-                minLength={8}
-                placeholder="Escriba su contraseña"
-              />
-
-              <button
-                type='button'
-                className='ojito'
-                onClick={() => { setPasswordVisible(!passwordVisible); }}
-              >
-                {passwordVisible ? (<VscEye />) : (<VscEyeClosed />)}
-              </button>
-            </div>
-          </div>
-
-          <div className="campo">
-            <div className="btn-box">
-              <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
-              <Link to="/" className="custom-link">Cancelar</Link>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
+      <PasswordInput
+        name='password'
+        label='Contraseña'
+        autoComplete='current-password'
+        value={password}
+        onChange={setPassword}
+        isValid={isPasswordValid}
+        placeholder='Escriba su contraseña'
+      />
+    </Form>
   );
 };
 
