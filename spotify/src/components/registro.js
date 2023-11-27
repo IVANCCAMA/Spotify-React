@@ -124,7 +124,7 @@ function Registro({ showAlertModal }) {
     }
   };
 
-  const handleTextInput = (newValue) => {
+  const handleUsernameInput = (newValue) => {
     if (newValue !== ' ') {
       const value = newValue.replace(/\s+/g, ' ');
       setIsUsernameValid(alfanumerico(value));
@@ -158,7 +158,7 @@ function Registro({ showAlertModal }) {
         label='Nombre *'
         autoComplete='new-username'
         value={username}
-        onChange={handleTextInput}
+        onChange={handleUsernameInput}
         onBlur={(newValue) => setUsername(newValue.trim())}
         isValid={isUsernameValid}
         placeholder='Escriba su nombre'

@@ -33,7 +33,7 @@ const Select: React.FC<SelectProps> = ({
           required={required}
           name={name}
           id={name}
-          defaultValue={defaultValue}
+          defaultValue={options.length !== 0 ? defaultValue : undefined}
           value={options.length === 0 ? defaultValue : undefined}
           onChange={(e) => onChange(e.target.value)}
           onFocus={(e) => onFocus(e.target.value)}

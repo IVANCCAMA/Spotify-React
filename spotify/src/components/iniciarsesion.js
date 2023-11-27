@@ -111,6 +111,7 @@ function IniciarSesion({ signOn, showAlertModal }) {
                 type="text"
                 id="username"
                 name="username"
+                autoComplete="username"
                 maxLength={20}
                 placeholder="Escriba su nombre de usuario"
               />
@@ -124,6 +125,7 @@ function IniciarSesion({ signOn, showAlertModal }) {
                 type={passwordVisible ? "text" : "password"}
                 id="password"
                 name="password"
+                autoComplete="current-password"
                 maxLength={20}
                 minLength={8}
                 placeholder="Escriba su contraseña"

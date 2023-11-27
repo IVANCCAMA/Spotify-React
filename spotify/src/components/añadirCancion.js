@@ -1,8 +1,6 @@
-/* eslint-disable no-unused-vars */
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
-import { RecuperarDuracion, RecuperarDuracionCorregido, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
+import React, { useState } from 'react';
+import { RecuperarDuracionCorregido, SubirCancion, deleteFile, recuperarUrlCancion } from '../firebase/config';
 import { alfanumerico } from './form.js';
 import Form from './Form/Form.tsx';
 import TextInput from './Form/TextInput.tsx';
@@ -13,14 +11,14 @@ function AñadirCancion({ showAlertModal }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
   const maxSize = 15 * 1024 * 1024; // 15 MB en bytes
   const formatsAllowed = ['mp3', 'mpeg', 'wav'];
-  const generos = ['Pop', 'Rock and Roll', 'Disco', 'Country', 'Techno',
+  const songGenres = ['Pop', 'Rock and Roll', 'Disco', 'Country', 'Techno',
     'Reggae', 'Salsa', 'Flamenco', 'Ranchera', 'Hip hop/Rap',
     'Reggaetón', 'Metal', 'Funk', 'Bossa Nova', 'Música melódica'];
 
   const [songTitle, setSongTitle] = useState('');
   const [isSongTitleValid, setIsSongTitleValid] = useState(true);
   const [artistName, setArtistName] = useState('');
-  const [isArtistValid, setIsArtistNameValid] = useState(true);
+  const [isArtistNameValid, setIsArtistNameValid] = useState(true);
   const [artistAlbums, setArtistAlbums] = useState([]);
   const [artistAlbum, setArtistAlbum] = useState('');
   const [songGenre, setSongGenre] = useState('');
@@ -66,7 +64,7 @@ function AñadirCancion({ showAlertModal }) {
     }
   };
 
-  const validarCampos = async (campos) => {
+  const validarCampos = async () => {
     if (songTitle.length > 20 || songTitle.length < 1 || !alfanumerico(songTitle)) {
       setIsSongTitleValid(false);
       throw new Error(`Asegúrese de que todos los campos estén llenados correctamente`);
@@ -117,14 +115,16 @@ function AñadirCancion({ showAlertModal }) {
     }
 
     // genero
-    for (const genero of generos) {
-      if (songGenre === genero) {
+    for (const genre of songGenres) {
+      if (songGenre === genre) {
+        const recuperarDuracionAudio = await RecuperarDuracionCorregido(file);
         return {
           id_lista: id_lista,
           nombre_cancion: songTitle,
           path_cancion: "",
           duracion: "",
-          genero: songGenre
+          genero: songGenre,
+          duracion: recuperarDuracionAudio
         };
       }
     }
@@ -138,7 +138,7 @@ function AñadirCancion({ showAlertModal }) {
       return { url: cancionUrl, filePath: cancionInfo };
     } catch (error) {
       console.error('Error:', error);
-      throw new Error(`Error al cargar la imágen. Intente más tarde`);
+      throw new Error(`Error al cargar la canción. Intente más tarde`);
     }
   }
 
@@ -160,14 +160,10 @@ function AñadirCancion({ showAlertModal }) {
       const resultado = await subirFirebase();
       nuevaCancion.path_cancion = resultado.url;
 
-      const recuperarDuracionAudio = await RecuperarDuracionCorregido(file);
-      nuevaCancion.duracion = recuperarDuracionAudio
-
       const subidaExitosa = await subirBD(nuevaCancion);
       if (!subidaExitosa) {
         deleteFile(resultado.filePath);
         throw new Error(`Error al subir o procesar el archivo`);
-        return;
       }
 
       showAlertModal(`Canción añadida exitosamente`, "/");
@@ -198,10 +194,7 @@ function AñadirCancion({ showAlertModal }) {
       const idArtistaEncontrado = await ExisteArtista(value);
       if (idArtistaEncontrado) {
         const listaAlbumes = await getlistasbyid_user(idArtistaEncontrado);
-        const arrayTransformado = listaAlbumes.map((objeto) => ({
-          value: objeto.titulo_lista,
-          title: objeto.titulo_lista,
-        }));
+        const arrayTransformado = listaAlbumes.map(objeto => objeto.titulo_lista);
         setArtistAlbums(arrayTransformado);
       } else {
         setArtistAlbums([]);
@@ -233,7 +226,7 @@ function AñadirCancion({ showAlertModal }) {
         value={artistName}
         onChange={handleArtistNameInput}
         onBlur={fetchAlbumsByArtistName}
-        isValid={isArtistValid}
+        isValid={isArtistNameValid}
         placeholder='Escriba el nombre del artista'
       />
 
@@ -249,7 +242,7 @@ function AñadirCancion({ showAlertModal }) {
         name='genero'
         label='Género musical *'
         placeholder='Seleccionar género'
-        options={generos}
+        options={songGenres}
         onChange={setSongGenre}
       />
 

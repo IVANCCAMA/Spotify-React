@@ -12,8 +12,8 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
   const maxSize = 5 * 1024 * 1024; // 5 MB en bytes
   const formatsAllowed = ['png', 'jpg', 'jpeg'];
 
-  const [title, setTitle] = useState('');
-  const [isTitleVaild, setIsTitleVaild] = useState(true);
+  const [playlistTitle, setPlaylistTitle] = useState('');
+  const [isPlaylistTitleVaild, setIsPlaylistTitleVaild] = useState(true);
   const [file, setFile] = useState(null);
 
   const getlistasbyid_user = async (id_usuario) => {
@@ -28,8 +28,8 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
   };
 
   const validarCampos = async () => {
-    if (title.length > 20 || title.length < 1 || !alfanumerico(title)) {
-      setIsTitleVaild(false);
+    if (playlistTitle.length > 20 || playlistTitle.length < 1 || !alfanumerico(playlistTitle)) {
+      setIsPlaylistTitleVaild(false);
       throw new Error(`Asegúrese de que todos los campos estén llenados correctamente`);
     }
     if (file === null) {
@@ -37,9 +37,9 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
     }
 
     const albumes = await getlistasbyid_user(userConnected.id_usuario);
-    const albumExistente = albumes.find((album) => album.titulo_lista === title);
+    const albumExistente = albumes.find((album) => album.titulo_lista === playlistTitle);
     if (albumExistente) {
-      setIsTitleVaild(false);
+      setIsPlaylistTitleVaild(false);
       throw new Error(`El nombre de la carpeta ya está en uso, intente otro`);
     }
 
@@ -53,7 +53,7 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
 
     return {
       id_usuario: userConnected.id_usuario,
-      titulo_lista: title,
+      titulo_lista: playlistTitle,
       path_image: ''
     };
   };
@@ -102,8 +102,8 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
   const handleTextInput = (newValue) => {
     if (newValue !== ' ') {
       const value = newValue.replace(/\s+/g, ' ');
-      setIsTitleVaild(alfanumerico(value));
-      setTitle(value);
+      setIsPlaylistTitleVaild(alfanumerico(value));
+      setPlaylistTitle(value);
     }
   };
 
@@ -118,10 +118,10 @@ function CrearListaReproduccion({ showAlertModal, userConnected }) {
       <TextInput
         name='titulo_lista'
         label='Nombre de la lista *'
-        value={title}
+        value={playlistTitle}
         onChange={handleTextInput}
-        onBlur={(newValue) => setTitle(title.trim())}
-        isValid={isTitleVaild}
+        onBlur={(newValue) => setPlaylistTitle(playlistTitle.trim())}
+        isValid={isPlaylistTitleVaild}
         placeholder='Escriba el nombre de la lista'
       />
 

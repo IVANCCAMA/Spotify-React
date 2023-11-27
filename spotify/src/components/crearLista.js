@@ -1,32 +1,24 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import { SubirPortada, deleteFile, recuperarUrlPortada } from '../firebase/config';
 import { alfanumerico } from './form.js';
-import './form.css';
+import Form from './Form/Form.tsx';
+import TextInput from './Form/TextInput.tsx';
+import FileInput from './Form/FileInput.tsx';
+import Select from './Form/Select.tsx';
 
 function CrearLista({ showAlertModal }) {
   const database = 'https://spfisbackend-production.up.railway.app/api';
-  const [botonHabilitado, setBotonHabilitado] = useState(true);
-  const [isOnline, setIsOnline] = useState(window.navigator.onLine); // Verifica si hay conexión inicialmente
+  const maxSize = 5 * 1024 * 1024; // 15 MB en bytes
+  const formatsAllowed = ['png', 'jpg', 'jpeg'];
 
-  const handleOnlineStatusChange = () => {
-    setIsOnline(window.navigator.onLine);
-  };
-
-  useEffect(() => {
-    mostrarNombreArchivo();
-  }, [botonHabilitado]);
-
-  useEffect(() => {
-    window.addEventListener('online', handleOnlineStatusChange);
-    window.addEventListener('offline', handleOnlineStatusChange);
-
-    return () => {
-      window.removeEventListener('online', handleOnlineStatusChange);
-      window.removeEventListener('offline', handleOnlineStatusChange);
-    };
-  }, []);
+  const [albumTitle, setAlbumTitle] = useState('');
+  const [isAlbumTitleValid, setIsAlbumTitleValid] = useState(true);
+  const [artistName, setArtistName] = useState('');
+  const [isArtistNameValid, setIsArtistNameValid] = useState(true);
+  const [collaboratorName, setCollaboratorName] = useState('');
+  const [isCollaboratorNameValid, setIsCollaboratorNameValid] = useState(true);
+  const [file, setFile] = useState(null);
 
   const getlistasbyid_user = async (id_usuario) => {
     try {
@@ -58,81 +50,75 @@ function CrearLista({ showAlertModal }) {
   };
 
   const validarCampos = async (campos) => {
-    if (campos.titulo.length > 20 || campos.titulo.length < 1 || !alfanumerico(campos.titulo)) {
-      document.getElementById('titulo_lista').classList.add('active');
-      return null;
+    if (albumTitle.length > 20 || albumTitle.length < 1 || !alfanumerico(albumTitle)) {
+      setIsAlbumTitleValid(false);
+      throw new Error(`Asegúrese de que todos los campos estén llenados correctamente`);
     }
-    if (campos.artista.length > 20 || campos.artista.length < 1 || !alfanumerico(campos.artista)) {
-      document.getElementById('artista').classList.add('active');
-      return null;
+    if (artistName.length > 20 || artistName.length < 1 || !alfanumerico(artistName)) {
+      setIsArtistNameValid(false);
+      throw new Error(`Asegúrese de que todos los campos estén llenados correctamente`);
     }
-    if (campos.colaborador.length > 20 || !alfanumerico(campos.colaborador)) {
-      document.getElementById('colaborador').classList.add('active');
-      return null;
+    if (collaboratorName.length > 20 || !alfanumerico(collaboratorName)) {
+      setIsCollaboratorNameValid(false);
+      throw new Error(`Asegúrese de que todos los campos estén llenados correctamente`);
     }
-    if (campos.archivo.length < 1) {
-      console.log("No se selecciono archivo");
-      return null;
+    if (file === null) {
+      throw new Error(`No se seleccionó ningún archivo`);
     }
 
     // artista
-    const id_usuario = await ExisteArtista(campos.artista);
+    const id_usuario = await ExisteArtista(artistName);
     if (id_usuario == null) {
-      document.getElementById('artista').classList.add('active');
-      showAlertModal('El artista no existe, intente con otro');
-      return null;
+      setIsArtistNameValid(false);
+      throw new Error(`No se pudo encontrar el artista con ese nombre`);
     }
 
     // titulo
     const albumes = await getlistasbyid_user(id_usuario);
-    const albumExistente = albumes.find((album) => album.titulo_lista === campos.titulo);
+    const albumExistente = albumes.find((album) => album.titulo_lista === albumTitle);
     if (albumExistente) {
-      document.getElementById('titulo_lista').classList.add('active');
-      showAlertModal('El nombre de la carpeta ya está en uso, intente otro');
-      return null;
+      setIsAlbumTitleValid(false);
+      throw new Error(`El nombre de la carpeta ya está en uso, intente otro`);
     }
 
     // colaborador
-    if (campos.colaborador.length > 0) {
-      const id_colaborador = await ExisteArtista(campos.colaborador);
+    if (collaboratorName.length > 0) {
+      const id_colaborador = await ExisteArtista(collaboratorName);
       if (id_colaborador == null) {
-        document.getElementById('colaborador').classList.add('active');
-        showAlertModal('El artista colaborador no existe, intente con otro');
-        return null;
+        setIsCollaboratorNameValid(false);
+        throw new Error(`El artista colaborador no existe, intente con otro`);
       } else if (id_colaborador === id_usuario) {
-        document.getElementById('colaborador').classList.add('active');
-        showAlertModal('El artista y el colaborador no pueden ser el mismo');
-        return null;
+        setIsCollaboratorNameValid(false);
+        throw new Error(`El artista y el colaborador no pueden ser el mismo`);
       }
+    }
+
+    // archivo
+    const isFileFormatAllowed = formatsAllowed.some((format) => file.type.includes(format))
+    if (!isFileFormatAllowed) {
+      throw new Error(`Formato de archivo no válido`);
+    }
+    if (file.size > maxSize) {
+      throw new Error(`Tamaño máximo de 5 MB excedido`);
     }
 
     return {
       id_usuario: id_usuario,
-      nombre_usuario: campos.artista,
-      titulo_lista: campos.titulo,
+      nombre_usuario: artistName,
+      titulo_lista: albumTitle,
       path_image: "",
-      // colaborador: colaborador
-      colaborador: campos.colaborador
+      colaborador: collaboratorName
     };
   };
 
-  const validarFormatoArchivo = async (archivo) => {
-    const formatosPermitidos = ["jpeg", "png"];
-    for (const formato of formatosPermitidos) {
-      if (archivo.type.includes(formato)) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const subirFirebase = async (archivo) => {
+  const subirFirebase = async () => {
     try {
-      const portadaInfo = await SubirPortada(archivo);
+      const portadaInfo = await SubirPortada(file);
       const imageUrl = await recuperarUrlPortada(portadaInfo);
       return { url: imageUrl, filePath: portadaInfo };
     } catch (error) {
       console.error('Error:', error);
+      throw new Error(`Error al cargar la imágen. Intente más tarde`);
     }
   };
 
@@ -147,191 +133,94 @@ function CrearLista({ showAlertModal }) {
     }
   };
 
-  const validarForm = async (e) => {
-
-    setBotonHabilitado(false);
+  const validarForm = async () => {
     try {
-      if (isOnline) {
-        e.preventDefault();
+      const nuevoAlbum = await validarCampos();
 
-        const campos = {
-          titulo: eliminarEspacios(document.getElementById('titulo_lista').value).trim(),
-          artista: eliminarEspacios(document.getElementById('artista').value).trim(),
-          colaborador: eliminarEspacios(document.getElementById('colaborador').value).trim(),
-          archivo: document.getElementById('archivo').files
-        };
+      const resultado = await subirFirebase();
+      nuevoAlbum.path_image = resultado.url;
 
-        const nuevoAlbum = await validarCampos(campos);
-        if (nuevoAlbum === null) {
-          showAlertModal(`Asegúrese de que todos los campos estén llenados correctamente`);
-          return;
-        }
-
-        const archivo = campos.archivo[0];
-        if (!await validarFormatoArchivo(archivo)) {
-          showAlertModal(`Formato de archivo no válido`);
-          return;
-        }
-
-        const maxSize = 5 * 1024 * 1024; // 15 MB en bytes
-        if (archivo.size > maxSize) {
-          showAlertModal(`Tamaño máximo de 5 MB excedido`);
-          return;
-        }
-
-        try {
-          const resultado = await subirFirebase(archivo);
-          nuevoAlbum.path_image = resultado.url;
-
-          const subidaExitosa = await subirBD(nuevoAlbum);
-          if (!subidaExitosa) {
-            deleteFile(resultado.filePath);
-            e.preventDefault();
-            showAlertModal(`Error al cargar la canción. Intente más tarde`);
-            return;
-          }
-          showAlertModal(`Lista creada exitosamente`, "/");
-        } catch (error) {
-          console.error('Error:', error);
-          showAlertModal(`Error al subir o procesar el archivo`);
-        }
-      } else {
-        e.preventDefault();
-        showAlertModal('Hubo un error al crear la carpeta, Intenta nuevamente');
+      const subidaExitosa = await subirBD(nuevoAlbum);
+      if (!subidaExitosa) {
+        deleteFile(resultado.filePath);
+        throw new Error(`Error al subir o procesar el archivo`);
       }
+
+      showAlertModal(`Lista creada exitosamente`, "/");
     } catch (error) {
-      e.preventDefault();
-      showAlertModal('Hubo un error al crear la carpeta, Intenta nuevamente');
-    } finally {
-      // Una vez que se complete, habilitar el botón nuevamente
-      setBotonHabilitado(true);
+      showAlertModal(error.message);
     }
   };
 
-  const mostrarNombreArchivo = async () => {
-    const file = document.getElementById('archivo');
-
-    if (file.files && file.files.length > 0) {
-      file.previousElementSibling.innerText = file.files[0].name;
-      file.previousElementSibling.style.display = 'block';
-      file.nextElementSibling.value = "X";
-      file.nextElementSibling.classList.add('active');
+  const handleAlbumTitleInput = (newValue) => {
+    if (newValue !== ' ') {
+      const value = newValue.replace(/\s+/g, ' ');
+      setIsAlbumTitleValid(alfanumerico(value));
+      setAlbumTitle(value);
     }
   };
 
-  const eliminarEspacios = (value) => {
-    if (value === " ") {
-      return "";
+  const handleArtistNameInput = (newValue) => {
+    if (newValue !== ' ') {
+      const value = newValue.replace(/\s+/g, ' ');
+      setIsArtistNameValid(alfanumerico(value));
+      setArtistName(value);
     }
-    return value.replace(/\s+/g, ' ');
   };
 
-  const handle = (e, alfanumericoFunc) => {
-    let newValue = eliminarEspacios(e.target.value);
-    if (alfanumericoFunc(newValue)) {
-      e.target.classList.remove('active');
-    } else {
-      e.target.classList.add('active');
+  const handleCollaboratorNameInput = (newValue) => {
+    if (newValue !== ' ') {
+      const value = newValue.replace(/\s+/g, ' ');
+      setIsCollaboratorNameValid(alfanumerico(value));
+      setCollaboratorName(value);
     }
-    if (newValue.length > 20) {
-      newValue = newValue.slice(0, 20);
-    }
-    e.target.value = newValue;
   };
 
   return (
-    <div className="modal-form">
-      <form className="modal-box" id="form" onSubmit={validarForm}>
-        <div className="inter-modal">
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="titulo_lista">Título del álbum *</label>
-              <input autoFocus required
-                type="text"
-                className="validar"
-                id="titulo_lista"
-                name="titulo_lista"
-                placeholder="Escriba el título del álbum"
-                onChange={(e) => { handle(e, alfanumerico); }}
-                onBlur={(e) => { e.target.value = e.target.value.trim(); }}
-              />
-            </div>
-          </div>
+    <Form
+      onSubmit={validarForm}
+      requiredConnection
+      showAlertModal={showAlertModal}
+      onclickCancelRedirectTo='/'
+    >
+      <TextInput
+        name='titulo_lista'
+        label='Título del álbum *'
+        value={albumTitle}
+        onChange={handleAlbumTitleInput}
+        onBlur={(newValue) => setAlbumTitle(newValue.trim())}
+        isValid={isAlbumTitleValid}
+        placeholder='Escriba el título del álbum'
+      />
 
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="artista">Artista *</label>
-              <input required
-                type="text"
-                className="validar"
-                id="artista"
-                name="artista"
-                placeholder="Escriba el nombre del artista"
-                onChange={(e) => { handle(e, alfanumerico); }}
-                onBlur={(e) => { e.target.value = e.target.value.trim(); }}
-              />
-            </div>
-          </div>
+      <TextInput
+        name='artista'
+        label='Artista *'
+        value={artistName}
+        onChange={handleArtistNameInput}
+        onBlur={(newValue) => setArtistName(newValue.trim())}
+        isValid={isArtistNameValid}
+        placeholder='Escriba el nombre del artista'
+      />
 
-          <div className="campo">
-            <div className="input-box">
-              <label htmlFor="colaborador">Artista colaborador</label>
-              <input
-                type="text"
-                className="validarNoRequiered"
-                id="colaborador"
-                name="colaborador"
+      <TextInput
+        name='colaborador'
+        label='Artista colaborador'
+        value={collaboratorName}
+        onChange={handleCollaboratorNameInput}
+        onBlur={(newValue) => setCollaboratorName(newValue.trim())}
+        isValid={isCollaboratorNameValid}
+        placeholder='Escriba el nombre del artista colaborador'
+      />
 
-                placeholder="Escriba el nombre del artista colaborador"
-                onChange={(e) => {
-                  if (e.target.value.length > 0 && e.target.value.length < 21) {
-                    e.target.classList.remove('active'); e.target.classList.add('valid');
-                  }
-                  handle(e, alfanumerico);
-                }}
-                onBlur={(e) => {
-                  e.target.value = e.target.value.trim();
-                  if (e.target.value.length < 1) {
-                    e.target.classList.remove('active'); e.target.classList.remove('valid');
-                  }
-                }}
-              />
-            </div>
-          </div>
-
-          {/* SELECCIONAR ARCHIVO */}
-          <div className="campo campo-cargar-cancion">
-            <div className="input-box">
-              <label>Portada del álbum *</label>
-              <div className="seleccionarArchivo">
-                <span className="nombreArchivo" id="nombreArchivo"></span> {/* Mostrar nombre del archivo */}
-                <input
-                  type="file"
-                  name="archivo"
-                  id="archivo"
-                  accept=".png, .jpg, .jpeg"
-                  style={{ display: 'none' }}
-                  onChange={mostrarNombreArchivo}
-                />
-                <input
-                  type="button"
-                  className="btn-subir bg-white"
-                  onClick={() => { document.getElementById('archivo').click(); }}
-                  value="Seleccionar imagen"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="campo">
-            <div className="btn-box">
-              <button type="submit" className="btn-next" disabled={!botonHabilitado}>Aceptar</button>
-              <Link to="/"><button to="/" className="custom-link">Cancelar</button></Link>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
+      <FileInput
+        name='archivo'
+        label='Portada del álbum *'
+        fileName={file?.name}
+        onChange={setFile}
+        accept={'.' + formatsAllowed.join(', .')}
+      />
+    </Form>
   );
 }
 
